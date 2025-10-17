@@ -1,0 +1,38 @@
+/* -------------------- CSS DE DASHBOARD_ADM.HTML -------------------- */
+
+.welcome h1 {
+    font-size: var(--fs-xl);
+    color: var(--color-primary);
+    margin-bottom: .5rem;
+}
+.welcome p {
+    margin-bottom: var(--fs-lg);
+    color: var(--color-muted);
+}
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+.card {
+    background: var(--color-card-bg);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    color: var(--color-text);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+.card h2 {
+    font-size: 1.1rem;
+    margin-bottom: .4rem;
+    color: var(--color-primary);
+}
+.card p {
+    font-size: .9rem;
+    color: var(--color-muted);
+}

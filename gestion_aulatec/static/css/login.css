@@ -1,0 +1,65 @@
+
+/* -------------------- CSS DE LOGIN.HTML -------------------- */
+.login-page {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.login-left {
+  flex: 1 1 300px;
+  max-width: 450px;
+}
+.login-left .brand {
+  margin-bottom: 1rem;
+}
+.login-left .description {
+  font-size: 1.2rem;
+  color: #333;
+}
+.login-right {
+  background: white;
+  padding: var(--space-md);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  flex: 1 1 320px;
+  max-width: 400px;
+}
+.login-form p {
+  margin-bottom: var(--space-sm);
+}
+.login-form input {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid var(--clr-muted);
+  border-radius: var(--radius);
+  font-size: var(--space-sm);
+}
+.full {
+  width: 100%;
+  margin-top: var(--space-sm);
+  padding: var(--space-sm);
+  background: var(--clr-primary-hover);
+  border: 1px solid var(--clr-muted);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  cursor: pointer;
+}
+.extra-links {
+  margin-top: 1rem;
+  text-align: center;
+}
+.extra-links a {
+  color: var(--clr-primary);
+  text-decoration: none;
+}
+.divider {
+  border: none;
+  height: 1px;
+  background-color: #ccc;
+  margin: 0.9rem 0;
+}

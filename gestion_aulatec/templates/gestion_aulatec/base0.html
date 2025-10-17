@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}AulaTec{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="navbar">
+        <div class="navbar__logo">
+            <a href="{% url 'gestion_aulatec:home' %}">
+                <img src="{% static 'img/aula_tec_logo.png' %}" alt="AulaTec">
+            </a>
+        </div>
+
+        <!-- Desktop -->
+        <ul class="navbar__links"> 
+            <li>
+                <a href="{% url 'gestion_aulatec:home' %}" class="button" data-text="Inicio">
+                    <span class="actual-text">&nbsp;Inicio&nbsp;</span>
+                    <span aria-hidden="true" class="hover-text">&nbsp;Inicio&nbsp;</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="button" data-text="Cursos">
+                    <span class="actual-text">&nbsp;Cursos&nbsp;</span>
+                    <span aria-hidden="true" class="hover-text">&nbsp;Cursos&nbsp;</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="button" data-text="Blog">
+                    <span class="actual-text">&nbsp;Blog&nbsp;</span>
+                    <span aria-hidden="true" class="hover-text">&nbsp;Blog&nbsp;</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="button" data-text="Contacto">
+                    <span class="actual-text">&nbsp;Contacto&nbsp;</span>
+                    <span aria-hidden="true" class="hover-text">&nbsp;Contacto&nbsp;</span>
+                </a>
+            </li>
+        </ul>   
+
+        {% if request.user.is_authenticated %}
+        <span class="navbar__user">{{ request.user.Nombres }}</span>
+        <a class="btn btn--primary" href="{% url 'gestion_aulatec:logout' %}">Salir</a>
+        {% else %}
+        <a class="btn btn--primary" href="{% url 'gestion_aulatec:login' %}">Ingresar</a>
+        {% endif %}
+
+        <!-- Botón Hamburguesa -->
+        <button class="navbar__toggle" id="menu-toggle" aria-label="Abrir menú">
+            &#9776;
+        </button>
+
+        <!-- Menú móvil -->
+        <div class="navbar__mobile" id="mobile-menu">
+            <ul>
+                <li><a href="{% url 'gestion_aulatec:home' %}">Inicio</a></li>
+                <li><a href="#">Cursos</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+            <a class="btn btn--primary" href="{% url 'gestion_aulatec:login' %}">Ingresar</a>
+        </div>
+    </header>
+
+    <!-- BLOQUE DE CONTENIDO -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>&copy; 2025 AulaTec. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="{% static 'js/menu.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+

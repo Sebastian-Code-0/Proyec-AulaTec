@@ -1,0 +1,7 @@
+from .EstudianteViews import EstudianteCreateView,EstudianteDeleteView,EstudianteListView,EstudianteUpdateView
+from .DocenteViews import DocenteCreateView,DocenteDeleteView,DocenteListView,DocenteUpdateView
+from .GradoViews import GradoCreateView,GradoDeleteView,GradoUpdateView,GradoListView
+from .MateriaViews import MateriaCreateView,MateriaDeleteView,MateriaListView,MateriaUpdateView
+from .MatriculaViews import MatriculaCreateView,MatriculaDeleteView,MatriculaDetailView,MatriculaUpdateView,MatriculaListView
+from .LoginViews import AdminDashboardView,DocenteDashboardView,EstudianteDashboardView,login_view,logout_view,home_view
+from .UsuarioViews import UsuarioCreateView,UsuarioDeleteView,UsuarioListView,UsuarioUpdateView

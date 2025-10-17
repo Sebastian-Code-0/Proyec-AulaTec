@@ -1,0 +1,95 @@
+/* -------------------- PANEL ESTUDIANTE -------------------- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5faf6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Contenedor principal */
+.dashboard-container {
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 2.5rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+/* Encabezado */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+/* Título */
+.dashboard-header h1 {
+    font-size: 1.8rem;
+    color: #000000;
+    margin: 0;
+}
+
+/* Botones */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+.action-buttons a {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: 0.3s ease;
+    font-size: 0.95rem;
+}
+.action-buttons a[href*="home"] {
+    background: #27ae60;
+    color: white;
+}
+.action-buttons a[href*="logout"] {
+    background: #c0392b;
+    color: white;
+}
+.action-buttons a:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+/* Bienvenida */
+.welcome {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    color: #000000;
+}
+
+/* Subtítulo */
+h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: #000000;
+    border-left: 5px solid #000000;
+    padding-left: 10px;
+}
+
+/* Información del estudiante */
+.student-info {
+    background: #ecfdf3;
+    border: 1px solid #27ae60;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+.student-info p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+}
+.student-info strong {
+    color: #1e4620;
+}

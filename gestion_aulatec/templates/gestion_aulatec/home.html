@@ -1,0 +1,61 @@
+{% extends "gestion_aulatec/base0.html" %}
+{% load static %}
+
+{% block title %}AulaTec - Inicio{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <video autoplay muted loop playsinline>
+        <source src="{% static 'mp4/1270564-hd_1920_1080_25fps.mp4' %}" type="video/mp4">
+        Tu navegador no soporta video.
+    </video>
+    <div class="overlay"></div>
+    <div class="hero-content" id="hero-content">
+        <h1>Bienvenido a AulaTec</h1>
+        <p>Transformamos la educación con tecnología e innovación digital.</p>
+        <a href="#" class="btn">Descubrir más</a>
+    </div>  
+</section>
+
+<main class="container">
+    <section class="highlights appear" id="highlights">
+        <h2 class="section-title">Proyectos destacados</h2>
+        <div class="card-grid futuristic">
+            <article class="card">
+                <img src="{% static 'img/card-1.jpeg' %}" alt="">
+                <div class="card__body">
+                    <h3>Aula de Innovación</h3>
+                    <p>Descubre cómo nuestros estudiantes aplican tecnología en proyectos reales.</p>
+                    <a href="#" class="btn btn--secondary">Ver más</a>
+                </div>
+            </article>
+            <article class="card">
+                <img src="{% static 'img/card-2.jpeg' %}" alt="">
+                <div class="card__body">
+                    <h3>Blog Estudiantil</h3>
+                    <p>Historias y artículos escritos por la comunidad académica.</p>
+                    <a href="#" class="btn btn--secondary">Explorar</a>
+                </div>
+            </article>
+            <article class="card">
+                <img src="{% static 'img/card-3.jpeg' %}" alt="">
+                <div class="card__body">
+                    <h3>Laboratorio Virtual</h3>
+                    <p>Accede a simuladores de física, química y más.</p>
+                    <a href="#" class="btn btn--secondary">Acceder</a>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/script_hero.js' %}"></script>
+<script src="{% static 'js/script_appear.js' %}"></script>
+{% endblock %}
+

@@ -1,0 +1,106 @@
+/* -------------------- CSS PARA FORMULARIOS DE MATERIAS -------------------- */
+
+/* Contenedor principal del formulario */
+.materias-page form {
+    max-width: 720px;
+    margin: 1.5rem auto;
+    background: var(--color-card-bg);
+    padding: 2rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Grupos de campos del formulario */
+.materias-page .form-field {
+    margin-bottom: 1.5rem;
+}
+.materias-page .form-field label {
+    font-weight: 500;
+    display: block;
+    margin-bottom: .5rem;
+    color: var(--color-text);
+}
+
+/* Campos de entrada */
+.materias-page .form-field input,
+.materias-page .form-field select,
+.materias-page .form-field textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    background: #fff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.materias-page .form-field input:focus,
+.materias-page .form-field select:focus,
+.materias-page .form-field textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+/* Mensajes de error */
+.materias-page .form-field .error {
+    color: #d32f2f;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: block;
+}
+
+/* Botones del formulario */
+.materias-page .form-buttons {
+    margin-top: 2rem;
+    display: flex;
+    gap: 12px;
+}
+.materias-page .btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: var(--radius);
+    font-weight: 500;
+    text-decoration: none;
+    transition: background .15s ease, color .15s ease;
+    cursor: pointer;
+    border: none;
+    font-size: 1rem;
+}
+.materias-page .btn-primary {
+    background: var(--color-primary);
+    color: #fff;
+}
+.materias-page .btn-primary:hover { 
+    background: var(--color-primary-dark); 
+}
+.materias-page .btn-outline {
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+    background: transparent;
+}
+.materias-page .btn-outline:hover {
+    background: rgba(0, 102, 204, 0.08);
+}
+
+/* Título de la página */
+.materias-page .welcome h1 {
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    color: var(--color-primary);
+    text-align: center;
+}
+
+/* Responsividad para formularios */
+@media (max-width: 768px) {
+    .materias-page form {
+        padding: 1.5rem;
+        margin: 1rem;
+    } 
+    .materias-page .form-buttons {
+        flex-direction: column;
+    }
+    .materias-page .btn {
+        width: 100%;
+        text-align: center;
+    }
+}

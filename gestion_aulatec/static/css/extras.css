@@ -1,0 +1,83 @@
+/* -------------------- CSS NECESARIO PARA EL CORRECTO FUNCIONAMIENTO DE LA VISTAS DE ADM, EST, DOC -------------------- */
+
+/* Dark mode opcional (respeta la preferencia del usuario) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #3399ff;
+    --color-bg: #1e1e1e;
+    --color-card-bg: #262626;
+    --color-text: #e0e0e0;
+    --color-muted: #aaaaaa;
+  }
+}
+.content {
+  flex: 1;
+  padding: 35px;
+  background: var(--color-bg);
+  color: #1d1d1d; 
+  color: var(--color-text);
+}
+.wrapper {
+    display: flex;
+    min-height: calc(100vh - 60px);   /* resta la altura del header */
+}
+.top-bar {
+    background: var(--color-primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 60px;
+    box-shadow: var(--shadow-sm);
+}
+.top-bar .logo {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+}
+.top-bar .logo span {
+    margin-left: 65px;
+    font-size: 1.2rem;
+}
+.top-bar .top-nav a {
+    color: #fff;
+    margin-left: 16px;
+    text-decoration: none;
+    font-weight: 400;
+}
+.top-bar .top-nav a:hover {
+    opacity: .85;
+}
+.sidebar {
+    width: 240px;
+    background: #fff;
+    border-right: 1px solid #e0e0e0;
+    padding-top: 20px;
+    overflow-y: auto;
+}
+.menu {
+    list-style: none;
+}
+.menu li a {
+    display: block;
+    padding: 12px 20px;
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+.menu li a.active,
+.menu li a:hover {
+    background: #e6f2ff;
+}
+@media (max-width: 768px) {
+    .wrapper {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+    }
+}
+

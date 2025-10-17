@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Matrícula: {{ object.NumMatricula }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f7f6; }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 30px; }
+        h2 { color: #34495e; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; margin-top: 30px; margin-bottom: 20px; }
+        .detail-item {
+            margin-bottom: 15px;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .detail-item strong {
+            display: inline-block;
+            width: 200px; /* Ancho fijo para las etiquetas para alinear */
+            color: #555;
+        }
+        .detail-item span {
+            color: #333;
+        }
+        .actions {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .actions a {
+            display: inline-block;
+            background-color: #3498db; /* Azul */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+        }
+        .actions a:hover {
+            background-color: #2980b9;
+        }
+        .actions a.edit { background-color: #f39c12; } /* Naranja */
+        .actions a.edit:hover { background-color: #e67e22; }
+        .actions a.delete { background-color: #e74c3c; } /* Rojo */
+        .actions a.delete:hover { background-color: #c0392b; }
+        .messages { list-style-type: none; padding: 0; margin-bottom: 20px; }
+        .messages li { padding: 12px; margin-bottom: 10px; border-radius: 4px; font-weight: bold; }
+        .messages .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .messages .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .messages .info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Detalle de Matrícula</h1>
+
+        {# Mensajes de Django #}
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <h2>Información General de la Matrícula</h2>
+        <div class="detail-item">
+            <strong>Número de Matrícula:</strong> <span>{{ object.NumMatricula }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Año Lectivo:</strong> <span>{{ object.anio_lectivo }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Nombre del Colegio:</strong> <span>{{ object.nombre_colegio }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Grado a Matricular:</strong> <span>{{ object.IdGrado.NumGrado }} </span>
+        </div>
+
+        <h2>Información del Estudiante</h2>
+        <div class="detail-item">
+            <strong>Nombres del Estudiante:</strong> <span>{{ object.IdEstudiante.IdUsuario.Nombres }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Apellidos del Estudiante:</strong> <span>{{ object.IdEstudiante.IdUsuario.Apellidos }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Tipo de Documento:</strong> <span>{{ object.IdEstudiante.IdUsuario.TipoId }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Número de Documento:</strong> <span>{{ object.IdEstudiante.IdUsuario.NumId }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Celular del Estudiante:</strong> <span>{{ object.IdEstudiante.IdUsuario.Celular|default:"No registrado" }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Fecha de Nacimiento:</strong> <span>{{ object.fecha_nacimiento_estudiante|date:"d M Y" }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Lugar de Nacimiento:</strong> <span>{{ object.lugar_nacimiento_estudiante|default:"No especificado" }}</span>
+        </div>
+        <!--<div class="detail-item">
+            <strong>Dirección de Residencia:</strong> <span>{{ object.direccion_residencia_estudiante }}</span>
+        </div>-->
+        <div class="detail-item">
+            <strong>Barrio/Vereda:</strong> <span>{{ object.barrio_vereda_estudiante|default:"No especificado" }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>EPS o Seguro Médico:</strong> <span>{{ object..eps_seguro_medico_estudiante|default:"No especificado" }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>¿Tiene condición médica o discapacidad?:</strong> <span>{% if object.TieneCondicionMedica %}Sí{% else %}No{% endif %}</span>
+        </div>
+        {% if object.TieneCondicionMedica %}
+            <div class="detail-item">
+                <strong>Especificación de Condición Médica:</strong> <span>{{ object.EspecificacionCondicionMedica|default:"No especificado" }}</span>
+            </div>
+        {% endif %}
+
+        <h2>Información del Acudiente</h2>
+        <div class="detail-item">
+            <strong>Tipo de Identificación Acudiente:</strong> <span>{{ object.Acudiente_TipoId }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Número de Identificación Acudiente:</strong> <span>{{ object.Acudiente_NumId }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Nombres del Acudiente:</strong> <span>{{ object.Acudiente_Nombres }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Apellidos del Acudiente:</strong> <span>{{ object.Acudiente_Apellidos }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Celular del Acudiente:</strong> <span>{{ object.Acudiente_Celular|default:"No registrado" }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Parentesco con el Estudiante:</strong> <span>{{ object.Acudiente_Parentesco }}</span>
+        </div>
+
+        <h2>Información Académica</h2>
+        <div class="detail-item">
+            <strong>Último Grado Cursado:</strong> <span>{{ object.ultimo_grado_cursado|default:"No especificado" }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Institución Anterior:</strong> <span>{{ object.institucion_anterior|default:"No especificado" }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Ciudad/Municipio Institución Anterior:</strong> <span>{{ object.ciudad_municipio_institucion_anterior|default:"No especificado" }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>¿Repite Grado?:</strong> <span>{% if object.repite_grado %}Sí{% else %}No{% endif %}</span>
+        </div>
+        <div class="detail-item">
+            <strong>¿Requiere Apoyo Pedagógico Especial?:</strong> <span>{% if object.requiere_apoyo_pedagogico %}Sí{% else %}No{% endif %}</span>
+        </div>
+
+        <h2>Autorizaciones y Documentos Presentados</h2>
+        <div class="detail-item">
+            <strong>Autoriza Tratamiento de Datos:</strong> <span>{% if object.autoriza_tratamiento_datos %}Sí{% else %}No{% endif %}</span>
+        </div>
+
+        <h3>Documentos Requeridos del Estudiante</h3>
+        <div class="detail-item">
+            <strong>Copia del documento de identidad:</strong> <span>{% if object.doc_identidad_estudiante_presentado %}Sí{% else %}No{% endif %}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Certificado de notas del año anterior:</strong> <span>{% if object.certificado_notas_anterior_presentado %}Sí{% else %}No{% endif %}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Fotocopia del carné de vacunación:</strong> <span>{% if object.fotocopia_carnet_vacunacion_presentado %}Sí{% else %}No{% endif %}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Fotocopia de la EPS o seguro médico:</strong> <span>{% if object.fotocopia_eps_seguro_medico_presentado %}Sí{% else %}No{% endif %}</span>
+        </div>
+        <div class="detail-item">
+            <strong>2 fotos tamaño documento:</strong> <span>{% if object.fotos_tamano_documento_presentadas %}Sí{% else %}No{% endif %}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Certificado médico:</strong> <span>{% if object.certificado_medico_presentado %}Sí{% else %}No{% endif %}</span>
+        </div>
+
+        <h3>Documentos del Acudiente</h3>
+        <div class="detail-item">
+            <strong>Copia de la cédula del acudiente:</strong> <span>{% if object.copia_cedula_acudiente_presentado %}Sí{% else %}No{% endif %}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Comprobante de residencia:</strong> <span>{% if object.comprobante_residencia_acudiente_presentado %}Sí{% else %}No{% endif %}</span>
+        </div>
+
+
+        <div class="actions">
+            <a href="{% url 'gestion_aulatec:matricula_list' %}">Volver a la lista</a>
+        </div>
+    </div>
+</body>
+</html>

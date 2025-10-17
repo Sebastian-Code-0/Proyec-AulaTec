@@ -1,0 +1,104 @@
+{% extends "gestion_aulatec/base1.html" %}
+{% load static %}
+
+{% block title %}AulaTec{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/usuarios.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="wrapper">
+    <!-- Sidebar (compartido con el dashboard) -->
+    <aside class="sidebar">
+        <ul class="menu">
+            <li><a href="{% url 'gestion_aulatec:admin_dashboard' %}">Resumen</a></li>
+            <li><a href="{% url 'gestion_aulatec:usuario_list' %}" class="active">👤 Usuarios</a></li>
+            <li><a href="{% url 'gestion_aulatec:grado_list' %}">🎓 Grados</a></li>
+            <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
+            <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
+            <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
+            <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
+        </ul>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="content">
+        <div class="users-page">
+            <section class="welcome">
+                <h1 class="centerh1">Usuarios del Sistema</h1>
+            </section>
+            
+            {% if usuarios %}
+            <section class="table-wrapper">
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>Tipo ID</th><th>Número ID</th>
+                            <th>Nombres</th><th>Apellidos</th><th>Rol</th>
+                            <th>Celular</th><th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for usuario in usuarios %}
+                        <tr>
+                            <td>{{ usuario.IdUsuario }}</td>
+                            <td>{{ usuario.TipoId }}</td>
+                            <td>{{ usuario.NumId }}</td>
+                            <td>{{ usuario.Nombres }}</td>
+                            <td>{{ usuario.Apellidos }}</td>
+                            <td>{{ usuario.Rol }}</td>
+                            <td>{{ usuario.Celular }}</td>
+                            <td class="actions">
+                                <a href="{% url 'gestion_aulatec:usuario_update' pk=usuario.IdUsuario %}"
+                                class="action-link edit">Editar</a>
+                                <button type="button" 
+                                        class="action-link delete delete-btn"
+                                        data-usuario-id="{{ usuario.IdUsuario }}"
+                                        data-usuario-name="{{ usuario.Nombres }} {{ usuario.Apellidos }}"
+                                        data-delete-url = "{% url 'gestion_aulatec:usuario_delete' pk=usuario.IdUsuario %}">
+                                    Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+            {% else %}
+            <p class="empty-msg">No hay usuarios registrados aún.</p>
+            {% endif %}
+            
+            <div class="nav-bottom">
+                <!-- <a href="{% url 'gestion_aulatec:docente_list' %}"
+                class="btn btn-secondary">Ir a Docentes</a>-->
+                <a href="{% url 'gestion_aulatec:admin_dashboard' %}"
+                class="btn btn-outline">Volver al inicio</a> 
+                <a href="{% url 'gestion_aulatec:usuario_create' %}"
+                class="btn btn-primary">Crear Nuevo Usuario</a>
+            </div>
+        </div><!-- /.users-page -->
+    </main>
+</div>
+<!-- Modal de Confirmación para Usuarios -->
+<div id="deleteModalUsuario" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Confirmar Eliminación</h3>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="icon">⚠️</div>
+            <p>¿Estás seguro de que quieres eliminar al usuario <strong id="usuarioName"></strong>?</p>
+            <div class="warning-text">
+                ❗️ Esta acción no se puede deshacer ❗️
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-cancel">Cancelar</button>
+            <button type="button" id="confirmDeleteUsuario" class="btn btn-delete">Sí, Eliminar</button>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/modal_usuario.js' %}"></script>
+{% endblock %}
