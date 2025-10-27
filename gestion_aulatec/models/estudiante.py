@@ -9,6 +9,12 @@ class Estudiante(models.Model):
     # este Estudiante también será eliminado.
     IdUsuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, unique=True)
     IdGrado = models.ForeignKey(Grado, on_delete=models.SET_NULL, null=True, blank=True)
+    FechaNacimiento = models.DateField(null=True, blank=True, verbose_name="Fecha de Nacimiento")
+    LugarNacimiento = models.CharField(max_length=100, null=True, blank=True, verbose_name="Lugar de Nacimiento")
+    BarrioVereda = models.CharField(max_length=100, null=True, blank=True, verbose_name="Barrio/Vereda de Residencia")
+    EPSSeguroMedico = models.CharField(max_length=100, null=True, blank=True, verbose_name="EPS o Seguro Médico")
+    TieneCondicionMedica = models.BooleanField(default=False, verbose_name="¿Tiene alguna condición médica?")
+    EspecificacionCondicionMedica = models.TextField(blank=True, null=True, verbose_name="Especificar condición médica")
     def __str__(self):
         nombre_usuario = f"{self.IdUsuario.Nombres} {self.IdUsuario.Apellidos}" if self.IdUsuario else "Usuario Desconocido"
         grado_info = f" (Grado {self.IdGrado.NumCurso}{self.IdGrado.NumGrado})" if self.IdGrado else ""

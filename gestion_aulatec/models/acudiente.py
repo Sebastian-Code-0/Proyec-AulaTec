@@ -1,9 +1,13 @@
 from django.db import models
-
+from .tipoIdentificacion import TipoIdentificacion # Asume que lo importas
 
 class Acudiente(models.Model):
     AcudienteId = models.AutoField(primary_key=True)
-    TipoId = models.CharField(max_length=50, verbose_name='Tipo Id')
+    
+    # NORMALIZACIÓN: Ahora es una FK a la tabla TipoIdentificacion
+    IdTipoId = models.ForeignKey(TipoIdentificacion, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Tipo Id')
+    
+    # Eliminamos el campo TipoId de texto y usamos IdTipoId
     NumId = models.CharField(max_length=50, unique=True)
     Nombres = models.CharField(max_length=100)
     Apellidos = models.CharField(max_length=100)

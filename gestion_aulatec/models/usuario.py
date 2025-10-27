@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin #importar para Autenticación
+from .tipoIdentificacion import TipoIdentificacion
+from .rol import Rol
 
 #Personalizamos la creación de usuarios.
 class CustomUserManager(BaseUserManager):
@@ -28,28 +30,30 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(NumId, password, **extra_fields)
     
 #Modelo tabla usuarios.
-class Usuario(AbstractBaseUser, PermissionsMixin): # Hereda de AbstractBaseUser y PermissionsMixin
+class Usuario(AbstractBaseUser, PermissionsMixin):
     IdUsuario = models.AutoField(primary_key=True)
-    TipoId = models.CharField(max_length=20)
+    
+    # NORMALIZACIÓN: Ahora es una FK a la tabla TipoIdentificacion
+    IdTipoId = models.ForeignKey(TipoIdentificacion, on_delete=models.SET_NULL, null=True, blank=True)
+    
     NumId = models.CharField(max_length=10, unique=True)
     Nombres = models.CharField(max_length=100)
     Apellidos = models.CharField(max_length=100)
-    # Contrasena ya no se define aquí directamente, AbstractBaseUser la maneja
-    Rol = models.CharField(max_length=50)
+    
+    # NORMALIZACIÓN: Ahora es una FK a la tabla Rol
+    IdRol = models.ForeignKey(Rol, on_delete=models.SET_NULL, null=True, blank=True)
+    
     Celular = models.CharField(max_length=20, blank=True, null=True)
 
-    # Campos requeridos por AbstractBaseUser (para el admin de Django, etc.)
+    #Campos requeridos por AbtractUser
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
-    objects = CustomUserManager() # Asigna tu CustomUserManager
+    objects = CustomUserManager() 
 
-    USERNAME_FIELD = 'NumId' # Campo que se usará para el login (nombre de usuario)
-    REQUIRED_FIELDS = ['TipoId', 'Nombres', 'Apellidos', 'Rol'] # Campos requeridos al crear superusuario
-
-    def __str__(self):
-        return f"{self.Nombres} {self.Apellidos} ({self.Rol})"
-
+    USERNAME_FIELD = 'NumId'
+    # NOTA: Los REQUIRED_FIELDS deben ser nombres de campos del modelo.
+    REQUIRED_FIELDS = ['Nombres', 'Apellidos'] # TipoId y Rol se manejan por FK, no son tan directos aquí.
     # Métodos necesarios para PermissionsMixin si no usas los grupos y permisos de Django directamente
     # (aunque PermissionsMixin los provee, si solo usas el campo Rol, puedes ignorar estos para el login)
     

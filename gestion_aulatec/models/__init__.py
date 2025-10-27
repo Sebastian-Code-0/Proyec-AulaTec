@@ -5,3 +5,7 @@ from .grado import Grado
 from .matricula import Matricula
 from .materia import Materia
 from .acudiente import Acudiente
+from .rol import Rol
+from .tipoIdentificacion import TipoIdentificacion
+from .documentos import ChecklistDocumentos
+from .historialAcademico import HistorialAcademico
