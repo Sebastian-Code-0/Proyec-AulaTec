@@ -1,8 +1,8 @@
 :root {
-  --clr-primary: #1a73e8;
-  --clr-primary-hover: #1558b0;
-  --clr-secondary: #00bfa6;
-  --clr-secondary-hover: #009e89;
+  --clr-primary: #7d3cff;
+  --clr-primary-hover: #624298;
+  --clr-secondary: #7e7effca;
+  --clr-secondary-hover: #343497ca;
   --clr-muted: #6c757d;
   --radius: .75rem;
   --shadow-md: 0 4px 12px rgba(0,0,0,.09);
@@ -14,8 +14,8 @@
   --space-md: 2rem;
   --space-lg: 4rem;
   /* DASHBOARD_ADM UTILIDADES */
-  --color-primary: #1a73e8;         
-  --color-primary-dark: #0d47a1;
+  --color-primary: #7d3cff;         
+  --color-primary-dark: #624298;
   --color-bg: #f4f6f9;               
   --color-card-bg: #ffffff;
   --color-text: #2c3e50;

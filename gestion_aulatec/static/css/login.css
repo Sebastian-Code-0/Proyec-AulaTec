@@ -43,7 +43,7 @@
   width: 100%;
   margin-top: var(--space-sm);
   padding: var(--space-sm);
-  background: var(--clr-primary-hover);
+  background: var(--clr-primary);
   border: 1px solid var(--clr-muted);
   border-radius: var(--radius);
   font-size: 1rem;
@@ -54,7 +54,7 @@
   text-align: center;
 }
 .extra-links a {
-  color: var(--clr-primary);
+  color: var(--clr-primary-hover);
   text-decoration: none;
 }
 .divider {

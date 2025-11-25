@@ -77,9 +77,44 @@
 
     <!-- FOOTER -->
     <footer class="footer">
+    <div class="footer-container">        <!-- Columna 1 -->
+        <div class="footer-col">
+        <h3 class="footer-title">AulaTec</h3>
+        <p class="footer-desc">
+            Transformamos la educación con tecnología, innovación y pasión por el aprendizaje digital.
+        </p>
+        </div>         <!-- Columna 2 -->
+        <div class="footer-col">
+        <h3>Enlaces útiles</h3>
+        <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/proyectos">Proyectos</a></li>
+            <li><a href="/nosotros">Sobre nosotros</a></li>
+            <li><a href="/contacto">Contacto</a></li>
+        </ul>
+        </div>        <!-- Columna 3 -->
+        <div class="footer-col">
+        <h3>Contacto</h3>
+        <ul>
+            <li>📍 Bogotá, Colombia</li>
+            <li>📧 contacto@aulatec.com</li>
+            <li>📞 +57 300 123 4567</li>
+        </ul>
+        </div>        <!-- Columna 4 -->
+        <div class="footer-col">
+        <h3>Síguenos</h3>
+        <div class="social-links">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
         <p>&copy; 2025 AulaTec. Todos los derechos reservados.</p>
+    </div>
     </footer>
-
     <script src="{% static 'js/menu.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
