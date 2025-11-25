@@ -10,19 +10,19 @@
 {% block content %}
 <section class="hero">
     <video autoplay muted loop playsinline>
-        <source src="{% static 'mp4/1270564-hd_1920_1080_25fps.mp4' %}" type="video/mp4">
+        <source src="{% static 'mp4/185023-874465595.mp4' %}" type="video/mp4">
         Tu navegador no soporta video.
     </video>
     <div class="overlay"></div>
     <div class="hero-content" id="hero-content">
         <h1>Bienvenido a AulaTec</h1>
         <p>Transformamos la educación con tecnología e innovación digital.</p>
-        <a href="#" class="btn">Descubrir más</a>
+        <a href="#info" class="btn">Descubrir más</a>
     </div>  
 </section>
-
 <main class="container">
     <section class="highlights appear" id="highlights">
+        <span id="info"></span> <!-- sirve como ancla para que se pueda lograr el scroll del boton descubrir mas -->
         <h2 class="section-title">Proyectos destacados</h2>
         <div class="card-grid futuristic">
             <article class="card">
@@ -58,4 +58,3 @@
 <script src="{% static 'js/script_hero.js' %}"></script>
 <script src="{% static 'js/script_appear.js' %}"></script>
 {% endblock %}
-

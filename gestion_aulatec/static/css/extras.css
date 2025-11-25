@@ -1,15 +1,5 @@
 /* -------------------- CSS NECESARIO PARA EL CORRECTO FUNCIONAMIENTO DE LA VISTAS DE ADM, EST, DOC -------------------- */
 
-/* Dark mode opcional (respeta la preferencia del usuario) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-primary: #3399ff;
-    --color-bg: #1e1e1e;
-    --color-card-bg: #262626;
-    --color-text: #e0e0e0;
-    --color-muted: #aaaaaa;
-  }
-}
 .content {
   flex: 1;
   padding: 35px;
