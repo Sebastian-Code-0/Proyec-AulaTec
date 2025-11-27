@@ -82,27 +82,14 @@ WSGI_APPLICATION = 'aulatec.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# CONEXION PERSONAL
+# CONFIGURACIÓN SQLITE - BASE DE DATOS LOCAL
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '3306',
-    }
-}
-"""DATABASES = {  #CONEXION DEL LIDER 
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
     }
-}"""
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -151,11 +138,15 @@ LOGIN_URL = reverse_lazy('gestion_aulatec:login')
 
 LOGOUT_REDIRECT_URL = '/login/'
 
-# MODIFICA SETTINGS.PY PARA QUE LEA EL LOCAL
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# COMENTADO: settings_local.py puede sobrescribir la configuración
+# Si quieres usar SQLite, asegúrate de eliminar o comentar esta sección
+"""
 try:
     from .settings_local import *
 except ImportError:
     pass
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-]
+"""

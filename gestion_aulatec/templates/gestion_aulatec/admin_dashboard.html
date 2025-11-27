@@ -17,6 +17,7 @@
                 <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
                 <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
                 <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
+                <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
                 <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
             </ul>
         </aside>
@@ -52,6 +53,11 @@
                 <a href="{% url 'gestion_aulatec:materia_list' %}" class="card">
                     <h2>Materias</h2>
                     <p>📖 Define los cursos ofrecidos.</p>
+                </a>
+
+                <a href="{% url 'gestion_aulatec:horario_list' %}" class="card">
+                    <h2>Horarios</h2>
+                    <p>🕐 Organiza los horarios de clase.</p>
                 </a>
 
                 <a href="{% url 'gestion_aulatec:matricula_list' %}" class="card">

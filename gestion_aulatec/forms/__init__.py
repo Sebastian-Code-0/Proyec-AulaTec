@@ -5,3 +5,4 @@ from .GradoForm import GradoForm
 from .LoginForm import LoginForm
 from .MateriaForm import MateriaForm
 from .MatriculaForm import MatriculaForm
+from .HorarioForm import HorarioForm
