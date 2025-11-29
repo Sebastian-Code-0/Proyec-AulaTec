@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AulaTec - Panel Estudiante{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard_est.css' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+
+        <!-- Encabezado -->
+        <div class="dashboard-header">
+            <h1>Panel de Estudiante</h1>
+            <div class="action-buttons">
+                <a href="{% url 'gestion_aulatec:home' %}">🏠 Inicio</a>
+                <a href="{% url 'gestion_aulatec:logout' %}">🚪 Cerrar Sesión</a>
+            </div>
+        </div>
+
+        <!-- Bienvenida -->
+        <p class="welcome">
+            Bienvenido, <b>{{ request.user.Nombres }} {{ request.user.Apellidos }}</b>.  
+            Tienes rol de <b>Estudiante</b>.
+        </p>
+
+        <!-- Información del Estudiante -->
+        <h2>Mi Información de Estudiante</h2>
+        {% if estudiante_perfil %}
+            {% with estudiante=estudiante_perfil.first %}
+            <div class="student-info">
+                <p><strong>Tipo de Documento:</strong> {{ request.user.TipoId }}</p>
+                <p><strong>Número de Identificación:</strong> {{ request.user.NumId }}</p>
+                <p><strong>Grado Asignado:</strong>
+                    {% if estudiante.IdGrado %}
+                        {{ estudiante.IdGrado.NumGrado }}{{ estudiante.IdGrado.NumCurso|default:"" }}
+                    {% else %}
+                        Sin Grado Asignado
+                    {% endif %}
+                </p>
+            </div>
+            {% endwith %}
+        {% else %}
+            <p>Tu perfil de estudiante aún no ha sido creado o asignado.</p>
+        {% endif %}
+
+        <!-- NUEVA SECCIÓN: Mis Certificados -->
+        <div class="certificates-section">
+            <h2>
+                <span class="certificates-icon">🎓</span>
+                Mis Certificados
+            </h2>
+
+            {% if certificados %}
+                <div class="certificates-grid">
+                    {% for cert in certificados %}
+                    <div class="certificate-card">
+                        <div class="certificate-header">
+                            <span class="certificate-code">{{ cert.codigo }}</span>
+                            <span class="certificate-status status-{{ cert.estado }}">{{ cert.estado }}</span>
+                        </div>
+                        
+                        <div class="certificate-materia">
+                            {% if cert.IdMateria %}
+                                📚 {{ cert.IdMateria.NombreMateria }}
+                            {% else %}
+                                📄 Certificado General
+                            {% endif %}
+                        </div>
+                        
+                        <div class="certificate-type">
+                            Tipo: {{ cert.tipo }}
+                        </div>
+                        
+                        <div class="certificate-date">
+                            📅 Emitido: {{ cert.fecha_emision|date:"d/m/Y" }}
+                        </div>
+                        
+                        <div class="certificate-actions">
+                            <a href="{% url 'gestion_aulatec:descargar_mi_certificado' cert.IdCertificado %}" 
+                               class="btn-download"
+                               target="_blank">
+                                📥 Descargar PDF
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="certificates-info">
+                    <p><strong>ℹ️ Información importante:</strong></p>
+                    <p>• Cada certificado incluye tu información personal completa y es válido para trámites oficiales.</p>
+                    <p>• El PDF contiene el NIT de la institución y un código único de verificación.</p>
+                    <p>• Puedes descargar tus certificados cuantas veces necesites.</p>
+                </div>
+
+            {% else %}
+                <div class="no-certificates">
+                    <div class="no-certificates-icon">📜</div>
+                    <p><strong>Aún no tienes certificados disponibles</strong></p>
+                    <p>Los certificados aparecerán aquí una vez que sean emitidos por la institución.</p>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,124 @@
+{% extends "gestion_aulatec/base0.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/certificado.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cert-container">
+    <!-- Encabezado -->
+    <div class="cert-header">
+        <h2>
+            <span>🎓</span>
+            Certificados
+        </h2>
+        <a href="{% url 'gestion_aulatec:certificado_create' %}" class="btn-new">
+            <span>✨</span>
+            Nuevo Certificado
+        </a>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="cert-stats">
+        <div class="stat-box">
+            <h4>Total Certificados</h4>
+            <p class="number">{{ certificados|length }}</p>
+        </div>
+        <div class="stat-box" style="border-left-color: #2ecc71;">
+            <h4>Activos</h4>
+            <p class="number" style="color: #2ecc71;">
+                {% with activos=certificados|length %}{{ activos }}{% endwith %}
+            </p>
+        </div>
+        <div class="stat-box" style="border-left-color: #f39c12;">
+            <h4>Este Mes</h4>
+            <p class="number" style="color: #f39c12;">
+                {{ certificados|length }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-wrapper">
+        {% if certificados %}
+        <table class="cert-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Código</th>
+                    <th>Estudiante</th>
+                    <th>Materia</th>
+                    <th>Tipo</th>
+                    <th style="text-align: center;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for certificado in certificados %}
+                <tr>
+                    <td class="cert-id">#{{ certificado.IdCertificado }}</td>
+                    <td>
+                        <span class="cert-code">{{ certificado.codigo }}</span>
+                    </td>
+                    <td>
+                        <strong>{{ certificado.IdEstudiante.IdUsuario.Nombres }} {{ certificado.IdEstudiante.IdUsuario.Apellidos }}</strong>
+                        <br>
+                        <small style="color: var(--color-muted, #95a5a6);">
+                            {{ certificado.IdEstudiante.IdUsuario.TipoId }}: {{ certificado.IdEstudiante.IdUsuario.NumId }}
+                        </small>
+                    </td>
+                    <td>
+                        {% if certificado.IdMateria %}
+                            📚 {{ certificado.IdMateria.NombreMateria }}
+                        {% else %}
+                            <span style="color: var(--color-muted, #95a5a6);">Sin materia</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="cert-type">{{ certificado.tipo }}</span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{% url 'gestion_aulatec:certificado_detail' certificado.IdCertificado %}" 
+                               class="btn-action btn-view"
+                               title="Ver detalles">
+                                👁️ Ver
+                            </a>
+                            <a href="{% url 'gestion_aulatec:certificado_preview' certificado.IdCertificado %}" 
+                               class="btn-action btn-preview"
+                               title="Vista previa"
+                               target="_blank">
+                                🔍 Preview
+                            </a>
+                            <a href="{% url 'gestion_aulatec:certificado_pdf' certificado.IdCertificado %}" 
+                               class="btn-action btn-pdf"
+                               title="Descargar PDF"
+                               target="_blank">
+                                📥 PDF
+                            </a>
+                            <a href="{% url 'gestion_aulatec:certificado_delete' certificado.IdCertificado %}" 
+                               class="btn-action btn-delete"
+                               title="Eliminar"
+                               onclick="return confirm('¿Estás seguro de eliminar este certificado?');">
+                                🗑️ Eliminar
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📜</div>
+            <h3>No hay certificados registrados</h3>
+            <p>Comienza generando el primer certificado para un estudiante</p>
+            <a href="{% url 'gestion_aulatec:certificado_create' %}" class="btn-new">
+                <span>✨</span>
+                Crear Primer Certificado
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

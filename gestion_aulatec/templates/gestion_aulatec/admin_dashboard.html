@@ -1,0 +1,169 @@
+{% extends "gestion_aulatec/base1.html" %}
+{% load static %}
+
+{% block title %}AulaTec - Panel Administrador{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+
+{% endblock %}
+
+{% block content %}
+    <div class="wrapper">
+        <aside class="sidebar">
+            <ul class="menu">
+                <li><a href="" class="active">Resumen</a></li>
+                <li><a href="{% url 'gestion_aulatec:usuario_list' %}">👤 Usuarios</a></li>
+                <li><a href="{% url 'gestion_aulatec:grado_list' %}">🎓 Grados</a></li>
+                <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
+                <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
+                <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
+                <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
+                <li><a href="{% url 'gestion_aulatec:certificado_list' %}">🎓 Certificados</a></li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <section class="welcome">
+                <h1>¡Bienvenido, {{ request.user.Nombres }} {{ request.user.Apellidos }}!</h1>
+                <p>Tienes permisos de <strong>Administrador</strong>. Desde aquí puedes gestionar todo lo relacionado con el colegio.</p>
+            </section>
+
+            <section class="cards">
+                <a href="{% url 'gestion_aulatec:usuario_list' %}" class="card">
+                    <h2>Usuarios</h2>
+                    <p>👤 Gestiona cuentas de acceso.</p>
+                </a>
+
+                <a href="{% url 'gestion_aulatec:grado_list' %}" class="card">
+                    <h2>Grados</h2>
+                    <p>🎓 Organiza los niveles educativos.</p>
+                </a>
+
+                <a href="{% url 'gestion_aulatec:estudiante_list' %}" class="card">
+                    <h2>Estudiantes</h2>
+                    <p>📚 Administra la información académica.</p>
+                </a>
+
+                <a href="{% url 'gestion_aulatec:docente_list' %}" class="card">
+                    <h2>Docentes</h2>
+                    <p>👩‍🏫 Controla el cuerpo docente.</p>
+                </a>
+
+                <a href="{% url 'gestion_aulatec:materia_list' %}" class="card">
+                    <h2>Materias</h2>
+                    <p>📖 Define los cursos ofrecidos.</p>
+                </a>
+
+                <a href="{% url 'gestion_aulatec:matricula_list' %}" class="card">
+                    <h2>Matrículas</h2>
+                    <p>🗂️ Registra inscripciones.</p>
+                </a>
+            </section>
+
+            <!-- NUEVA SECCIÓN: Gestión de Certificados -->
+            <section class="certificates-section">
+                <h2>
+                    <span>🎓</span>
+                    Gestión de Certificados
+                </h2>
+
+                <div class="certificates-stats">
+                    <!-- Crear Certificado -->
+                    <div class="stat-card create">
+                        <a href="{% url 'gestion_aulatec:certificado_create' %}">
+                            <h3>✨ Crear Certificado</h3>
+                            <p style="margin-top: 10px;">Generar certificado para estudiante</p>
+                        </a>
+                    </div>
+
+                    <!-- Ver Todos -->
+                    <div class="stat-card list">
+                        <a href="{% url 'gestion_aulatec:certificado_list' %}">
+                            <h3>📋 Ver Certificados</h3>
+                            <p style="margin-top: 10px;">Lista completa de certificados</p>
+                        </a>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="stat-card total">
+                        <h3>📊 Total Emitidos</h3>
+                        <div class="stat-number">{{ total_certificados|default:"0" }}</div>
+                        <p>Certificados generados</p>
+                    </div>
+
+                    <!-- Esta Semana -->
+                    <div class="stat-card week">
+                        <h3>🕒 Esta Semana</h3>
+                        <div class="stat-number">{{ certificados_semana|default:"0" }}</div>
+                        <p>Nuevos certificados</p>
+                    </div>
+                </div>
+
+                <!-- Tabla de Certificados Recientes -->
+                {% if certificados_recientes %}
+                <div class="recent-certificates">
+                    <h3>📄 Últimos Certificados Generados</h3>
+                    <table class="cert-table">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Estudiante</th>
+                                <th>Materia</th>
+                                <th>Tipo</th>
+                                <th>Fecha</th>
+                                <th style="text-align: center;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cert in certificados_recientes %}
+                            <tr>
+                                <td>
+                                    <span class="cert-code">{{ cert.codigo }}</span>
+                                </td>
+                                <td>
+                                    {{ cert.IdEstudiante.IdUsuario.Nombres }} {{ cert.IdEstudiante.IdUsuario.Apellidos }}
+                                </td>
+                                <td>
+                                    {% if cert.IdMateria %}
+                                        {{ cert.IdMateria.NombreMateria }}
+                                    {% else %}
+                                        <span style="color: #95a5a6;">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="cert-type-badge">{{ cert.tipo }}</span>
+                                </td>
+                                <td style="color: var(--color-muted);">
+                                    {{ cert.fecha_emision|date:"d/m/Y" }}
+                                </td>
+                                <td class="cert-actions" style="text-align: center;">
+                                    <a href="{% url 'gestion_aulatec:certificado_detail' cert.IdCertificado %}" 
+                                       title="Ver detalles">👁️</a>
+                                    <a href="{% url 'gestion_aulatec:certificado_pdf' cert.IdCertificado %}" 
+                                       title="Descargar PDF"
+                                       target="_blank">📥</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="view-all-link">
+                        <a href="{% url 'gestion_aulatec:certificado_list' %}">
+                            Ver todos los certificados →
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="recent-certificates">
+                    <div class="no-certificates">
+                        <div class="no-certificates-icon">📜</div>
+                        <p><strong>No hay certificados registrados</strong></p>
+                        <p style="margin-top: 8px;">Comienza generando el primer certificado para un estudiante.</p>
+                    </div>
+                </div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+{% endblock %}

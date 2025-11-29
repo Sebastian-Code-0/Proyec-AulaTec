@@ -1,0 +1,22 @@
+{% extends 'gestion_aulatec/base0.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Detalle del Certificado</h2>
+
+    <div class="card">
+        <div class="card-body">
+            <p><b>Código:</b> {{ certificado.codigo }}</p>
+            <p><b>Estudiante:</b> {{ certificado.IdEstudiante.IdUsuario.Nombres }} {{ certificado.IdEstudiante.IdUsuario.Apellidos }}</p>
+            <p><b>Materia:</b> {{ certificado.IdMateria.NombreMateria }}</p>
+            <p><b>Tipo:</b> {{ certificado.tipo }}</p>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a class="btn btn-primary" href="{% url 'gestion_aulatec:certificado_pdf' certificado.IdCertificado %}">Generar PDF</a>
+        <a class="btn btn-success" href="{% url 'gestion_aulatec:certificado_preview' certificado.IdCertificado %}">Ver Preview</a>
+        <a class="btn btn-secondary" href="{% url 'gestion_aulatec:certificado_list' %}">Volver</a>
+    </div>
+</div>
+{% endblock %}

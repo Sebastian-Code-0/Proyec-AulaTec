@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Eliminación de Matrícula</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f7f6; }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 { color: #e74c3c; margin-bottom: 20px; } /* Rojo para eliminación */
+        p { margin-bottom: 25px; font-size: 1.1em; color: #555; }
+        .actions {
+            margin-top: 20px;
+        }
+        .actions button {
+            background-color: #e74c3c; /* Rojo */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+        }
+        .actions button:hover {
+            background-color: #c0392b;
+        }
+        .actions a {
+            display: inline-block;
+            background-color: #95a5a6; /* Gris */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+        }
+        .actions a:hover {
+            background-color: #7f8c8d;
+        }
+        .messages { list-style-type: none; padding: 0; margin-bottom: 20px; }
+        .messages li { padding: 12px; margin-bottom: 10px; border-radius: 4px; font-weight: bold; }
+        .messages .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .messages .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .messages .info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Confirmar Eliminación</h1>
+
+        {# Mensajes de Django #}
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <p>¿Estás seguro de que quieres eliminar la matrícula **No. {{ object.NumMatricula }}**</p>
+        <p>del estudiante **{{ object.IdEstudiante.IdUsuario.Nombres }} {{ object.IdEstudiante.IdUsuario.Apellidos }}** del grado **{{ object.IdGrado.NumGrado }}** **{{ object.IdGrado.NumCurso }}**?</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="actions">
+                <button type="submit">Sí, eliminar</button>
+                <a href="{% url 'gestion_aulatec:matricula_detail' object.id %}">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

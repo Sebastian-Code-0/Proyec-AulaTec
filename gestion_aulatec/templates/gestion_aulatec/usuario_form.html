@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if form.instance.pk %}Editar Usuario{% else %}Crear Usuario{% endif %}</title>
+    <link rel="stylesheet" href="{% static 'css/formularioUsu.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <main class="content">
+        <div class="users-page">
+            <section class="welcome">
+                <h1>{% if form.instance.pk %}Editar Usuario{% else %}Crear Nuevo Usuario{% endif %}</h1>
+            </section>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div class="form-field">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    
+                    {% if field.errors %}
+                    <span class="error">
+                        {% for error in field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <a href="{% url 'gestion_aulatec:usuario_list' %}" class="btn btn-outline">Volver a la lista</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+</body>
+</html>
+

@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AulaTec{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard_doc.css' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+
+        <!-- Encabezado con título y botones -->
+        <div class="dashboard-header">
+            <h1>Panel de Docente</h1>
+            <div class="action-buttons">
+                <a href="{% url 'gestion_aulatec:home' %}">🏠 Inicio</a>
+                <a href="{% url 'gestion_aulatec:logout' %}">🚪 Cerrar Sesión</a>
+            </div>
+        </div>
+
+        <!-- Bienvenida -->
+        <p class="welcome">
+            Bienvenido, <b>{{ request.user.Nombres }} {{ request.user.Apellidos }}</b>.  
+            Tienes rol de <b>Docente</b>.
+        </p>
+
+        <!-- Materias -->
+        <h2>Mis Materias</h2>
+        {% if materias %}
+            <ul class="materias-list">
+                {% for materia in materias %}
+                    <li>📘 {{ materia.NombreMateria }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No tienes materias asignadas aún.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

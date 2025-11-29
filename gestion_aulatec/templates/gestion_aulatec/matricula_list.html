@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Matrículas</title>
+    <style>
+        /* Estilos CSS básicos para la lista */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f7f6;
+        }
+
+        .container {
+            max-width: 1200px;
+            /* Un poco más ancho para la tabla */
+            margin: auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .actions {
+            margin-top: 30px;
+            text-align: center;
+            gap: 10rem;
+        }
+
+        .actions a {
+            display: inline-block;
+            background-color: #247981;
+            /* Azul */
+            color: white;
+            padding: 4px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .add-button {
+            display: inline-block;
+            background-color: #2ecc71;
+            /* Verde de éxito */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .add-button:hover {
+            background-color: #27ae60;
+            gap: 2rem;
+        }
+
+        .boton {
+            margin-right: 20px;
+        }
+
+        .boton2 {
+            background-color: black;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #ecf0f1;
+            color: #34495e;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            /* Filas pares con fondo ligeramente diferente */
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #e8f5e9;
+            /* Resaltar fila al pasar el mouse */
+        }
+
+        .messages {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .messages li {
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .messages .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .messages .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .messages .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .no-records {
+            text-align: center;
+            padding: 20px;
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+            color: #555;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Lista de Matrículas</h1>
+
+        {# Bloque para mensajes de Django #}
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+        </ul>
+        {% endif %}
+        {# Fin del bloque de mensajes #}
+
+        <a href="{% url 'gestion_aulatec:matricula_form' %}" class="add-button">Registrar Nueva Matrícula</a>
+
+        {% if matriculas %}
+        <table>
+            <thead>
+                <tr>
+                    <th>No. Matrícula</th>
+                    <th>Estudiante</th>
+                    <th>Grado</th>
+                    <th>Año Lectivo</th>
+                    <th>Acudiente</th>
+                    <th>Parentesco</th>
+                    <th>Teléfono Acudiente</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for matricula in matriculas %}
+                <tr>
+                    <td>{{ matricula.NumMatricula }}</td>
+                    <td>{{ matricula.IdEstudiante.IdUsuario.Nombres }} {{ matricula.IdEstudiante.IdUsuario.Apellidos }}
+                    </td>
+                    <td>{{ matricula.IdGrado.NumGrado }}</td>
+                    <td>{{ matricula.AnioLectivo}}</td>
+                    <td>{{ matricula.IdAcudiente.Nombres }} {{ matricula.IdAcudiante.Apellidos }}</td>
+                    <td>{{ matricula.IdAcudiente.Parentesco }}</td>
+                    <td>{{ matricula.IdAcudiente.Celular }}</td>
+                    <td>
+                        {% if matricula.Activa %}
+                        <span class="badge bg-success">ACTIVA</span>
+                        {% else %}
+                        <span class="badge bg-warning">INACTIVA</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'gestion_aulatec:matricula_detail' matricula.pk %}"
+                            class="btn btn-sm btn-info">Ver Detalles</a>
+
+                        <form method="POST" action="{% url 'gestion_aulatec:matricula_toggle' matricula.pk %}"
+                            style="display: inline;">
+                            {% csrf_token %}
+                            {% if matricula.Activa %}
+                            <button type="submit" class="btn btn-sm btn-warning">Inactivar</button>
+                            {% else %}
+                            <button type="submit" class="btn btn-sm btn-success">Activar</button>
+                            {% endif %}
+                        </form>
+
+                        <a href="{% url 'gestion_aulatec:matricula_delete' matricula.pk %}"
+                            class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% else %}
+        <p class="no-records">No hay matrículas registradas aún.</p>
+        {% endif %}
+
+    </div>
+    <a name="" id="" class="add-button" href="{% url 'gestion_aulatec:admin_dashboard' %}" role="button">Volver al
+        Menú</a>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{% extends "gestion_aulatec/base0.html" %}
+
+{% block content %}
+<h2>Crear Certificado</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <label>Estudiante</label>
+    <select name="estudiante" class="form-control">
+        {% for e in estudiantes %}
+            <option value="{{ e.IdEstudiante }}">{{ e.IdUsuario.Nombres }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Materia</label>
+    <select name="materia" class="form-control">
+        {% for m in materias %}
+            <option value="{{ m.IdMateria }}">{{ m.NombreMateria }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Generado por (Usuario)</label>
+    <select name="usuario" class="form-control">
+        {% for u in usuarios %}
+            <option value="{{ u.IdUsuario }}">{{ u.Nombres }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Tipo</label>
+    <input type="text" name="tipo" class="form-control">
+
+    <button type="submit" class="btn btn-primary mt-3">Generar Certificado</button>
+</form>
+{% endblock %}

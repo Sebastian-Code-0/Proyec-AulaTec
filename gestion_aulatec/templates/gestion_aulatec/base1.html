@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AulaTec{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/extras.css' %}">    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="logo">
+            <a href="{% url 'gestion_aulatec:admin_dashboard' %}">
+                <img src="{% static 'img/aula_tec_logo.png' %}" alt="<logo AulaTec" height="30">
+            </a>
+            <span>Panel de Administrador</span>
+        </div>
+
+        <nav class="top-nav">
+            <a href="{% url 'gestion_aulatec:admin_dashboard' %}">🏠 Inicio</a>
+            <a href="{% url 'gestion_aulatec:logout' %}">🚪 Cerrar sesión</a>
+        </nav>
+    </header>
+
+    <!-- BLOQUE DE CONTENIDO -->
+    <main>
+        {% block content %}{% endblock %}
+    </main> 
+</body>
+</html>

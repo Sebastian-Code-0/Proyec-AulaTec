@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if form.instance.pk %}Editar Grado{% else %}Crear Grado{% endif %}</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/formularioGra.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <main class="content">
+        <div class="grades-page">
+            <section class="welcome">
+                <h1>{% if form.instance.pk %}Editar Grado{% else %}Crear Nuevo Grado{% endif %}</h1>
+            </section>
+            <form method="post">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="form-field">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    
+                    {% if field.errors %}
+                    <span class="error">
+                        {% for error in field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <a href="{% url 'gestion_aulatec:grado_list' %}"
+                    class="btn btn-outline">Cancelar
+                    </a>
+                </div>
+            </form>
+        </div><!-- /.grades-page -->
+    </main>
+</body>
+</html>

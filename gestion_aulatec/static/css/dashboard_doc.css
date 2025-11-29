@@ -1,0 +1,101 @@
+/* -------------------- PANEL DOCENTE -------------------- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f6f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Contenedor principal */
+.dashboard-container {
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 2.5rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+/* Encabezado */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+/* Título */
+.dashboard-header h1 {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin: 0;
+}
+
+/* Botones */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+.action-buttons a {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: 0.3s ease;
+    font-size: 0.95rem;
+}
+.action-buttons a[href*="home"] {
+    background: #3498db;
+    color: white;
+}
+.action-buttons a[href*="logout"] {
+    background: #e74c3c;
+    color: white;
+}
+
+.action-buttons a:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+/* Bienvenida */
+.welcome {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    color: #555;
+}
+
+/* Subtítulo */
+h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: #34495e;
+}
+
+/* Lista de materias */
+.materias-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.materias-list li {
+    background: #ecf0f1;
+    padding: 1rem;
+    border-radius: 10px;
+    font-weight: 500;
+    color: #2c3e50;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: 0.3s ease;
+}
+.materias-list li:hover {
+    background: #dce3e6;
+    transform: scale(1.02);
+}
