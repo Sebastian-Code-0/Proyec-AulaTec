@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
+<<<<<<< HEAD
 from django.conf import settings
 from django.conf.urls.static import static
 from django.http import HttpResponse
@@ -32,3 +33,11 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
+=======
+
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('gestion_aulatec.urls')),  # Include the URLs from your app
+]
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0

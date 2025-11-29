@@ -62,12 +62,19 @@
                                 <a href="{% url 'gestion_aulatec:grado_update' pk=grado.IdGrado %}"
                                 class="action-link edit">Editar</a>
                                 <button type="button" 
+<<<<<<< HEAD
                                 id="deleteButton{{ grado.IdGrado }}"
                                 name="deleteButton"
                                 class="action-link delete delete-btn"
                                 data-grado-id="{{ grado.IdGrado }}"
                                 data-grado-name="{{ grado.NumGrado }}{{ grado.NumCurso|default:'' }}"
                                 data-delete-url="{% url 'gestion_aulatec:grado_delete' pk=grado.IdGrado %}">
+=======
+                                        class="action-link delete delete-btn"
+                                        data-grado-id="{{ grado.IdGrado }}"
+                                        data-grado-name="{{ grado.NumGrado }}{{ grado.NumCurso|default:'' }}"
+                                        data-delete-url="{% url 'gestion_aulatec:grado_delete' pk=grado.IdGrado %}">
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0
                                     Eliminar
                                 </button>
                             </td>

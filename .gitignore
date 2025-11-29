@@ -20,7 +20,11 @@ Thumbs.db
 
 # === Archivos sensibles ===
 *.log
+<<<<<<< HEAD
 *.env_
+=======
+*.env
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0
 .env.*
 
 # === Django ===

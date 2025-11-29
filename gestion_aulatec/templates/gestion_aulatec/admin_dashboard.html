@@ -1,11 +1,18 @@
 {% extends "gestion_aulatec/base1.html" %}
 {% load static %}
 
+<<<<<<< HEAD
 {% block title %}AulaTec - Panel Administrador{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/admin.css' %}">
 
+=======
+{% block title %}AulaTec{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0
 {% endblock %}
 
 {% block content %}
@@ -19,7 +26,10 @@
                 <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
                 <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
                 <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
+<<<<<<< HEAD
                 <li><a href="{% url 'gestion_aulatec:certificado_list' %}">🎓 Certificados</a></li>
+=======
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0
             </ul>
         </aside>
 
@@ -30,6 +40,10 @@
             </section>
 
             <section class="cards">
+<<<<<<< HEAD
+=======
+                <!-- Cada tarjeta representa una entidad que se puede administrar -->
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0
                 <a href="{% url 'gestion_aulatec:usuario_list' %}" class="card">
                     <h2>Usuarios</h2>
                     <p>👤 Gestiona cuentas de acceso.</p>
@@ -60,6 +74,7 @@
                     <p>🗂️ Registra inscripciones.</p>
                 </a>
             </section>
+<<<<<<< HEAD
 
             <!-- NUEVA SECCIÓN: Gestión de Certificados -->
             <section class="certificates-section">
@@ -167,3 +182,8 @@
         </main>
     </div>
 {% endblock %}
+=======
+        </main>
+    </div>
+{% endblock %}
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0

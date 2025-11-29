@@ -36,6 +36,7 @@
     font-size: .9rem;
     color: var(--color-muted);
 }
+<<<<<<< HEAD
 .certificates-section {
         margin-top: 3rem;
     }
@@ -221,3 +222,5 @@
         margin-bottom: 10px;
         opacity: 0.5;
     }
+=======
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0

@@ -4,7 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>{% block title %}AulaTec - Panel Estudiante{% endblock %}</title>
+=======
+    <title>{% block title %}AulaTec{% endblock %}</title>
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0
     <link rel="stylesheet" href="{% static 'css/dashboard_est.css' %}">
 </head>
 <body>
@@ -25,13 +29,21 @@
             Tienes rol de <b>Estudiante</b>.
         </p>
 
+<<<<<<< HEAD
         <!-- Información del Estudiante -->
+=======
+        <!-- Información -->
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0
         <h2>Mi Información de Estudiante</h2>
         {% if estudiante_perfil %}
             {% with estudiante=estudiante_perfil.first %}
             <div class="student-info">
+<<<<<<< HEAD
                 <p><strong>Tipo de Documento:</strong> {{ request.user.TipoId }}</p>
                 <p><strong>Número de Identificación:</strong> {{ request.user.NumId }}</p>
+=======
+                <p><strong>Número de Identificación:</strong> {{ estudiante.IdUsuario.NumId }}</p>
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0
                 <p><strong>Grado Asignado:</strong>
                     {% if estudiante.IdGrado %}
                         {{ estudiante.IdGrado.NumGrado }}{{ estudiante.IdGrado.NumCurso|default:"" }}
@@ -45,6 +57,7 @@
             <p>Tu perfil de estudiante aún no ha sido creado o asignado.</p>
         {% endif %}
 
+<<<<<<< HEAD
         <!-- NUEVA SECCIÓN: Mis Certificados -->
         <div class="certificates-section">
             <h2>
@@ -107,3 +120,8 @@
     </div>
 </body>
 </html>
+=======
+    </div>
+</body>
+</html>
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0

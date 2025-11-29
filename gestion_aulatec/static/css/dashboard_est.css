@@ -93,6 +93,7 @@ h2 {
 .student-info strong {
     color: #1e4620;
 }
+<<<<<<< HEAD
         .certificates-section {
             margin-top: 2.5rem;
         }
@@ -232,3 +233,5 @@ h2 {
         .certificates-info strong {
             color: var(--color-primary, #2c3e50);
         }
+=======
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0

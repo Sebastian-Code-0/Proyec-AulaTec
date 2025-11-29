@@ -13,10 +13,13 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from django.urls import reverse_lazy
 
+<<<<<<< HEAD
 import pymysql
 pymysql.install_as_MySQLdb()
 
 
+=======
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -46,7 +49,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< HEAD
     'django_extensions',
+=======
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0
     'gestion_aulatec',  # Your custom app
 ]
 
@@ -69,7 +75,11 @@ ROOT_URLCONF = 'aulatec.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+<<<<<<< HEAD
         'DIRS': [BASE_DIR / 'gestion_aulatec' / 'templates'],
+=======
+        'DIRS': [],
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -91,10 +101,17 @@ WSGI_APPLICATION = 'aulatec.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
+<<<<<<< HEAD
         'NAME': 'aulatec',
         'USER': 'root',
         'PASSWORD': '0000',
         'HOST': '127.0.0.1',
+=======
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0
         'PORT': '3306',
     }
 }
@@ -102,8 +119,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+<<<<<<< HEAD
         'USER': 'root',
         'PASSWORD': '0000',
+=======
+        'USER': '',
+        'PASSWORD': '',
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -143,8 +165,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+<<<<<<< HEAD
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'gestion_aulatec' / 'static']
+=======
+STATIC_URL = 'static/'
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -153,8 +179,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'gestion_aulatec.Usuario'
 
+<<<<<<< HEAD
 APPEND_SLASH = True
 
+=======
+>>>>>>> 4e2f81b62d3d85f4ea86504f7061355e11f3faf0
 LOGIN_URL = reverse_lazy('gestion_aulatec:login')
 
 LOGOUT_REDIRECT_URL = '/login/'
