@@ -35,7 +35,7 @@ class Matricula(models.Model):
     ComprobanteResidenciaAcudientePresentado = models.BooleanField(default=False, verbose_name="Comprobante de Residencia Acudiente Presentado")
 
     FechaMatricula = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Matrícula")
-
+    #prueba Kevin
     class Meta:
         db_table = 'Matricula'
         verbose_name = 'Matrícula'
