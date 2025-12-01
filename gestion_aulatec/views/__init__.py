@@ -5,3 +5,4 @@ from .MateriaViews import MateriaCreateView,MateriaDeleteView,MateriaListView,Ma
 from .MatriculaViews import MatriculaCreateView,MatriculaDeleteView,MatriculaDetailView,MatriculaUpdateView,MatriculaListView
 from .LoginViews import AdminDashboardView,DocenteDashboardView,EstudianteDashboardView,login_view,logout_view,home_view
 from .UsuarioViews import UsuarioCreateView,UsuarioDeleteView,UsuarioListView,UsuarioUpdateView
+from .HorarioViews import HorarioListView, HorarioCreateView, HorarioUpdateView, HorarioDeleteView

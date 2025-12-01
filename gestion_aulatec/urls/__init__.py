@@ -11,6 +11,7 @@ urlpatterns = [
     path("docentes/", include("gestion_aulatec.urls.DocenteUrls")),
     path("estudiantes/", include("gestion_aulatec.urls.EstudianteUrls")),
     path("materia/", include("gestion_aulatec.urls.MateriaUrls")),
+    path("horarios/", include("gestion_aulatec.urls.HorarioUrls")),
     path("matricula/", include("gestion_aulatec.urls.MatriculaUrls")),
     path("usuario/", include("gestion_aulatec.urls.UsuarioUrls")),
     path("login/", include("gestion_aulatec.urls.LoginUrls"))

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Horario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0"><i class="fas fa-edit"></i> Editar Horario</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Mensajes -->
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" action="{% url 'gestion_aulatec:editar_horario' horario.id %}">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <!-- Grado -->
+                            <div class="col-md-6 mb-3">
+                                <label for="grado" class="form-label">Grado <span class="text-danger">*</span></label>
+                                <select name="grado" id="grado" class="form-select" required>
+                                    <option value="">Seleccione un grado</option>
+                                    {% for grado in grados %}
+                                    <option value="{{ grado.IdGrado }}" {% if grado.IdGrado == horario.grado.IdGrado %}selected{% endif %}>
+                                        {{ grado.NumGrado }} - {{ grado.NumCurso }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Materia -->
+                            <div class="col-md-6 mb-3">
+                                <label for="materia" class="form-label">Materia <span class="text-danger">*</span></label>
+                                <select name="materia" id="materia" class="form-select" required>
+                                    <option value="">Seleccione una materia</option>
+                                    {% for materia in materias %}
+                                    <option value="{{ materia.IdMateria }}" {% if materia.IdMateria == horario.materia.IdMateria %}selected{% endif %}>
+                                        {{ materia.Nombre }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Docente -->
+                            <div class="col-md-6 mb-3">
+                                <label for="docente" class="form-label">Docente <span class="text-danger">*</span></label>
+                                <select name="docente" id="docente" class="form-select" required>
+                                    <option value="">Seleccione un docente</option>
+                                    {% for docente in docentes %}
+                                    <option value="{{ docente.IdDocente }}" {% if docente.IdDocente == horario.docente.IdDocente %}selected{% endif %}>
+                                        {{ docente.Nombre }} {{ docente.Apellido }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Día de la semana -->
+                            <div class="col-md-6 mb-3">
+                                <label for="dia_semana" class="form-label">Día <span class="text-danger">*</span></label>
+                                <select name="dia_semana" id="dia_semana" class="form-select" required>
+                                    <option value="">Seleccione un día</option>
+                                    {% for dia_key, dia_nombre in dias %}
+                                    <option value="{{ dia_key }}" {% if dia_key == horario.dia_semana %}selected{% endif %}>
+                                        {{ dia_nombre }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Hora inicio -->
+                            <div class="col-md-6 mb-3">
+                                <label for="hora_inicio" class="form-label">Hora Inicio <span class="text-danger">*</span></label>
+                                <input type="time" name="hora_inicio" id="hora_inicio" class="form-control" 
+                                       value="{{ horario.hora_inicio|time:'H:i' }}" required>
+                            </div>
+
+                            <!-- Hora fin -->
+                            <div class="col-md-6 mb-3">
+                                <label for="hora_fin" class="form-label">Hora Fin <span class="text-danger">*</span></label>
+                                <input type="time" name="hora_fin" id="hora_fin" class="form-control" 
+                                       value="{{ horario.hora_fin|time:'H:i' }}" required>
+                            </div>
+
+                            <!-- Aula -->
+                            <div class="col-md-12 mb-3">
+                                <label for="aula" class="form-label">Aula</label>
+                                <input type="text" name="aula" id="aula" class="form-control" 
+                                       value="{{ horario.aula }}" placeholder="Ej: Aula 101, Laboratorio A">
+                            </div>
+                        </div>
+
+                        <!-- Información adicional -->
+                        <div class="alert alert-info">
+                            <small>
+                                <strong>Fecha de creación:</strong> {{ horario.fecha_creacion|date:"d/m/Y H:i" }}<br>
+                                <strong>Última actualización:</strong> {{ horario.fecha_actualizacion|date:"d/m/Y H:i" }}
+                            </small>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'gestion_aulatec:listar_horarios' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-save"></i> Actualizar Horario
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Validar que la hora fin sea mayor a la hora inicio
+    document.getElementById('hora_fin').addEventListener('change', function() {
+        const horaInicio = document.getElementById('hora_inicio').value;
+        const horaFin = this.value;
+        
+        if (horaInicio && horaFin && horaFin <= horaInicio) {
+            alert('La hora de fin debe ser mayor a la hora de inicio');
+            this.value = '{{ horario.hora_fin|time:"H:i" }}';
+        }
+    });
+</script>
+</body>
+</html>

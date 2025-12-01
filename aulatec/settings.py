@@ -85,14 +85,11 @@ WSGI_APPLICATION = 'aulatec.wsgi.application'
 # CONEXION PERSONAL
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
     }
 }
+
 """DATABASES = {  #CONEXION DEL LIDER 
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

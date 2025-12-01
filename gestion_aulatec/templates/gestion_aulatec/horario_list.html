@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Horarios - AulaTec</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .main-container {
+            padding: 30px 0;
+        }
+        
+        .header-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header-card h1 {
+            color: #667eea;
+            font-weight: 700;
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        .header-card .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin: 10px 0 0 0;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .btn-custom {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-create {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        .btn-back {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-back:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            color: white;
+        }
+        
+        .search-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        
+        .table-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .table {
+            margin: 0;
+        }
+        
+        .table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .table thead th {
+            border: none;
+            padding: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        .table tbody tr:hover {
+            background: #f8f9ff;
+            transform: scale(1.01);
+        }
+        
+        .table tbody td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+        
+        .badge-dia {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .badge-activo {
+            background: #28a745;
+            color: white;
+        }
+        
+        .badge-inactivo {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-action {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin: 0 3px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-edit {
+            background: #ffc107;
+            color: #000;
+            border: none;
+        }
+        
+        .btn-edit:hover {
+            background: #ffb300;
+            transform: translateY(-2px);
+        }
+        
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+            border: none;
+        }
+        
+        .btn-delete:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .empty-state i {
+            font-size: 80px;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="container">
+            <!-- Header -->
+            <div class="header-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1><i class="fas fa-clock"></i> Gestión de Horarios</h1>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'gestion_aulatec:admin_dashboard' %}">Dashboard</a></li>
+                                <li class="breadcrumb-item active">Horarios</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="action-buttons">
+                        <a href="{% url 'gestion_aulatec:horario_create' %}" class="btn btn-create btn-custom">
+                            <i class="fas fa-plus-circle"></i> Crear Horario
+                        </a>
+                        <a href="{% url 'gestion_aulatec:admin_dashboard' %}" class="btn btn-back btn-custom">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Búsqueda -->
+            <div class="search-card">
+                <form method="GET" action="{% url 'gestion_aulatec:horario_list' %}">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" name="q" class="form-control border-0" 
+                               placeholder="Buscar por grado, materia, docente o día..." 
+                               value="{{ request.GET.q }}">
+                        <button class="btn btn-create" type="submit">Buscar</button>
+                        {% if request.GET.q %}
+                            <a href="{% url 'gestion_aulatec:horario_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Limpiar
+                            </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabla de Horarios -->
+            <div class="table-card">
+                {% if horarios %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Grado</th>
+                                    <th>Materia</th>
+                                    <th>Docente</th>
+                                    <th>Día</th>
+                                    <th>Horario</th>
+                                    <th>Aula</th>
+                                    <th>Duración</th>
+                                    <th>Estado</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for horario in horarios %}
+                                <tr>
+                                    <td><strong>{{ horario.grado }}</strong></td>
+                                    <td>{{ horario.materia.NombreMateria }}</td>
+                                    <td>
+                                        {% if horario.docente.IdUsuario %}
+                                            {{ horario.docente.IdUsuario.Nombres }} {{ horario.docente.IdUsuario.Apellidos }}
+                                        {% else %}
+                                            <span class="text-muted">Sin asignar</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-dia bg-info">
+                                            {{ horario.get_dia_semana_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-clock text-primary"></i>
+                                        {{ horario.hora_inicio|time:"H:i" }} - {{ horario.hora_fin|time:"H:i" }}
+                                    </td>
+                                    <td>
+                                        {% if horario.aula %}
+                                            <i class="fas fa-door-open text-success"></i> {{ horario.aula }}
+                                        {% else %}
+                                            <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ horario.duracion }} min</td>
+                                    <td>
+                                        {% if horario.activo %}
+                                            <span class="badge badge-activo">
+                                                <i class="fas fa-check-circle"></i> Activo
+                                            </span>
+                                        {% else %}
+                                            <span class="badge badge-inactivo">
+                                                <i class="fas fa-times-circle"></i> Inactivo
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'gestion_aulatec:horario_update' pk=horario.id %}" 
+                                           class="btn btn-edit btn-action" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'gestion_aulatec:horario_delete' pk=horario.id %}" 
+                                           class="btn btn-delete btn-action" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <h3>No hay horarios registrados</h3>
+                        <p>{% if request.GET.q %}No se encontraron resultados para tu búsqueda.{% else %}Comienza creando tu primer horario.{% endif %}</p>
+                        <a href="{% url 'gestion_aulatec:horario_create' %}" class="btn btn-create btn-custom mt-3">
+                            <i class="fas fa-plus-circle"></i> Crear Primer Horario
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
