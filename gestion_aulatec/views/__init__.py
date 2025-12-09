@@ -6,3 +6,4 @@ from .MatriculaViews import MatriculaCreateView,MatriculaDeleteView,MatriculaDet
 from .LoginViews import AdminDashboardView,DocenteDashboardView,EstudianteDashboardView,login_view,logout_view,home_view
 from .UsuarioViews import UsuarioCreateView,UsuarioDeleteView,UsuarioListView,UsuarioUpdateView
 from .HorarioViews import HorarioListView, HorarioCreateView, HorarioUpdateView, HorarioDeleteView
+from .CertificadoViews import solicitar_certificado, mis_certificados, descargar_certificado, listar_solicitudes_admin, aprobar_certificado, rechazar_certificado, ver_detalle_certificado_admin

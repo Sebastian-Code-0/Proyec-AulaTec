@@ -1,0 +1,133 @@
+<!-- Archivo: gestion_aulatec/templates/certificados/admin_solicitudes.html -->
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Certificados{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <h2 class="mb-4"><i class="fas fa-tasks"></i> Gestión de Solicitudes de Certificados</h2>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h3 class="card-title">{{ pendientes }}</h3>
+                    <p class="card-text">Solicitudes Pendientes</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h3 class="card-title">{{ aprobados }}</h3>
+                    <p class="card-text">Certificados Aprobados</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h3 class="card-title">{{ rechazados }}</h3>
+                    <p class="card-text">Solicitudes Rechazadas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-auto">
+                    <label class="form-label">Filtrar por estado:</label>
+                </div>
+                <div class="col-auto">
+                    <select name="estado" class="form-select" onchange="this.form.submit()">
+                        <option value="pendiente" {% if estado_filtro == 'pendiente' %}selected{% endif %}>Pendientes</option>
+                        <option value="aprobado" {% if estado_filtro == 'aprobado' %}selected{% endif %}>Aprobados</option>
+                        <option value="rechazado" {% if estado_filtro == 'rechazado' %}selected{% endif %}>Rechazados</option>
+                        <option value="todos" {% if estado_filtro == 'todos' %}selected{% endif %}>Todos</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de certificados -->
+    {% if certificados %}
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Código</th>
+                            <th>Estudiante</th>
+                            <th>Documento</th>
+                            <th>Grado</th>
+                            <th>Tipo</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for certificado in certificados %}
+                        <tr>
+                            <td><strong>{{ certificado.codigo }}</strong></td>
+                            <td>{{ certificado.nombre_completo_estudiante }}</td>
+                            <td>{{ certificado.documento_estudiante }}</td>
+                            <td>{{ certificado.grado_estudiante|default:"N/A" }}</td>
+                            <td>{{ certificado.get_tipo_display }}</td>
+                            <td>{{ certificado.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if certificado.estado == 'aprobado' %}bg-success
+                                    {% elif certificado.estado == 'pendiente' %}bg-warning
+                                    {% elif certificado.estado == 'rechazado' %}bg-danger
+                                    {% endif %}">
+                                    {{ certificado.get_estado_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'gestion_aulatec:detalle_certificado_admin' certificado.IdCertificado %}" 
+                                       class="btn btn-sm btn-info" title="Ver detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    
+                                    {% if certificado.estado == 'pendiente' %}
+                                    <a href="{% url 'gestion_aulatec:aprobar_certificado' certificado.IdCertificado %}" 
+                                       class="btn btn-sm btn-success" title="Aprobar">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                    <a href="{% url 'gestion_aulatec:rechazar_certificado' certificado.IdCertificado %}" 
+                                       class="btn btn-sm btn-danger" title="Rechazar">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                    {% endif %}
+
+                                    {% if certificado.estado == 'aprobado' and certificado.archivo_pdf %}
+                                    <a href="{% url 'gestion_aulatec:descargar_certificado' certificado.IdCertificado %}" 
+                                       class="btn btn-sm btn-primary" title="Descargar PDF">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">
+        <i class="fas fa-info-circle fa-3x mb-3"></i>
+        <h5>No hay certificados con el estado: {{ estado_filtro }}</h5>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
