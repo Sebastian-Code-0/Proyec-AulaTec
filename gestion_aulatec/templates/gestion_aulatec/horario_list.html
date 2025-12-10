@@ -200,7 +200,9 @@
                         <h1><i class="fas fa-clock"></i> Gestión de Horarios</h1>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{% url 'gestion_aulatec:admin_dashboard' %}">Dashboard</a></li>
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'gestion_aulatec:admin_dashboard' %}">Dashboard</a>
+                                </li>
                                 <li class="breadcrumb-item active">Horarios</li>
                             </ol>
                         </nav>
@@ -313,7 +315,13 @@
                     <div class="empty-state">
                         <i class="fas fa-calendar-times"></i>
                         <h3>No hay horarios registrados</h3>
-                        <p>{% if request.GET.q %}No se encontraron resultados para tu búsqueda.{% else %}Comienza creando tu primer horario.{% endif %}</p>
+                        <p>
+                            {% if request.GET.q %}
+                                No se encontraron resultados para tu búsqueda.
+                            {% else %}
+                                Comienza creando tu primer horario.
+                            {% endif %}
+                        </p>
                         <a href="{% url 'gestion_aulatec:horario_create' %}" class="btn btn-create btn-custom mt-3">
                             <i class="fas fa-plus-circle"></i> Crear Primer Horario
                         </a>

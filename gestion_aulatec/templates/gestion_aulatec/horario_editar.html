@@ -26,7 +26,7 @@
                         {% endfor %}
                     {% endif %}
 
-                    <form method="POST" action="{% url 'gestion_aulatec:editar_horario' horario.id %}">
+                    <form method="POST" action="{% url 'gestion_aulatec:horario_update' pk=horario.id %}">
                         {% csrf_token %}
                         
                         <div class="row">
@@ -50,7 +50,7 @@
                                     <option value="">Seleccione una materia</option>
                                     {% for materia in materias %}
                                     <option value="{{ materia.IdMateria }}" {% if materia.IdMateria == horario.materia.IdMateria %}selected{% endif %}>
-                                        {{ materia.Nombre }}
+                                        {{ materia.NombreMateria }}
                                     </option>
                                     {% endfor %}
                                 </select>
@@ -63,7 +63,7 @@
                                     <option value="">Seleccione un docente</option>
                                     {% for docente in docentes %}
                                     <option value="{{ docente.IdDocente }}" {% if docente.IdDocente == horario.docente.IdDocente %}selected{% endif %}>
-                                        {{ docente.Nombre }} {{ docente.Apellido }}
+                                        {{ docente.IdUsuario.Nombres }} {{ docente.IdUsuario.Apellidos }}
                                     </option>
                                     {% endfor %}
                                 </select>
@@ -113,7 +113,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="{% url 'gestion_aulatec:listar_horarios' %}" class="btn btn-secondary">
+                            <a href="{% url 'gestion_aulatec:horario_list' %}" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left"></i> Cancelar
                             </a>
                             <button type="submit" class="btn btn-warning">

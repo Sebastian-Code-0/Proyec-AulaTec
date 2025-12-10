@@ -1,10 +1,12 @@
-# Archivo: gestion_aulatec/views/HorarioViews.py (o agregar a views.py si usas un solo archivo)
+# Archivo: gestion_aulatec/views/HorarioViews.py
 
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.db.models import Q
+
 from gestion_aulatec.models import Horario, Grado, Materia, Docente
 from gestion_aulatec.forms.HorarioForm import HorarioForm
+
 
 class HorarioListView(ListView):
     model = Horario

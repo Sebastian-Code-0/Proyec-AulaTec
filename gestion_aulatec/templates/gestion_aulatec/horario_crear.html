@@ -26,7 +26,8 @@
                         {% endfor %}
                     {% endif %}
 
-                    <form method="POST" action="{% url 'gestion_aulatec:crear_horario' %}">
+                    <!-- IMPORTANTE: Post hacia la misma vista de creación -->
+                    <form method="POST" action="{% url 'gestion_aulatec:horario_create' %}">
                         {% csrf_token %}
                         
                         <div class="row">
@@ -47,7 +48,7 @@
                                 <select name="materia" id="materia" class="form-select" required>
                                     <option value="">Seleccione una materia</option>
                                     {% for materia in materias %}
-                                    <option value="{{ materia.IdMateria }}">{{ materia.Nombre }}</option>
+                                    <option value="{{ materia.IdMateria }}">{{ materia.NombreMateria }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -58,7 +59,9 @@
                                 <select name="docente" id="docente" class="form-select" required>
                                     <option value="">Seleccione un docente</option>
                                     {% for docente in docentes %}
-                                    <option value="{{ docente.IdDocente }}">{{ docente.Nombre }} {{ docente.Apellido }}</option>
+                                    <option value="{{ docente.IdDocente }}">
+                                        {{ docente.IdUsuario.Nombres }} {{ docente.IdUsuario.Apellidos }}
+                                    </option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -95,7 +98,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="{% url 'gestion_aulatec:listar_horarios' %}" class="btn btn-secondary">
+                            <a href="{% url 'gestion_aulatec:horario_list' %}" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left"></i> Cancelar
                             </a>
                             <button type="submit" class="btn btn-success">
