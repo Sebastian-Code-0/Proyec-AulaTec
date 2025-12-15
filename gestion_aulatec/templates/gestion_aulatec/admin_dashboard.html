@@ -19,6 +19,7 @@
                 <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
                 <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
                 <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
+                <li><a href="{% url 'gestion_aulatec:admin_solicitudes' %}">📄 Certificados</a></li>
             </ul>
         </aside>
 
@@ -58,6 +59,10 @@
                 <a href="{% url 'gestion_aulatec:matricula_list' %}" class="card">
                     <h2>Matrículas</h2>
                     <p>🗂️ Registra inscripciones.</p>
+                </a>
+                <a href="{% url 'gestion_aulatec:admin_solicitudes' %}" class="card">
+                    <h2>Certificados</h2>
+                    <p>📄 Gestiona solicitudes de certificados.</p>
                 </a>
             </section>
         </main>

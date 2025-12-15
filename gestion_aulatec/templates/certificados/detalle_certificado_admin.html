@@ -1,0 +1,191 @@
+{% extends 'gestion_aulatec/base1.html' %}
+{% load static %}
+
+{% block title %}Detalle de Certificado{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/certificados.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="certificados-container">
+    <div class="certificados-header">
+        <h2>📄 Detalle del Certificado</h2>
+        <a href="{% url 'gestion_aulatec:admin_solicitudes' %}" class="btn-solicitar">
+            ← Volver a Solicitudes
+        </a>
+    </div>
+
+    <div class="certificado-card {{ certificado.estado }}">
+        <div class="certificado-header">
+            <div class="certificado-tipo">
+                {{ certificado.get_tipo_display }}
+            </div>
+            <span class="badge-estado badge-{{ certificado.estado }}">
+                {{ certificado.get_estado_display }}
+            </span>
+        </div>
+
+        <!-- Información del Estudiante -->
+        <div class="section-title">👤 Información del Estudiante</div>
+        <div class="certificado-info">
+            <div class="info-item">
+                <span class="info-label">Nombre Completo</span>
+                <span class="info-value">{{ certificado.IdEstudiante.IdUsuario.Nombres }} {{ certificado.IdEstudiante.IdUsuario.Apellidos }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Documento</span>
+                <span class="info-value">{{ certificado.IdEstudiante.IdUsuario.NumId }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Email</span>
+                <span class="info-value">{{ certificado.IdEstudiante.IdUsuario.Email }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Grado</span>
+                <span class="info-value">Grado {{ certificado.IdEstudiante.IdGrado.NumGrado }}, Curso {{ certificado.IdEstudiante.IdGrado.NumCurso }}</span>
+            </div>
+        </div>
+
+        <!-- Información del Certificado -->
+        <div class="section-title" style="margin-top: 30px;">📋 Información del Certificado</div>
+        <div class="certificado-info">
+            <div class="info-item">
+                <span class="info-label">Código</span>
+                <span class="info-value">{{ certificado.codigo }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Tipo de Certificado</span>
+                <span class="info-value">{{ certificado.get_tipo_display }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Fecha de Solicitud</span>
+                <span class="info-value">{{ certificado.fecha_solicitud|date:"d/m/Y H:i" }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Estado</span>
+                <span class="info-value">{{ certificado.get_estado_display }}</span>
+            </div>
+        </div>
+
+        {% if certificado.observaciones %}
+        <div class="info-item" style="margin-top: 15px;">
+            <span class="info-label">Observaciones del Estudiante</span>
+            <span class="info-value">{{ certificado.observaciones }}</span>
+        </div>
+        {% endif %}
+
+        <!-- Si está aprobado -->
+        {% if certificado.estado == 'aprobado' %}
+        <div class="section-title" style="margin-top: 30px;">✅ Información de Aprobación</div>
+        <div class="certificado-info">
+            <div class="info-item">
+                <span class="info-label">Fecha de Aprobación</span>
+                <span class="info-value">{{ certificado.fecha_aprobacion|date:"d/m/Y H:i" }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Aprobado por</span>
+                <span class="info-value">{{ certificado.aprobado_por.Nombres }} {{ certificado.aprobado_por.Apellidos }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Válido hasta</span>
+                <span class="info-value">{{ certificado.fecha_vencimiento|date:"d/m/Y" }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Vigencia</span>
+                <span class="info-value">
+                    {% if certificado.esta_vigente %}
+                        ✓ Vigente ({{ certificado.dias_para_vencer }} días restantes)
+                    {% else %}
+                        ✗ Vencido
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        {% if certificado.archivo_pdf %}
+        <a href="{% url 'gestion_aulatec:descargar_certificado' certificado.IdCertificado %}" 
+           class="btn-descargar" style="margin-top: 20px;">
+            📥 Descargar PDF
+        </a>
+        {% endif %}
+        {% endif %}
+
+        <!-- Si está rechazado -->
+        {% if certificado.estado == 'rechazado' %}
+        <div class="certificado-alert alert-danger" style="margin-top: 20px;">
+            ❌ Certificado Rechazado
+            {% if certificado.motivo_rechazo %}
+            <br><strong>Motivo:</strong> {{ certificado.motivo_rechazo }}
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Acciones del Administrador -->
+        {% if certificado.estado == 'pendiente' %}
+        <div class="admin-actions" style="margin-top: 30px; display: flex; gap: 15px;">
+            <a href="{% url 'gestion_aulatec:aprobar_certificado' certificado.IdCertificado %}" 
+               class="btn-aprobar">
+                ✅ Aprobar Certificado
+            </a>
+            <a href="{% url 'gestion_aulatec:rechazar_certificado' certificado.IdCertificado %}" 
+               class="btn-rechazar">
+                ❌ Rechazar Certificado
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #667eea;
+}
+
+.admin-actions {
+    padding-top: 20px;
+    border-top: 2px solid #eee;
+}
+
+.btn-aprobar {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    transition: transform 0.2s;
+    flex: 1;
+    text-align: center;
+}
+
+.btn-aprobar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(67, 233, 123, 0.3);
+}
+
+.btn-rechazar {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    transition: transform 0.2s;
+    flex: 1;
+    text-align: center;
+}
+
+.btn-rechazar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(250, 112, 154, 0.3);
+}
+</style>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'gestion_aulatec/base1.html' %}
+{% load static %}
+
+{% block title %}Mis Certificados{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/certificados.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="certificados-container">
+    <div class="certificados-header">
+        <h2>📋 Mis Certificados</h2>
+        <a href="{% url 'gestion_aulatec:solicitar_certificado' %}" class="btn-solicitar">
+            + Solicitar Nuevo Certificado
+        </a>
+    </div>
+
+    {% if certificados %}
+        {% for certificado in certificados %}
+        <div class="certificado-card {{ certificado.estado }}">
+            <div class="certificado-header">
+                <div class="certificado-tipo">
+                    {{ certificado.get_tipo_display }}
+                </div>
+                <span class="badge-estado badge-{{ certificado.estado }}">
+                    {{ certificado.get_estado_display }}
+                </span>
+            </div>
+
+            <div class="certificado-info">
+                <div class="info-item">
+                    <span class="info-label">Código</span>
+                    <span class="info-value">{{ certificado.codigo }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Fecha de Solicitud</span>
+                    <span class="info-value">{{ certificado.fecha_solicitud|date:"d/m/Y" }}</span>
+                </div>
+                {% if certificado.estado == 'aprobado' %}
+                <div class="info-item">
+                    <span class="info-label">Válido hasta</span>
+                    <span class="info-value">{{ certificado.fecha_vencimiento|date:"d/m/Y" }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if certificado.estado == 'aprobado' %}
+                <div class="certificado-alert alert-success">
+                    ✅ Certificado aprobado y listo para descargar
+                    {% if certificado.esta_vigente %}
+                        ({{ certificado.dias_para_vencer }} días de vigencia restantes)
+                    {% endif %}
+                </div>
+                
+                {% if certificado.archivo_pdf %}
+                <a href="{% url 'gestion_aulatec:descargar_certificado' certificado.IdCertificado %}" 
+                   class="btn-descargar">
+                    📥 Descargar PDF
+                </a>
+                {% endif %}
+            {% elif certificado.estado == 'pendiente' %}
+                <div class="certificado-alert alert-warning">
+                    ⏳ Tu solicitud está en proceso de revisión por el administrador
+                </div>
+            {% elif certificado.estado == 'rechazado' %}
+                <div class="certificado-alert alert-danger">
+                    ❌ Solicitud rechazada
+                    {% if certificado.motivo_rechazo %}
+                    <br><strong>Motivo:</strong> {{ certificado.motivo_rechazo }}
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if certificado.observaciones %}
+            <div class="info-item" style="margin-top: 15px;">
+                <span class="info-label">Observaciones</span>
+                <span class="info-value">{{ certificado.observaciones }}</span>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <div style="font-size: 4rem; margin-bottom: 20px;">📄</div>
+            <h5>No tienes certificados solicitados</h5>
+            <p>Haz clic en "Solicitar Nuevo Certificado" para comenzar</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

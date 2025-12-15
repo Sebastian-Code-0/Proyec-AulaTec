@@ -162,7 +162,6 @@ def listar_solicitudes_admin(request):
 @login_required
 def aprobar_certificado(request, certificado_id):
     """Vista para que el admin apruebe un certificado y genere el PDF"""
-    # Verificar permisos
     if request.user.Rol != 'Administrador':
         messages.error(request, 'No tienes permisos para realizar esta acción.')
         return redirect('gestion_aulatec:home')
@@ -180,18 +179,19 @@ def aprobar_certificado(request, certificado_id):
         try:
             from gestion_aulatec.views.certificado_pdf import generar_certificado_pdf
             ruta_pdf = generar_certificado_pdf(certificado)
-            certificado.archivo_pdf = ruta_pdf
-            certificado.save()
+            
+            # IMPORTANTE: Guardar la ruta en el modelo
+            certificado.archivo_pdf = ruta_pdf  # <-- Verifica que esta línea exista
+            certificado.save()  # <-- Y esta también
             
             messages.success(request, f'Certificado {certificado.codigo} aprobado exitosamente.')
         except Exception as e:
             messages.error(request, f'Error al generar el PDF: {str(e)}')
+            print(f"ERROR: {str(e)}")  # Para ver el error en consola
         
         return redirect('gestion_aulatec:admin_solicitudes')
     
-    context = {
-        'certificado': certificado,
-    }
+    context = {'certificado': certificado}
     return render(request, 'certificados/aprobar_certificado.html', context)
 
 

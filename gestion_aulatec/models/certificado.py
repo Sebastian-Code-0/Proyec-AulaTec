@@ -91,20 +91,44 @@ class Certificado(models.Model):
         uuid_corto = str(uuid.uuid4())[:8].upper()
         return f"CERT-{año}-{uuid_corto}"
     
+    @property
     def esta_vigente(self):
-        """Verifica si el certificado está vigente"""
-        if self.estado != 'aprobado':
+        """Verifica si el certificado aún está vigente"""
+        if self.estado != 'aprobado' or not self.fecha_vencimiento:
             return False
-        if self.fecha_vencimiento:
-            return datetime.now() <= self.fecha_vencimiento
-        return True
-    
+        
+        from django.utils import timezone
+        from datetime import datetime
+        
+        # Asegurarse de que ambas fechas tengan zona horaria
+        ahora = timezone.now()
+        
+        # Si fecha_vencimiento no tiene zona horaria, añadirla
+        if self.fecha_vencimiento.tzinfo is None:
+            fecha_venc = timezone.make_aware(self.fecha_vencimiento)
+        else:
+            fecha_venc = self.fecha_vencimiento
+        
+        return ahora < fecha_venc
+
+    @property
     def dias_para_vencer(self):
-        """Retorna los días restantes de vigencia"""
-        if self.fecha_vencimiento and self.esta_vigente():
-            delta = self.fecha_vencimiento - datetime.now()
-            return delta.days
-        return 0
+        """Calcula cuántos días faltan para que venza el certificado"""
+        if not self.esta_vigente:
+            return 0
+        
+        from django.utils import timezone
+        
+        ahora = timezone.now()
+        
+        # Si fecha_vencimiento no tiene zona horaria, añadirla
+        if self.fecha_vencimiento.tzinfo is None:
+            fecha_venc = timezone.make_aware(self.fecha_vencimiento)
+        else:
+            fecha_venc = self.fecha_vencimiento
+        
+        diferencia = fecha_venc - ahora
+        return diferencia.days
     
     def __str__(self):
         return f"Certificado {self.codigo} - {self.nombre_completo_estudiante} - {self.get_estado_display()}"

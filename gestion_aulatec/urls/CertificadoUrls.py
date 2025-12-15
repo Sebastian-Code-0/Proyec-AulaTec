@@ -3,7 +3,7 @@
 from django.urls import path
 from gestion_aulatec.views import CertificadoViews
 
-app_name = 'certificados'
+
 
 urlpatterns = [
     # URLs para estudiantes

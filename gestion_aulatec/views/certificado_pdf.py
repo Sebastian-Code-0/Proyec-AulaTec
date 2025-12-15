@@ -8,6 +8,19 @@ class CertificadoPDF(FPDF):
     def __init__(self, certificado):
         super().__init__()
         self.certificado = certificado
+    
+    def circle(self, x, y, r, style=''):
+        """
+        Método personalizado para dibujar un círculo
+        FPDF no tiene circle(), así que usamos ellipse()
+        
+        Args:
+            x: coordenada x del centro
+            y: coordenada y del centro
+            r: radio del círculo
+            style: 'D' (draw), 'F' (fill), 'DF' o 'FD' (draw y fill)
+        """
+        self.ellipse(x - r, y - r, 2 * r, 2 * r, style)
         
     def header(self):
         """Encabezado del certificado con logo y título"""
@@ -148,21 +161,27 @@ def generar_certificado_pdf(certificado):
     Returns:
         str: Ruta relativa del archivo PDF generado
     """
-    # Crear instancia del PDF
-    pdf = CertificadoPDF(certificado)
-    pdf.add_page()
-    pdf.generar_contenido()
+    try:
+        # Crear instancia del PDF
+        pdf = CertificadoPDF(certificado)
+        pdf.add_page()
+        pdf.generar_contenido()
+        
+        # Crear directorio si no existe
+        pdf_dir = os.path.join(settings.MEDIA_ROOT, 'certificados')
+        os.makedirs(pdf_dir, exist_ok=True)
+        
+        # Nombre del archivo
+        nombre_archivo = f'certificado_{certificado.codigo}.pdf'
+        ruta_completa = os.path.join(pdf_dir, nombre_archivo)
+        
+        # Guardar PDF
+        pdf.output(ruta_completa)
+        
+        # Retornar ruta relativa
+        return f'certificados/{nombre_archivo}'
     
-    # Crear directorio si no existe
-    pdf_dir = os.path.join(settings.MEDIA_ROOT, 'certificados')
-    os.makedirs(pdf_dir, exist_ok=True)
-    
-    # Nombre del archivo
-    nombre_archivo = f'certificado_{certificado.codigo}.pdf'
-    ruta_completa = os.path.join(pdf_dir, nombre_archivo)
-    
-    # Guardar PDF
-    pdf.output(ruta_completa)
-    
-    # Retornar ruta relativa
-    return f'certificados/{nombre_archivo}'
+    except Exception as e:
+        # Log del error para debugging
+        print(f"Error al generar PDF: {str(e)}")
+        raise

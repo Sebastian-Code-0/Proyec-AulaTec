@@ -1,0 +1,71 @@
+{% extends 'gestion_aulatec/base1.html' %}
+{% load static %}
+
+{% block title %}Solicitar Certificado{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/certificados.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="certificados-container">
+    <div class="certificados-header">
+        <h2>📄 Solicitar Certificado</h2>
+        <a href="{% url 'gestion_aulatec:mis_certificados' %}" class="btn-solicitar" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">
+            ← Volver a Mis Certificados
+        </a>
+    </div>
+
+    <div class="info-estudiante">
+        <h4 style="margin-bottom: 15px;">👤 Información del Estudiante</h4>
+        <p><strong>Nombre:</strong> {{ estudiante.IdUsuario.Nombres }} {{ estudiante.IdUsuario.Apellidos }}</p>
+        <p><strong>Documento:</strong> {{ estudiante.IdUsuario.NumId }}</p>
+        {% if estudiante.IdGrado %}
+        <p><strong>Grado:</strong> {{ estudiante.IdGrado }}</p>
+        {% endif %}
+    </div>
+
+    {% if solicitudes_pendientes > 0 %}
+    <div class="certificado-alert alert-warning">
+        ⚠️ Tienes <strong>{{ solicitudes_pendientes }}</strong> solicitud(es) pendiente(s) de aprobación.
+    </div>
+    {% endif %}
+
+    <div class="form-solicitud">
+        <h4 style="margin-bottom: 20px; color: #2c3e50;">Nueva Solicitud</h4>
+        
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="tipo" class="form-label">Tipo de Certificado *</label>
+                <select class="form-select" id="tipo" name="tipo" required>
+                    <option value="estudio">📚 Certificado de Estudio</option>
+                    <option value="notas">📊 Certificado de Notas</option>
+                    <option value="conducta">⭐ Certificado de Conducta</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="observaciones" class="form-label">Observaciones (Opcional)</label>
+                <textarea class="form-control" id="observaciones" name="observaciones" rows="4" 
+                          placeholder="Indica para qué necesitas el certificado o cualquier información adicional..."></textarea>
+            </div>
+
+            <div class="info-box">
+                <h6>ℹ️ Información Importante</h6>
+                <ul>
+                    <li>Tu solicitud será revisada por el administrador</li>
+                    <li>El certificado tendrá una validez de 30 días desde su aprobación</li>
+                    <li>Recibirás una notificación cuando sea procesado</li>
+                    <li>Podrás descargar el certificado en formato PDF</li>
+                </ul>
+            </div>
+
+            <button type="submit" class="btn-solicitar" style="width: 100%; padding: 15px;">
+                📤 Enviar Solicitud
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
