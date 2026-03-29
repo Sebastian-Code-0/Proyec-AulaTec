@@ -1,4 +1,4 @@
-{% extends "gestion_aulatec/base1.html" %}
+{% extends "gestion_aulatec/base_admin.html" %}
 {% load static %}
 
 {% block title %}AulaTec{% endblock %}
@@ -18,7 +18,9 @@
             <li><a href="{% url 'gestion_aulatec:grado_list' %}" class="active">🎓 Grados</a></li>
             <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
             <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
+            <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
             <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
+            <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
             <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
         </ul>
     </aside>

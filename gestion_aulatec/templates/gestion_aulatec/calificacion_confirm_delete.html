@@ -1,0 +1,59 @@
+{% extends base_template %}
+{% load static %}
+
+{% block title %}Eliminar Calificación - AulaTec{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="wrapper">
+
+    {% if request.user.Rol == 'Administrador' %}
+    <aside class="sidebar">
+        <ul class="menu">
+            <li><a href="{% url 'gestion_aulatec:admin_dashboard' %}">🏠 Inicio</a></li>
+            <li><a href="{% url 'gestion_aulatec:usuario_list' %}">👤 Usuarios</a></li>
+            <li><a href="{% url 'gestion_aulatec:grado_list' %}">🎓 Grados</a></li>
+            <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
+            <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
+            <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
+            <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
+            <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
+            <li><a href="{% url 'gestion_aulatec:calificacion_list' %}" class="active">📝 Calificaciones</a></li>
+        </ul>
+    </aside>
+    {% endif %}
+
+    <main class="content">
+        <div class="page-header">
+            <h1>Eliminar Calificación</h1>
+            <a href="{% url 'gestion_aulatec:calificacion_list' %}" class="btn btn--secondary">← Volver</a>
+        </div>
+
+        <div class="form-container">
+            <div class="alert alert--danger">
+                <p>¿Estás seguro de que deseas eliminar la siguiente calificación? <strong>Esta acción no se puede deshacer.</strong></p>
+            </div>
+
+            <div class="detail-card">
+                <p><strong>Estudiante:</strong> {{ calificacion.IdEstudiante.IdUsuario.Nombres }} {{ calificacion.IdEstudiante.IdUsuario.Apellidos }}</p>
+                <p><strong>Materia:</strong> {{ calificacion.IdMateria.NombreMateria }}</p>
+                <p><strong>Periodo:</strong> {{ calificacion.get_Periodo_display }}</p>
+                <p><strong>Actividad:</strong> {{ calificacion.NombreActividad }}</p>
+                <p><strong>Nota:</strong> {{ calificacion.Nota }}</p>
+                <p><strong>Año Lectivo:</strong> {{ calificacion.AnioLectivo }}</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn--danger">🗑️ Sí, eliminar</button>
+                    <a href="{% url 'gestion_aulatec:calificacion_list' %}" class="btn btn--secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+{% endblock %}

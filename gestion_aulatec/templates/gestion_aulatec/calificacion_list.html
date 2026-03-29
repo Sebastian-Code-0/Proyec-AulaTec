@@ -1,0 +1,195 @@
+{% extends base_template %}
+{% load static %}
+
+{% block title %}Calificaciones - AulaTec{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="wrapper">
+    {% if request.user.Rol == 'Administrador' %}
+    <aside class="sidebar">
+        <ul class="menu">
+            <li><a href="{% url 'gestion_aulatec:admin_dashboard' %}">🏠 Inicio</a></li>
+            <li><a href="{% url 'gestion_aulatec:usuario_list' %}">👤 Usuarios</a></li>
+            <li><a href="{% url 'gestion_aulatec:grado_list' %}">🎓 Grados</a></li>
+            <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
+            <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
+            <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
+            <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
+            <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
+            <li><a href="{% url 'gestion_aulatec:calificacion_list' %}" class="active">📝 Calificaciones</a></li>
+        </ul>
+    </aside>
+    {% endif %}
+
+    <main class="content">
+        <div class="page-header">
+            <h1>Calificaciones</h1>
+            {% if request.user.Rol == 'Administrador' or request.user.Rol == 'Docente' %}
+            <a href="{% url 'gestion_aulatec:calificacion_create' %}" class="btn btn--primary">+ Nueva Calificación</a>
+            {% endif %}
+        </div>
+
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <!-- FILTROS -->
+        <form method="get" class="filtros-form">
+            <div class="filtros-grid">
+                <div class="filtro-group">
+                    <label>🎓 Grado</label>
+                    <select name="grado" id="filtro-grado">
+                        <option value="">Todos</option>
+                        {% for grado in grados %}
+                        <option value="{{ grado.pk }}" {% if filtro_grado == grado.pk|stringformat:"s" %}selected{% endif %}>
+                            Grado {{ grado.NumGrado }}{{ grado.NumCurso }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filtro-group">
+                    <label>👤 Estudiante</label>
+                    <select name="estudiante" id="filtro-estudiante">
+                        <option value="">Todos</option>
+                        {% for est in estudiantes %}
+                        <option value="{{ est.pk }}"
+                            data-grado="{{ est.IdGrado.pk|default:'' }}"
+                            {% if filtro_estudiante == est.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ est.IdUsuario.Nombres }} {{ est.IdUsuario.Apellidos }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filtro-group">
+                    <label>📅 Periodo</label>
+                    <select name="periodo" id="filtro-periodo">
+                        <option value="">Todos</option>
+                        {% for num, nombre in periodos %}
+                        <option value="{{ num }}" {% if filtro_periodo == num|stringformat:"s" %}selected{% endif %}>
+                            {{ nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filtro-group">
+                    <label>📖 Materia</label>
+                    <select name="materia" id="filtro-materia">
+                        <option value="">Todas</option>
+                        {% for mat in materias %}
+                        <option value="{{ mat.pk }}"
+                            {% if filtro_materia == mat.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ mat.NombreMateria }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filtro-actions">
+                    <button type="submit" class="btn btn--primary">🔍 Filtrar</button>
+                    <a href="{% url 'gestion_aulatec:calificacion_list' %}" class="btn btn--secondary">✖ Limpiar</a>
+                </div>
+            </div>
+        </form>
+
+        <!-- TABLA -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Estudiante</th>
+                        <th>Materia</th>
+                        <th>Docente</th>
+                        <th>Grado</th>
+                        <th>Periodo</th>
+                        <th>Actividad</th>
+                        <th>Nota</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cal in calificaciones %}
+                    <tr>
+                        <td>{{ cal.IdEstudiante.IdUsuario.Nombres }} {{ cal.IdEstudiante.IdUsuario.Apellidos }}</td>
+                        <td>{{ cal.IdMateria.NombreMateria }}</td>
+                        <td>
+                            {% if cal.IdDocente %}
+                                {{ cal.IdDocente.IdUsuario.Nombres }} {{ cal.IdDocente.IdUsuario.Apellidos }}
+                            {% else %}—{% endif %}
+                        </td>
+                        <td>
+                            {% if cal.IdEstudiante.IdGrado %}
+                                {{ cal.IdEstudiante.IdGrado.NumGrado }}{{ cal.IdEstudiante.IdGrado.NumCurso }}
+                            {% else %}—{% endif %}
+                        </td>
+                        <td>{{ cal.get_Periodo_display }}</td>
+                        <td>{{ cal.NombreActividad }}</td>
+                        <td><strong>{{ cal.Nota }}</strong></td>
+                        <td class="actions">
+                            <a href="{% url 'gestion_aulatec:calificacion_update' cal.pk %}" class="btn btn--secondary">✏️ Editar</a>
+                            {% if request.user.Rol == 'Administrador' %}
+                            <a href="{% url 'gestion_aulatec:calificacion_delete' cal.pk %}" class="btn btn--danger">🗑️ Eliminar</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" style="text-align:center; padding: 2rem; color: #94a3b8; font-style: italic;">
+                            No se encontraron calificaciones con los filtros seleccionados.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+{% block extra_js %}
+<script>
+    const estudiantesData = {{ estudiantes_json|safe }};
+
+    const gradoSelect     = document.getElementById('filtro-grado');
+    const estudianteSelect = document.getElementById('filtro-estudiante');
+
+    const filtroGradoActual     = "{{ filtro_grado }}";
+    const filtroEstudianteActual = "{{ filtro_estudiante }}";
+
+    function filtrarEstudiantes(gradoPk) {
+        // Guardar valor seleccionado actual
+        const seleccionado = estudianteSelect.value;
+
+        // Limpiar opciones
+        estudianteSelect.innerHTML = '<option value="">Todos</option>';
+
+        estudiantesData.forEach(est => {
+            if (!gradoPk || est.grado === gradoPk) {
+                const opt = document.createElement('option');
+                opt.value = est.pk;
+                opt.textContent = est.nombre;
+                opt.dataset.grado = est.grado;
+                if (est.pk === seleccionado || est.pk === filtroEstudianteActual) {
+                    opt.selected = true;
+                }
+                estudianteSelect.appendChild(opt);
+            }
+        });
+    }
+
+    // Al cambiar grado filtra estudiantes
+    gradoSelect.addEventListener('change', function () {
+        filtrarEstudiantes(this.value);
+    });
+
+    // Al cargar la página aplica el filtro si hay grado seleccionado
+    if (filtroGradoActual) {
+        filtrarEstudiantes(filtroGradoActual);
+    }
+</script>
+{% endblock %}
+{% endblock %}

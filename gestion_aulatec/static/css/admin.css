@@ -1,38 +1,42 @@
-/* -------------------- CSS DE DASHBOARD_ADM.HTML -------------------- */
-
+/* -------------------- ADMIN DASHBOARD REDISEÑO -------------------- */
+.welcome {
+    margin-bottom: 2rem;
+}
 .welcome h1 {
-    font-size: var(--fs-xl);
+    font-size: 1.8rem;
     color: var(--color-primary);
-    margin-bottom: .5rem;
+    margin-bottom: 0.3rem;
 }
 .welcome p {
-    margin-bottom: var(--fs-lg);
-    color: var(--color-muted);
+    color: #64748b;
+    font-size: 0.95rem;
 }
 .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.2rem;
 }
 .card {
-    background: var(--color-card-bg);
-    border-radius: var(--radius);
-    padding: 18px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 1.5rem;
     box-shadow: var(--shadow-sm);
     text-decoration: none;
     color: var(--color-text);
-    transition: transform .15s ease, box-shadow .15s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid var(--color-primary);
 }
 .card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-4px);
     box-shadow: var(--shadow-md);
 }
 .card h2 {
     font-size: 1.1rem;
-    margin-bottom: .4rem;
+    margin-bottom: 0.5rem;
     color: var(--color-primary);
 }
 .card p {
-    font-size: .9rem;
-    color: var(--color-muted);
+    font-size: 0.875rem;
+    color: #64748b;
 }

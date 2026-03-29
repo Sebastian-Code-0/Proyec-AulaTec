@@ -6,3 +6,10 @@ from .MatriculaViews import MatriculaCreateView,MatriculaDeleteView,MatriculaDet
 from .LoginViews import AdminDashboardView,DocenteDashboardView,EstudianteDashboardView,login_view,logout_view,home_view
 from .UsuarioViews import UsuarioCreateView,UsuarioDeleteView,UsuarioListView,UsuarioUpdateView
 from .HorarioViews import HorarioListView, HorarioCreateView, HorarioUpdateView, HorarioDeleteView
+from .calificacion_views import (
+    CalificacionListView,
+    CalificacionCreateView,
+    CalificacionUpdateView,
+    CalificacionDeleteView,
+    CalificacionEstudianteView
+)

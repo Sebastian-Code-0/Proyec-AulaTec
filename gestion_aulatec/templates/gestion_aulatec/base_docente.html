@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AulaTec - Docente{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard_doc.css' %}">
+    <link rel="stylesheet" href="{% static 'css/extras_docente.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+        <div class="topbar__logo">
+            <a href="{% url 'gestion_aulatec:docente_dashboard' %}">
+                <img src="{% static 'img/aula_tec_logo.png' %}" alt="AulaTec">
+            </a>
+        </div>
+        <div class="topbar__user">
+            <div class="topbar__avatar">
+                {{ request.user.Nombres|first }}{{ request.user.Apellidos|first }}
+            </div>
+            <div>
+                <div class="topbar__name">{{ request.user.Nombres }} {{ request.user.Apellidos }}</div>
+                <div class="topbar__role">Docente</div>
+            </div>
+            <a href="{% url 'gestion_aulatec:logout' %}" class="btn-logout">🚪 Salir</a>
+        </div>
+    </header>
+
+    <div class="doc-wrapper">
+
+        <!-- SIDEBAR -->
+        <aside class="doc-sidebar">
+            <ul>
+                <li><a href="{% url 'gestion_aulatec:docente_dashboard' %}"
+                    {% if request.resolver_match.url_name == 'docente_dashboard' %}class="active"{% endif %}>
+                    🏠 Inicio
+                </a></li>
+                <li><a href="{% url 'gestion_aulatec:calificacion_list' %}"
+                    {% if request.resolver_match.url_name == 'calificacion_list' %}class="active"{% endif %}>
+                    📝 Calificaciones
+                </a></li>
+                <li><a href="{% url 'gestion_aulatec:calificacion_create' %}"
+                    {% if request.resolver_match.url_name == 'calificacion_create' %}class="active"{% endif %}>
+                    ➕ Nueva Calificación
+                </a></li>
+            </ul>
+        </aside>
+
+        <!-- CONTENIDO DINÁMICO -->
+        <main class="doc-content">
+            {% if messages %}
+            <ul class="messages" style="list-style:none; margin-bottom:1rem;">
+                {% for message in messages %}
+                <li class="{{ message.tags }}"
+                    style="padding:.75rem 1rem; border-radius:8px; margin-bottom:.5rem; font-size:.9rem;
+                        background:{% if message.tags == 'success' %}rgba(16,185,129,.15){% else %}rgba(239,68,68,.15){% endif %};
+                        color:{% if message.tags == 'success' %}#10B981{% else %}#EF4444{% endif %};">
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

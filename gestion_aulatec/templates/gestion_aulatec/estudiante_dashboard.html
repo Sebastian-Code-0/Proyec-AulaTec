@@ -4,46 +4,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}AulaTec{% endblock %}</title>
+    <title>Mi Panel - AulaTec</title>
     <link rel="stylesheet" href="{% static 'css/dashboard_est.css' %}">
 </head>
 <body>
-    <div class="dashboard-container">
 
-        <!-- Encabezado -->
-        <div class="dashboard-header">
-            <h1>Panel de Estudiante</h1>
-            <div class="action-buttons">
-                <a href="{% url 'gestion_aulatec:home' %}">🏠 Inicio</a>
-                <a href="{% url 'gestion_aulatec:logout' %}">🚪 Cerrar Sesión</a>
+<!-- TOP BAR -->
+<header class="topbar">
+    <div class="topbar__logo">
+        <a href="{% url 'gestion_aulatec:estudiante_dashboard' %}">
+            <img src="{% static 'img/aula_tec_logo.png' %}" alt="AulaTec">
+        </a>
+    </div>
+    <div class="topbar__user">
+        <div class="topbar__avatar">
+            {{ request.user.Nombres|first }}{{ request.user.Apellidos|first }}
+        </div>
+        <div>
+            <div class="topbar__name">{{ request.user.Nombres }} {{ request.user.Apellidos }}</div>
+            <div class="topbar__role">Estudiante</div>
+        </div>
+        <a href="{% url 'gestion_aulatec:logout' %}" class="btn-logout">🚪 Salir</a>
+    </div>
+</header>
+
+<div class="dashboard">
+
+    <!-- BIENVENIDA -->
+    <div class="welcome-banner">
+        <div>
+            <h1>¡Hola, {{ request.user.Nombres }}! 👋</h1>
+            <p>Bienvenido a tu panel académico. Aquí puedes ver tus calificaciones y horario.</p>
+        </div>
+        <div class="emoji">🎓</div>
+    </div>
+
+    <!-- INFO DEL ESTUDIANTE -->
+    {% if estudiante %}
+    <div class="info-grid">
+        <div class="info-card">
+            <div class="info-card__icon">🪪</div>
+            <div>
+                <div class="info-card__label">Identificación</div>
+                <div class="info-card__value">{{ estudiante.IdUsuario.NumId }}</div>
             </div>
         </div>
-
-        <!-- Bienvenida -->
-        <p class="welcome">
-            Bienvenido, <b>{{ request.user.Nombres }} {{ request.user.Apellidos }}</b>.  
-            Tienes rol de <b>Estudiante</b>.
-        </p>
-
-        <!-- Información -->
-        <h2>Mi Información de Estudiante</h2>
-        {% if estudiante_perfil %}
-            {% with estudiante=estudiante_perfil.first %}
-            <div class="student-info">
-                <p><strong>Número de Identificación:</strong> {{ estudiante.IdUsuario.NumId }}</p>
-                <p><strong>Grado Asignado:</strong>
+        <div class="info-card">
+            <div class="info-card__icon">🎓</div>
+            <div>
+                <div class="info-card__label">Grado</div>
+                <div class="info-card__value">
                     {% if estudiante.IdGrado %}
-                        {{ estudiante.IdGrado.NumGrado }}{{ estudiante.IdGrado.NumCurso|default:"" }}
+                        {{ estudiante.IdGrado.NumGrado }}° {{ estudiante.IdGrado.NumCurso }}
                     {% else %}
-                        Sin Grado Asignado
+                        Sin asignar
                     {% endif %}
-                </p>
+                </div>
             </div>
-            {% endwith %}
-        {% else %}
-            <p>Tu perfil de estudiante aún no ha sido creado o asignado.</p>
-        {% endif %}
-
+        </div>
+        <div class="info-card">
+            <div class="info-card__icon">📅</div>
+            <div>
+                <div class="info-card__label">Año Lectivo</div>
+                <div class="info-card__value">2025</div>
+            </div>
+        </div>
+        <div class="info-card">
+            <div class="info-card__icon">📱</div>
+            <div>
+                <div class="info-card__label">Celular</div>
+                <div class="info-card__value">{{ request.user.Celular|default:"No registrado" }}</div>
+            </div>
+        </div>
     </div>
+    {% endif %}
+
+    <!-- PROMEDIOS POR PERIODO -->
+    <div>
+        <div class="section-title">📊 Promedios por Periodo</div>
+        <div class="promedios-grid">
+            {% for num, nombre in periodos %}
+            <div class="promedio-card">
+                {% if promedios|dictsort:num %}{% endif %}
+                {% with avg=promedios|default_if_none:"" %}{% endwith %}
+                <div class="promedio-card__num {% if not promedios %}sin-notas{% endif %}">
+                    {% if promedios %}
+                        {% if num == 1 %}{% if promedios.1 %}{{ promedios.1 }}{% else %}—{% endif %}
+                        {% elif num == 2 %}{% if promedios.2 %}{{ promedios.2 }}{% else %}—{% endif %}
+                        {% elif num == 3 %}{% if promedios.3 %}{{ promedios.3 }}{% else %}—{% endif %}
+                        {% elif num == 4 %}{% if promedios.4 %}{{ promedios.4 }}{% else %}—{% endif %}
+                        {% endif %}
+                    {% else %}—{% endif %}
+                </div>
+                <div class="promedio-card__label">{{ nombre }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- CALIFICACIONES POR PERIODO -->
+    <div>
+        <div class="section-title">📝 Mis Calificaciones</div>
+        {% for num, nombre in periodos %}
+        <div class="periodo-section">
+            <div class="periodo-header">
+                <span>{{ nombre }}</span>
+                {% if num == 1 and promedios.1 %}<span class="promedio-badge">Promedio: {{ promedios.1 }}</span>
+                {% elif num == 2 and promedios.2 %}<span class="promedio-badge">Promedio: {{ promedios.2 }}</span>
+                {% elif num == 3 and promedios.3 %}<span class="promedio-badge">Promedio: {{ promedios.3 }}</span>
+                {% elif num == 4 and promedios.4 %}<span class="promedio-badge">Promedio: {{ promedios.4 }}</span>
+                {% endif %}
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Materia</th>
+                        <th>Actividad</th>
+                        <th>Docente</th>
+                        <th>Nota</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cal in calificaciones %}
+                        {% if cal.Periodo == num %}
+                        <tr>
+                            <td>{{ cal.IdMateria.NombreMateria }}</td>
+                            <td>{{ cal.NombreActividad }}</td>
+                            <td>
+                                {% if cal.IdDocente %}
+                                    {{ cal.IdDocente.IdUsuario.Nombres }} {{ cal.IdDocente.IdUsuario.Apellidos }}
+                                {% else %}—{% endif %}
+                            </td>
+                            <td>
+                                <span class="nota-badge
+                                    {% if cal.Nota >= 7 %}nota-alta
+                                    {% elif cal.Nota >= 5 %}nota-media
+                                    {% else %}nota-baja{% endif %}">
+                                    {{ cal.Nota }}
+                                </span>
+                            </td>
+                            <td>{{ cal.Observaciones|default:"—" }}</td>
+                        </tr>
+                        {% endif %}
+                    {% empty %}
+                        <tr class="empty-row">
+                            <td colspan="5">Sin calificaciones en este periodo.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- HORARIO -->
+    <div>
+        <div class="section-title">🕐 Mi Horario</div>
+        {% if horario %}
+        <div class="horario-grid">
+            {% regroup horario by dia_semana as horario_por_dia %}
+            {% for dia in horario_por_dia %}
+            <div class="dia-card">
+                <div class="dia-card__header">{{ dia.grouper|capfirst }}</div>
+                <div class="dia-card__body">
+                    {% for clase in dia.list %}
+                    <div class="clase-item">
+                        <div class="clase-item__materia">{{ clase.materia.NombreMateria }}</div>
+                        <div class="clase-item__hora">🕐 {{ clase.hora_inicio|time:"H:i" }} - {{ clase.hora_fin|time:"H:i" }}</div>
+                        {% if clase.docente %}
+                        <div class="clase-item__docente">👩‍🏫 {{ clase.docente.IdUsuario.Nombres }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="periodo-section">
+            <div class="sin-clases">No hay horario asignado para tu grado aún.</div>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
 </body>
 </html>

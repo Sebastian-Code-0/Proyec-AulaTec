@@ -4,38 +4,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}AulaTec{% endblock %}</title>
+    <title>Panel Docente - AulaTec</title>
     <link rel="stylesheet" href="{% static 'css/dashboard_doc.css' %}">
 </head>
 <body>
-    <div class="dashboard-container">
 
-        <!-- Encabezado con título y botones -->
-        <div class="dashboard-header">
-            <h1>Panel de Docente</h1>
-            <div class="action-buttons">
-                <a href="{% url 'gestion_aulatec:home' %}">🏠 Inicio</a>
-                <a href="{% url 'gestion_aulatec:logout' %}">🚪 Cerrar Sesión</a>
+<!-- TOP BAR -->
+<header class="topbar">
+    <div class="topbar__logo">
+        <a href="{% url 'gestion_aulatec:home' %}">
+            <img src="{% static 'img/aula_tec_logo.png' %}" alt="AulaTec">
+        </a>
+    </div>
+    <div class="topbar__user">
+        <div class="topbar__avatar">
+            {{ request.user.Nombres|first }}{{ request.user.Apellidos|first }}
+        </div>
+        <div>
+            <div class="topbar__name">{{ request.user.Nombres }} {{ request.user.Apellidos }}</div>
+            <div class="topbar__role">Docente</div>
+        </div>
+        <a href="{% url 'gestion_aulatec:logout' %}" class="btn-logout">🚪 Salir</a>
+    </div>
+</header>
+
+<div class="doc-wrapper">
+
+    <!-- SIDEBAR -->
+    <aside class="doc-sidebar">
+        <ul>
+            <li><a href="{% url 'gestion_aulatec:docente_dashboard' %}" class="active">🏠 Inicio</a></li>
+            <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
+            <li><a href="{% url 'gestion_aulatec:calificacion_create' %}">➕ Nueva Calificación</a></li>
+        </ul>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="doc-content">
+
+        <!-- BIENVENIDA -->
+        <div class="welcome-banner">
+            <div>
+                <h1>¡Hola, {{ request.user.Nombres }}! 👋</h1>
+                <p>Bienvenido a tu panel docente. Gestiona tus materias y calificaciones.</p>
+            </div>
+            <div class="emoji">👩‍🏫</div>
+        </div>
+
+        <!-- STATS RÁPIDAS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card__icon">📖</div>
+                <div>
+                    <div class="stat-card__label">Materias Asignadas</div>
+                    <div class="stat-card__value">{{ materias.count }}</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon">📝</div>
+                <div>
+                    <div class="stat-card__label">Calificaciones Registradas</div>
+                    <div class="stat-card__value">{{ total_calificaciones }}</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon">🕐</div>
+                <div>
+                    <div class="stat-card__label">Clases en Horario</div>
+                    <div class="stat-card__value">{{ horarios.count }}</div>
+                </div>
             </div>
         </div>
 
-        <!-- Bienvenida -->
-        <p class="welcome">
-            Bienvenido, <b>{{ request.user.Nombres }} {{ request.user.Apellidos }}</b>.  
-            Tienes rol de <b>Docente</b>.
-        </p>
-
-        <!-- Materias -->
-        <h2>Mis Materias</h2>
-        {% if materias %}
-            <ul class="materias-list">
-                {% for materia in materias %}
-                    <li>📘 {{ materia.NombreMateria }}</li>
-                {% endfor %}
-            </ul>
+        <!-- MATERIAS -->
+        <div class="section-title">📖 Mis Materias</div>
+        {% if resumen_materias %}
+        <div class="materias-grid">
+            {% for item in resumen_materias %}
+            <div class="materia-card">
+                <div class="materia-card__header">
+                    <h3>{{ item.materia.NombreMateria }}</h3>
+                    <span>📘</span>
+                </div>
+                <div class="materia-card__body">
+                    <div class="materia-stat">
+                        <span>Estudiantes</span>
+                        <span>{{ item.total_estudiantes }}</span>
+                    </div>
+                    <div class="materia-stat">
+                        <span>Calificaciones</span>
+                        <span>{{ item.total_calificaciones }}</span>
+                    </div>
+                    <div class="materia-stat">
+                        <span>Promedio general</span>
+                        <span>{% if item.promedio %}{{ item.promedio }}{% else %}—{% endif %}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
         {% else %}
-            <p>No tienes materias asignadas aún.</p>
+        <p style="color: var(--doc-muted); margin-bottom: 2rem;">No tienes materias asignadas aún.</p>
         {% endif %}
-    </div>
+
+<!-- HORARIO -->
+        <div class="section-title">🕐 Mi Horario</div>
+        {% if horarios %}
+        <div class="horario-grid">
+            {% regroup horarios by dia_semana as horario_por_dia %}
+            {% for dia in horario_por_dia %}
+            <div class="dia-card">
+                <div class="dia-card__header">{{ dia.grouper|capfirst }}</div>
+                <div class="dia-card__body">
+                    {% for clase in dia.list %}
+                    <div class="clase-item">
+                        <div class="clase-item__materia">{{ clase.materia.NombreMateria }}</div>
+                        <div class="clase-item__hora">🕐 {{ clase.hora_inicio|time:"H:i" }} - {{ clase.hora_fin|time:"H:i" }}</div>
+                        <div class="clase-item__grado">🎓 Grado {{ clase.grado.NumGrado }}{{ clase.grado.NumCurso }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="color: var(--doc-muted); margin-bottom: 2rem; font-style: italic;">
+            No tienes horario asignado aún.
+        </div>
+        {% endif %}
+
+        <!-- CALIFICACIONES RECIENTES -->
+        <div class="section-title">📝 Últimas Calificaciones Registradas</div>
+        {% if calificaciones_recientes %}
+        <div class="tabla-recientes">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Estudiante</th>
+                        <th>Materia</th>
+                        <th>Actividad</th>
+                        <th>Nota</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cal in calificaciones_recientes %}
+                    <tr>
+                        <td>{{ cal.IdEstudiante.IdUsuario.Nombres }} {{ cal.IdEstudiante.IdUsuario.Apellidos }}</td>
+                        <td>{{ cal.IdMateria.NombreMateria }}</td>
+                        <td>{{ cal.NombreActividad }}</td>
+                        <td>
+                            <span class="nota-badge
+                                {% if cal.Nota >= 7 %}nota-alta
+                                {% elif cal.Nota >= 5 %}nota-media
+                                {% else %}nota-baja{% endif %}">
+                                {{ cal.Nota }}
+                            </span>
+                        </td>
+                        <td>{{ cal.FechaRegistro|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="color: var(--doc-muted); font-style: italic; margin-bottom: 2rem;">
+            Aún no has registrado calificaciones.
+        </div>
+        {% endif %}
+
+        <!-- ACCESO RÁPIDO -->
+        <div class="section-title">⚡ Acciones Rápidas</div>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
+            <a href="{% url 'gestion_aulatec:calificacion_create' %}" class="btn-accion">
+                ➕ Registrar Calificación
+            </a>
+            <a href="{% url 'gestion_aulatec:calificacion_list' %}" class="btn-accion">
+                📋 Ver Todas las Calificaciones
+            </a>
+        </div>
+
+    </main>
+</div>
+
 </body>
 </html>

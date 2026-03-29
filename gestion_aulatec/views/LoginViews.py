@@ -61,29 +61,123 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     
 class DocenteDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = 'gestion_aulatec/docente_dashboard.html'
-    model = Docente 
+    model = Docente
+
     def test_func(self):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Docente'
 
     def handle_no_permission(self):
         messages.error(self.request, 'No tienes permiso para acceder a esta página.')
-        return redirect('home')
+        return redirect('gestion_aulatec:home')
+
+    def get_queryset(self):
+        return Docente.objects.filter(IdUsuario=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from gestion_aulatec.models import Materia, Horario, Calificacion, Estudiante
+        from django.db.models import Avg, Count
+
+        try:
+            docente = Docente.objects.get(IdUsuario=self.request.user)
+
+            # Materias del docente
+            materias = Materia.objects.filter(IdDocente=docente)
+
+            # Horarios del docente
+            horarios = Horario.objects.filter(
+                docente=docente, activo=True
+            ).select_related('materia', 'grado').order_by('dia_semana', 'hora_inicio')
+
+            # Calificaciones registradas por el docente
+            calificaciones = Calificacion.objects.filter(
+                IdDocente=docente
+            ).select_related('IdEstudiante__IdUsuario', 'IdMateria').order_by('-FechaRegistro')
+
+            # Resumen por materia
+            resumen_materias = []
+            for materia in materias:
+                cals = calificaciones.filter(IdMateria=materia)
+                promedio = cals.aggregate(Avg('Nota'))['Nota__avg']
+                estudiantes = Estudiante.objects.filter(
+                    IdGrado__horarios__materia=materia,
+                    IdGrado__horarios__docente=docente
+                ).distinct()
+                resumen_materias.append({
+                    'materia': materia,
+                    'total_calificaciones': cals.count(),
+                    'promedio': round(promedio, 2) if promedio else None,
+                    'total_estudiantes': estudiantes.count(),
+                    'estudiantes': estudiantes.select_related('IdUsuario')[:5],
+                })
+
+            context['docente'] = docente
+            context['materias'] = materias
+            context['horarios'] = horarios
+            context['calificaciones_recientes'] = calificaciones[:10]
+            context['resumen_materias'] = resumen_materias
+            context['total_calificaciones'] = calificaciones.count()
+
+        except Docente.DoesNotExist:
+            context['docente'] = None
+
+        return context
 
 class EstudianteDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = 'gestion_aulatec/estudiante_dashboard.html'
-    model = Estudiante # Ejemplo: un estudiante ve su perfil
-    context_object_name = 'estudiante_perfil' # Asegúrate de filtrar por el usuario logueado en get_queryset
+    model = Estudiante
+    context_object_name = 'estudiante_perfil'
 
     def test_func(self):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Estudiante'
 
     def handle_no_permission(self):
         messages.error(self.request, 'No tienes permiso para acceder a esta página.')
-        return redirect('home')
+        return redirect('gestion_aulatec:home')
 
     def get_queryset(self):
-        # Filtra para obtener el perfil del estudiante logueado
-        return Estudiante.objects.filter(IdUsuario=self.request.user)
+        return Estudiante.objects.filter(IdUsuario=self.request.user).select_related('IdUsuario', 'IdGrado')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            from django.db.models import Avg
+            from gestion_aulatec.models import Calificacion, Horario
+            estudiante = Estudiante.objects.get(IdUsuario=self.request.user)
+
+            calificaciones = Calificacion.objects.filter(
+                IdEstudiante=estudiante
+            ).select_related('IdMateria', 'IdDocente__IdUsuario').order_by('Periodo', 'IdMateria')
+
+            promedios = {}
+            for periodo in range(1, 5):
+                avg = calificaciones.filter(Periodo=periodo).aggregate(Avg('Nota'))['Nota__avg']
+                promedios[periodo] = round(avg, 2) if avg else None
+
+            horario = []
+            if estudiante.IdGrado:
+                horario = Horario.objects.filter(
+                    grado=estudiante.IdGrado,
+                    activo=True
+                ).select_related('materia', 'docente__IdUsuario').order_by('dia_semana', 'hora_inicio')
+
+            context['estudiante'] = estudiante
+            context['calificaciones'] = calificaciones
+            context['promedios'] = promedios
+            context['horario'] = horario
+            context['periodos'] = [
+                (1, 'Primer Periodo'),
+                (2, 'Segundo Periodo'),
+                (3, 'Tercer Periodo'),
+                (4, 'Cuarto Periodo'),
+            ]
+        except Estudiante.DoesNotExist:
+            context['estudiante'] = None
+            context['calificaciones'] = []
+            context['promedios'] = {}
+            context['horario'] = []
+            context['periodos'] = []
+
+        return context
 def home_view(request):
     return render(request,'gestion_aulatec/home.html')
