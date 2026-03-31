@@ -29,6 +29,24 @@ class EsDocenteOAdminMixin(LoginRequiredMixin, UserPassesTestMixin):
         return redirect('gestion_aulatec:home')
 
 
+class DocenteVinculadoMixin:
+    """
+    Para vistas que requieren que el usuario Docente tenga perfil en la tabla Docente.
+    Los administradores pasan directamente.
+    """
+    def dispatch(self, request, *args, **kwargs):
+        from gestion_aulatec.models import Docente
+        if request.user.Rol == 'Docente':
+            if not Docente.objects.filter(IdUsuario=request.user).exists():
+                messages.error(
+                    request,
+                    'Tu cuenta no está vinculada a un perfil de docente. '
+                    'Contacta al administrador para que complete tu registro.'
+                )
+                return redirect('gestion_aulatec:docente_dashboard')
+        return super().dispatch(request, *args, **kwargs)
+
+
 class EsEstudianteMixin(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):
         return self.request.user.Rol == 'Estudiante'
@@ -40,7 +58,7 @@ class EsEstudianteMixin(LoginRequiredMixin, UserPassesTestMixin):
 
 # --- Vistas ---
 
-class CalificacionListView(EsDocenteOAdminMixin, ListView):
+class CalificacionListView(DocenteVinculadoMixin, EsDocenteOAdminMixin, ListView):
     model = Calificacion
     template_name = 'gestion_aulatec/calificacion_list.html'
     context_object_name = 'calificaciones'
@@ -142,7 +160,7 @@ class CalificacionEstudianteView(LoginRequiredMixin, ListView):
         ).order_by('Periodo', 'IdMateria')
 
 2
-class CalificacionCreateView(EsDocenteOAdminMixin, CreateView):
+class CalificacionCreateView(DocenteVinculadoMixin, EsDocenteOAdminMixin, CreateView):
     model = Calificacion
     form_class = CalificacionForm
     template_name = 'gestion_aulatec/calificacion_form.html'
@@ -189,7 +207,7 @@ class CalificacionCreateView(EsDocenteOAdminMixin, CreateView):
         return super().form_valid(form)
 
 
-class CalificacionUpdateView(EsDocenteOAdminMixin, UpdateView):
+class CalificacionUpdateView(DocenteVinculadoMixin, EsDocenteOAdminMixin, UpdateView):
     model = Calificacion
     form_class = CalificacionForm
     template_name = 'gestion_aulatec/calificacion_form.html'

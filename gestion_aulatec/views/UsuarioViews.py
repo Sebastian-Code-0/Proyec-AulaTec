@@ -46,7 +46,16 @@ class UsuarioUpdateView(UpdateView):
     model = Usuario
     form_class = UsuarioForm
     template_name = 'gestion_aulatec/usuario_form.html'
-    success_url = reverse_lazy('gestion_aulatec:usuario_list')  # Redirige a la lista de usuarios después de actualizar uno
+    success_url = reverse_lazy('gestion_aulatec:usuario_list')
+
+    def form_valid(self, form):
+        usuario = form.save(commit=False)
+        nueva_password = form.cleaned_data.get('password')
+        if nueva_password:
+            usuario.set_password(nueva_password)
+        usuario.save()
+        messages.success(self.request, 'Usuario actualizado con éxito.')
+        return redirect(self.success_url)
 
 # Eliminar (Borrar un usuario)
 class UsuarioDeleteView(DeleteView):

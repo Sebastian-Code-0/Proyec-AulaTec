@@ -1,0 +1,161 @@
+/* ── Variables ─────────────────────────────────────────────── */
+:root {
+    --adm-primary: #7d3cff;
+    --adm-primary-dark: #624298;
+    --adm-primary-light: #a78bfa;
+    --adm-secondary: #7e7eff;
+    --adm-bg: #0F172A;
+    --adm-card: #1E293B;
+    --adm-card2: #263348;
+    --adm-border: #334155;
+    --adm-text: #F1F5F9;
+    --adm-muted: #94A3B8;
+    --adm-radius: 16px;
+    --adm-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--adm-bg);
+    color: var(--adm-text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Top Bar ────────────────────────────────────────────────── */
+.top-bar {
+    background: var(--adm-card);
+    border-bottom: 1px solid var(--adm-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--adm-shadow);
+}
+.top-bar .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+}
+.top-bar .logo span {
+    color: var(--adm-text);
+    font-size: 1.1rem;
+    margin-left: 0;
+}
+.top-bar .top-nav a {
+    color: var(--adm-muted);
+    margin-left: 16px;
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+.top-bar .top-nav a:hover {
+    color: var(--adm-primary-light);
+}
+
+/* ── Layout ─────────────────────────────────────────────────── */
+.wrapper {
+    display: flex;
+    flex: 1;
+    min-height: calc(100vh - 60px);
+}
+
+/* ── Sidebar ────────────────────────────────────────────────── */
+.sidebar {
+    width: 240px;
+    background: var(--adm-card);
+    border-right: 1px solid var(--adm-border);
+    padding-top: 1.5rem;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+}
+.menu {
+    list-style: none;
+}
+.menu li a {
+    display: block;
+    padding: 0.85rem 1.5rem;
+    color: var(--adm-muted);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+}
+.menu li a:hover,
+.menu li a.active {
+    color: var(--adm-primary-light);
+    background: rgba(125, 60, 255, 0.1);
+    border-left-color: var(--adm-primary);
+}
+
+/* ── Contenido principal ────────────────────────────────────── */
+.content {
+    flex: 1;
+    padding: 2rem;
+    background: var(--adm-bg);
+    overflow-y: auto;
+}
+
+/* ── Bienvenida ─────────────────────────────────────────────── */
+.welcome {
+    margin-bottom: 2rem;
+}
+.welcome h1 {
+    font-size: 1.8rem;
+    color: var(--adm-primary-light);
+    margin-bottom: 0.3rem;
+}
+.welcome p {
+    color: var(--adm-muted);
+    font-size: 0.95rem;
+}
+
+/* ── Cards ──────────────────────────────────────────────────── */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.2rem;
+}
+.card {
+    background: var(--adm-card);
+    border: 1px solid var(--adm-border);
+    border-top: 4px solid var(--adm-primary);
+    border-radius: var(--adm-radius);
+    padding: 1.5rem;
+    text-decoration: none;
+    color: var(--adm-text);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: var(--adm-shadow);
+}
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(125, 60, 255, 0.2);
+}
+.card h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: var(--adm-primary-light);
+}
+.card p {
+    font-size: 0.875rem;
+    color: var(--adm-muted);
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .wrapper { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: static; }
+    .cards { grid-template-columns: repeat(2, 1fr); }
+}

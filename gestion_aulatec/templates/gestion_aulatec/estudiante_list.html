@@ -3,13 +3,8 @@
 
 {% block title %}AulaTec{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/estudiante.css' %}">
-{% endblock %}
-
 {% block content %}
 <div class="wrapper">
-    <!-- Sidebar (común a todo el panel) -->
     <aside class="sidebar">
         <ul class="menu">
             <li><a href="{% url 'gestion_aulatec:admin_dashboard' %}">Resumen</a></li>
@@ -25,33 +20,23 @@
     </aside>
 
     <main class="content">
-        <div class="students-page">
-            <section class="welcome">
-                <h1>Estudiantes Registrados</h1>
-                <p>
-                    <a href="{% url 'gestion_aulatec:estudiante_create' %}"
-                       class="btn btn-primary">Registrar Nuevo Estudiante</a>
-                    <!--<a href="{% url 'gestion_aulatec:usuario_list' %}"
-                       class="btn btn-outline">Ir a Usuarios</a>
-                    <a href="{% url 'gestion_aulatec:grado_list' %}"
-                       class="btn btn-outline">Ir a Grados</a>-->
-                </p>
-            </section>
+        <div class="page-header">
+            <h1>📚 Estudiantes Registrados</h1>
+            <a href="{% url 'gestion_aulatec:estudiante_create' %}" class="btn btn--primary">+ Registrar Estudiante</a>
+        </div>
 
-            <!-- Formulario de búsqueda -->
-            <form method="GET" action="{% url 'gestion_aulatec:estudiante_list' %}"
-                  class="search-form">
-                <input type="text" name="q" placeholder="Buscar por nombre de usuario..."
-                       value="{{ request.GET.q }}">
-                <button type="submit" class="btn btn-primary">Buscar</button>
-                {% if request.GET.q %}
-                <a href="{% url 'gestion_aulatec:estudiante_list' %}"
-                   class="btn btn-outline">Limpiar</a>
-                {% endif %}
-            </form>
+        <form method="GET" action="{% url 'gestion_aulatec:estudiante_list' %}" class="search-form">
+            <input type="text" name="q" placeholder="Buscar por nombre de usuario..."
+                   value="{{ request.GET.q }}">
+            <button type="submit" class="btn btn--primary">Buscar</button>
+            {% if request.GET.q %}
+            <a href="{% url 'gestion_aulatec:estudiante_list' %}" class="btn btn--secondary">Limpiar</a>
+            {% endif %}
+        </form>
 
-            {% if estudiantes %}
-            <table class="styled-table">
+        {% if estudiantes %}
+        <div class="table-container">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>ID Estudiante</th>
@@ -80,9 +65,9 @@
                         </td>
                         <td class="actions">
                             <a href="{% url 'gestion_aulatec:estudiante_update' pk=estudiante.IdEstudiante %}"
-                            class="action-link edit">Editar</a>
-                            <button type="button" 
-                                    class="action-link delete delete-btn"
+                               class="btn btn--secondary">✏️ Editar</a>
+                            <button type="button"
+                                    class="btn btn--danger delete-btn"
                                     data-estudiante-id="{{ estudiante.IdEstudiante }}"
                                     data-estudiante-name="{% if estudiante.IdUsuario %}{{ estudiante.IdUsuario.Nombres }} {{ estudiante.IdUsuario.Apellidos }}{% else %}Usuario No Asignado{% endif %}"
                                     data-delete-url="{% url 'gestion_aulatec:estudiante_delete' pk=estudiante.IdEstudiante %}">
@@ -93,17 +78,17 @@
                     {% endfor %}
                 </tbody>
             </table>
-            {% else %}
-            <p class="empty-msg">No hay estudiantes registrados aún o no se encontraron resultados.</p>
-            {% endif %}
-            <div class="nav-bottom">
-                <a href="{% url 'gestion_aulatec:admin_dashboard' %}"
-                   class="btn btn-outline">Volver al inicio
-                </a>
-            </div>
-        </div><!-- /.students-page -->
+        </div>
+        {% else %}
+        <p class="empty-msg">No hay estudiantes registrados aún o no se encontraron resultados.</p>
+        {% endif %}
+
+        <div class="form-actions">
+            <a href="{% url 'gestion_aulatec:admin_dashboard' %}" class="btn btn--secondary">Volver al inicio</a>
+        </div>
     </main>
 </div>
+
 <!-- Modal de Confirmación para Estudiantes -->
 <div id="deleteModal" class="modal-overlay" style="display: none;">
     <div class="modal-content">

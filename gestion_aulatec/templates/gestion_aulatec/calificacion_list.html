@@ -3,10 +3,6 @@
 
 {% block title %}Calificaciones - AulaTec{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/admin.css' %}">
-{% endblock %}
-
 {% block content %}
 <div class="wrapper">
     {% if request.user.Rol == 'Administrador' %}
@@ -19,8 +15,8 @@
             <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
             <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
             <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
-            <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
             <li><a href="{% url 'gestion_aulatec:calificacion_list' %}" class="active">📝 Calificaciones</a></li>
+            <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
         </ul>
     </aside>
     {% endif %}
@@ -132,9 +128,15 @@
                         <td>{{ cal.NombreActividad }}</td>
                         <td><strong>{{ cal.Nota }}</strong></td>
                         <td class="actions">
-                            <a href="{% url 'gestion_aulatec:calificacion_update' cal.pk %}" class="btn btn--secondary">✏️ Editar</a>
+                            <a href="{% url 'gestion_aulatec:calificacion_update' cal.pk %}" class="btn btn--secondary">Editar</a>
                             {% if request.user.Rol == 'Administrador' %}
-                            <a href="{% url 'gestion_aulatec:calificacion_delete' cal.pk %}" class="btn btn--danger">🗑️ Eliminar</a>
+                            <button type="button"
+                                    class="btn btn--danger delete-btn"
+                                    data-calificacion-id="{{ cal.pk }}"
+                                    data-calificacion-name="{{ cal.NombreActividad }} - {{ cal.IdEstudiante.IdUsuario.Nombres }} {{ cal.IdEstudiante.IdUsuario.Apellidos }}"
+                                    data-delete-url="{% url 'gestion_aulatec:calificacion_delete' cal.pk %}">
+                                Eliminar
+                            </button>
                             {% endif %}
                         </td>
                     </tr>
@@ -150,6 +152,26 @@
         </div>
     </main>
 </div>
+<!-- Modal eliminación calificación -->
+<div id="deleteModalCalificacion" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Confirmar Eliminación</h3>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="icon">⚠️</div>
+            <p>¿Estás seguro de que quieres eliminar la calificación <strong id="calificacionName"></strong>?</p>
+            <div class="warning-text">❗️ Esta acción no se puede deshacer ❗️</div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel">Cancelar</button>
+            <button type="button" id="confirmDeleteCalificacion" class="btn-delete">Sí, Eliminar</button>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/modal_calificacion.js' %}"></script>
+
 {% block extra_js %}
 <script>
     const estudiantesData = {{ estudiantes_json|safe }};

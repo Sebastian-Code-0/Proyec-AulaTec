@@ -34,8 +34,10 @@
     <aside class="doc-sidebar">
         <ul>
             <li><a href="{% url 'gestion_aulatec:docente_dashboard' %}" class="active">🏠 Inicio</a></li>
+            {% if docente %}
             <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
             <li><a href="{% url 'gestion_aulatec:calificacion_create' %}">➕ Nueva Calificación</a></li>
+            {% endif %}
         </ul>
     </aside>
 
@@ -46,11 +48,35 @@
         <div class="welcome-banner">
             <div>
                 <h1>¡Hola, {{ request.user.Nombres }}! 👋</h1>
-                <p>Bienvenido a tu panel docente. Gestiona tus materias y calificaciones.</p>
+                <p>Bienvenido a tu panel docente.</p>
             </div>
             <div class="emoji">👩‍🏫</div>
         </div>
 
+        {% if not docente %}
+        <!-- ALERTA: perfil no vinculado -->
+        <div style="
+            background: rgba(239,68,68,0.12);
+            border: 1px solid rgba(239,68,68,0.4);
+            border-left: 5px solid #EF4444;
+            border-radius: 10px;
+            padding: 1.5rem 1.75rem;
+            margin-bottom: 2rem;
+        ">
+            <div style="font-size:1.6rem; margin-bottom:0.5rem;">⚠️</div>
+            <h2 style="color:#EF4444; font-size:1.1rem; margin-bottom:0.5rem;">
+                Cuenta no vinculada a un perfil docente
+            </h2>
+            <p style="color:#b91c1c; font-size:0.9rem; line-height:1.6;">
+                Tu usuario tiene el rol <strong>Docente</strong> pero aún no está registrado
+                como docente en el sistema. No puedes registrar ni ver calificaciones hasta
+                que un administrador complete tu perfil.<br><br>
+                Comunícate con el administrador para que vincule tu cuenta en el módulo
+                <strong>Docentes</strong>.
+            </p>
+        </div>
+
+        {% else %}
         <!-- STATS RÁPIDAS -->
         <div class="stats-grid">
             <div class="stat-card">
@@ -107,7 +133,7 @@
         <p style="color: var(--doc-muted); margin-bottom: 2rem;">No tienes materias asignadas aún.</p>
         {% endif %}
 
-<!-- HORARIO -->
+        <!-- HORARIO -->
         <div class="section-title">🕐 Mi Horario</div>
         {% if horarios %}
         <div class="horario-grid">
@@ -183,6 +209,7 @@
                 📋 Ver Todas las Calificaciones
             </a>
         </div>
+        {% endif %}
 
     </main>
 </div>

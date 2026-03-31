@@ -3,10 +3,6 @@
 
 {% block title %}Eliminar Calificación - AulaTec{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/admin.css' %}">
-{% endblock %}
-
 {% block content %}
 <div class="wrapper">
 
@@ -20,8 +16,8 @@
             <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
             <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
             <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
-            <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
             <li><a href="{% url 'gestion_aulatec:calificacion_list' %}" class="active">📝 Calificaciones</a></li>
+            <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
         </ul>
     </aside>
     {% endif %}
@@ -49,7 +45,7 @@
             <form method="post">
                 {% csrf_token %}
                 <div class="form-actions">
-                    <button type="submit" class="btn btn--danger">🗑️ Sí, eliminar</button>
+                    <button type="submit" class="btn btn--danger">Sí, eliminar</button>
                     <a href="{% url 'gestion_aulatec:calificacion_list' %}" class="btn btn--secondary">Cancelar</a>
                 </div>
             </form>

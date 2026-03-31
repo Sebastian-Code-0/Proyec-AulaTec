@@ -5,10 +5,6 @@
     {% if object %}Editar Calificación{% else %}Nueva Calificación{% endif %} - AulaTec
 {% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/admin.css' %}">
-{% endblock %}
-
 {% block content %}
 <div class="wrapper">
 
@@ -22,8 +18,8 @@
             <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
             <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
             <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
-            <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
             <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
+            <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
         </ul>
     </aside>
     {% endif %}

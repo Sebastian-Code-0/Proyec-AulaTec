@@ -1,0 +1,308 @@
+/* -------------------- BOTONES -------------------- */
+.btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+.btn--primary {
+    background: var(--adm-primary);
+    color: #fff;
+}
+.btn--primary:hover { background: var(--adm-primary-dark); }
+
+.btn--secondary {
+    background: var(--adm-card2);
+    color: var(--adm-muted);
+    border: 1px solid var(--adm-border);
+}
+.btn--secondary:hover { background: var(--adm-border); color: var(--adm-text); }
+
+.btn--danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #EF4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.btn--danger:hover { background: rgba(239, 68, 68, 0.25); }
+
+/* -------------------- PAGE HEADER -------------------- */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+.page-header h1 {
+    font-size: 1.6rem;
+    color: var(--adm-primary-light);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* -------------------- MENSAJES -------------------- */
+.messages {
+    list-style: none;
+    margin-bottom: 1rem;
+}
+.messages li {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+.messages .success { background: rgba(16, 185, 129, 0.15); color: #10B981; }
+.messages .error   { background: rgba(239, 68, 68, 0.15);  color: #EF4444; }
+.messages .info    { background: rgba(6, 182, 212, 0.15);   color: #06B6D4; }
+.messages .warning { background: rgba(245, 158, 11, 0.15);  color: #F59E0B; }
+
+/* -------------------- TABLAS -------------------- */
+.table-container {
+    background: var(--adm-card);
+    border-radius: 12px;
+    box-shadow: var(--adm-shadow);
+    overflow: hidden;
+    border: 1px solid var(--adm-border);
+}
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.table thead th {
+    padding: 0.85rem 1.2rem;
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--adm-muted);
+    background: var(--adm-card2);
+    border-bottom: 1px solid var(--adm-border);
+}
+.table tbody td {
+    padding: 0.9rem 1.2rem;
+    border-bottom: 1px solid var(--adm-border);
+    font-size: 0.9rem;
+    color: var(--adm-text);
+}
+.table tbody tr:last-child td { border-bottom: none; }
+.table tbody tr:hover { background: var(--adm-card2); }
+.table .actions { display: flex; gap: 0.5rem; align-items: center; }
+
+/* -------------------- FORMULARIOS -------------------- */
+.form-container {
+    background: var(--adm-card);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--adm-shadow);
+    border: 1px solid var(--adm-border);
+    max-width: 700px;
+}
+.form-group {
+    margin-bottom: 1.2rem;
+}
+.form-group label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--adm-text);
+    margin-bottom: 0.4rem;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--adm-border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--adm-text);
+    background: var(--adm-card2);
+    transition: border-color 0.2s;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--adm-primary);
+    box-shadow: 0 0 0 3px rgba(125, 60, 255, 0.15);
+}
+.form-group .errorlist {
+    list-style: none;
+    margin-top: 0.3rem;
+    color: #EF4444;
+    font-size: 0.8rem;
+}
+.form-group .help-text {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.8rem;
+    color: var(--adm-muted);
+}
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+/* -------------------- CONFIRM DELETE -------------------- */
+.alert {
+    padding: 1rem 1.2rem;
+    border-radius: 8px;
+    margin-bottom: 1.2rem;
+}
+.alert--danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #EF4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.detail-card {
+    background: var(--adm-card2);
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.detail-card p {
+    padding: 0.4rem 0;
+    font-size: 0.9rem;
+    color: var(--adm-text);
+    border-bottom: 1px solid var(--adm-border);
+}
+.detail-card p:last-child { border-bottom: none; }
+
+/* -------------------- FILTROS -------------------- */
+.filtros-form {
+    background: var(--adm-card);
+    border: 1px solid var(--adm-border);
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.filtros-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+}
+.filtro-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 180px;
+    flex: 1;
+}
+.filtro-group label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--adm-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.filtro-group select {
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--adm-border);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: var(--adm-text);
+    background: var(--adm-card2);
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+.filtro-group select:focus {
+    outline: none;
+    border-color: var(--adm-primary);
+}
+.filtro-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    padding-bottom: 1px;
+}
+
+/* -------------------- MODAL -------------------- */
+.modal-overlay {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+}
+.modal-content {
+    background: var(--adm-card);
+    border: 1px solid var(--adm-border);
+    border-left: 4px solid #EF4444;
+    border-radius: 12px;
+    width: 90%; max-width: 480px;
+    box-shadow: var(--adm-shadow);
+}
+.modal-header {
+    display: flex; justify-content: space-between;
+    align-items: center; padding: 1.5rem 1.5rem 0;
+}
+.modal-header h3 { color: #EF4444; font-size: 1.2rem; margin: 0; }
+.close-modal {
+    cursor: pointer; color: var(--adm-muted);
+    background: none; border: none;
+    font-size: 1.4rem; line-height: 1;
+}
+.close-modal:hover { color: var(--adm-text); }
+.modal-body { padding: 1.5rem; text-align: center; }
+.modal-body .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.modal-body p { color: var(--adm-text); margin-bottom: 0.75rem; }
+.warning-text {
+    color: #EF4444; font-weight: 500;
+    padding: 0.6rem 0.9rem;
+    background: rgba(239,68,68,0.1);
+    border-radius: 8px;
+    border-left: 3px solid #EF4444;
+    font-size: 0.875rem;
+}
+.modal-footer {
+    padding: 0 1.5rem 1.5rem;
+    display: flex; gap: 1rem; justify-content: center;
+}
+.btn-delete {
+    background: #EF4444; color: #fff;
+    padding: 10px 24px; border-radius: 8px;
+    border: none; cursor: pointer; font-weight: 500;
+}
+.btn-delete:hover { background: #DC2626; }
+.btn-cancel {
+    background: transparent;
+    border: 1px solid var(--adm-border);
+    color: var(--adm-muted);
+    padding: 10px 24px; border-radius: 8px;
+    cursor: pointer; font-weight: 500;
+}
+.btn-cancel:hover { background: var(--adm-card2); color: var(--adm-text); }
+
+/* -------------------- BÚSQUEDA -------------------- */
+.search-form {
+    display: flex; gap: 0.5rem;
+    flex-wrap: wrap; margin-bottom: 1.5rem;
+}
+.search-form input[type="text"] {
+    flex: 1; min-width: 200px;
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--adm-border);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: var(--adm-text);
+    background: var(--adm-card2);
+}
+.search-form input[type="text"]:focus {
+    outline: none;
+    border-color: var(--adm-primary);
+}
+.empty-msg {
+    color: var(--adm-muted);
+    font-style: italic;
+    padding: 2rem 0;
+}
+.no-assigned { color: var(--adm-muted); font-style: italic; }

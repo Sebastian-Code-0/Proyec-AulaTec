@@ -3,14 +3,8 @@
 
 {% block title %}AulaTec{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/grados.css' %}">
-{% endblock %}
-
 {% block content %}
-
 <div class="wrapper">
-    <!-- Sidebar (idéntico al resto del panel) -->
     <aside class="sidebar">
         <ul class="menu">
             <li><a href="{% url 'gestion_aulatec:admin_dashboard' %}">Resumen</a></li>
@@ -26,67 +20,56 @@
     </aside>
 
     <main class="content">
-        <div class="grades-page">
-            <section class="welcome">
-                <h1>Grados Registrados</h1>
-                <p>
-                    <a href="{% url 'gestion_aulatec:grado_create' %}"
-                       class="btn btn-primary">
-                        Crear Nuevo Grado
-                    </a>
-                    <!--<a href="{% url 'gestion_aulatec:usuario_list' %}"
-                       class="btn btn-outline">
-                        Ir a Usuarios
-                    </a>-->
-                </p>
-            </section>
+        <div class="page-header">
+            <h1>🎓 Grados Registrados</h1>
+            <a href="{% url 'gestion_aulatec:grado_create' %}" class="btn btn--primary">+ Crear Grado</a>
+        </div>
 
-            {% if grados %}     
-            <section class="table-wrapper">
-                <table class="styled-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Grado</th>
-                            <th>Curso</th>
-                            <th>Nro. Estudiantes</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for grado in grados %}
-                        <tr>
-                            <td>{{ grado.IdGrado }}</td>
-                            <td>{{ grado.NumGrado }}</td>
-                            <td>{{ grado.NumCurso }}</td>
-                            <td>{{ grado.NumEstudiantes }}</td>
-                            <td class="actions">
-                                <a href="{% url 'gestion_aulatec:grado_update' pk=grado.IdGrado %}"
-                                class="action-link edit">Editar</a>
-                                <button type="button" 
-                                        class="action-link delete delete-btn"
-                                        data-grado-id="{{ grado.IdGrado }}"
-                                        data-grado-name="{{ grado.NumGrado }}{{ grado.NumCurso|default:'' }}"
-                                        data-delete-url="{% url 'gestion_aulatec:grado_delete' pk=grado.IdGrado %}">
-                                    Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </section>
-            {% else %}
-            <p class="empty-msg">No hay grados registrados aún.</p>
-            {% endif %}
+        {% if grados %}
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Grado</th>
+                        <th>Curso</th>
+                        <th>Nro. Estudiantes</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for grado in grados %}
+                    <tr>
+                        <td>{{ grado.IdGrado }}</td>
+                        <td>{{ grado.NumGrado }}</td>
+                        <td>{{ grado.NumCurso }}</td>
+                        <td>{{ grado.NumEstudiantes }}</td>
+                        <td class="actions">
+                            <a href="{% url 'gestion_aulatec:grado_update' pk=grado.IdGrado %}"
+                               class="btn btn--secondary">Editar</a>
+                            <button type="button"
+                                    class="btn btn--danger delete-btn"
+                                    data-grado-id="{{ grado.IdGrado }}"
+                                    data-grado-name="{{ grado.NumGrado }}{{ grado.NumCurso|default:'' }}"
+                                    data-delete-url="{% url 'gestion_aulatec:grado_delete' pk=grado.IdGrado %}">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="empty-msg">No hay grados registrados aún.</p>
+        {% endif %}
 
-            <div class="nav-bottom">
-                <a href="{% url 'gestion_aulatec:admin_dashboard' %}"
-                   class="btn btn-outline">Volver al inicio</a>
-            </div>
-        </div><!-- /.grades-page -->
+        <div class="form-actions">
+            <a href="{% url 'gestion_aulatec:admin_dashboard' %}" class="btn btn--secondary">Volver al inicio</a>
+        </div>
     </main>
 </div>
+
 <!-- Modal de Confirmación para Grados -->
 <div id="deleteModal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
