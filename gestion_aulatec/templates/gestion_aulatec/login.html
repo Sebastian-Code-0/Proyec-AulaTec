@@ -4,40 +4,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}AulaTec{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <title>AulaTec — Iniciar Sesión</title>
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
-<body>
+<body class="login-body">
+
+  <!-- Partículas de fondo -->
+  <div class="particles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+  </div>
+
   <section class="login-page">
+
+    <!-- Columna izquierda: marca -->
     <div class="login-left">
-      <a href="{% url 'gestion_aulatec:home' %}">
-        <img src="{% static 'img/aula_tec_logo.png' %}" alt="AulaTec">
+      <a href="{% url 'gestion_aulatec:home' %}" class="brand-link">
+        <img src="{% static 'img/aula_tec_logo.png' %}" alt="AulaTec" class="brand-logo">
       </a>
-        <p class="description">
-        Transformamos la educación con tecnología, innovación y pasión por enseñar.
+      <p class="brand-desc">
+        Transformamos la educación con tecnología,<br>innovación y pasión por enseñar.
       </p>
-    </div>
-    <div class="login-right">
-      <form method="post" class="login-form">
-        {% csrf_token %}
-        {% if messages %}
-          <ul class="messages">
-            {% for message in messages %}
-              <li class="{{ message.tags }}">{{ message }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn--primary full">Iniciar Sesión</button>
-      </form>
-      <div class="extra-links">
-        <hr class="divider">
-        <p><a href="{% url 'gestion_aulatec:home' %}">Volver al Inicio</a></p>
-        <a href="{% url 'gestion_aulatec:usuario_create' %}"
-                class="btn btn-primary">Crear Nuevo Usuario</a>
+      <div class="brand-badges">
+        <span class="badge-item">🎓 Gestión académica</span>
+        <span class="badge-item">🔒 Acceso seguro</span>
+        <span class="badge-item">📊 Datos en tiempo real</span>
       </div>
     </div>
+
+    <!-- Columna derecha: formulario -->
+    <div class="login-right">
+      <div class="login-card">
+        <div class="login-card__header">
+          <div class="login-icon">🔐</div>
+          <h1>Iniciar Sesión</h1>
+          <p>Ingresa tus credenciales para continuar</p>
+        </div>
+
+        {% if messages %}
+        <ul class="login-messages">
+          {% for message in messages %}
+          <li class="login-msg login-msg--{{ message.tags }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+
+        <form method="post" class="login-form" novalidate>
+          {% csrf_token %}
+
+          <div class="field-group">
+            <label for="id_NumId">Número de identificación</label>
+            <div class="input-wrap">
+              <span class="input-icon">👤</span>
+              {{ form.NumId }}
+            </div>
+            {% if form.NumId.errors %}
+            <span class="field-error">{{ form.NumId.errors.0 }}</span>
+            {% endif %}
+          </div>
+
+          <div class="field-group">
+            <label for="id_password">Contraseña</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔑</span>
+              {{ form.password }}
+              <button type="button" class="eye-btn" id="togglePassword" aria-label="Mostrar/ocultar contraseña">
+                <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+            {% if form.password.errors %}
+            <span class="field-error">{{ form.password.errors.0 }}</span>
+            {% endif %}
+          </div>
+
+          <button type="submit" class="btn-login">
+            <span>Iniciar Sesión</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </form>
+
+        <div class="login-footer">
+          <a href="{% url 'gestion_aulatec:home' %}" class="back-link">← Volver al inicio</a>
+          {# <a href="{% url 'gestion_aulatec:usuario_create' %}" class="create-link">Crear Nuevo Usuario</a> #}
+        </div>
+      </div>
+    </div>
+
   </section>
+
+  <script>
+    const toggleBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('id_password');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    const eyeOpen = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+    const eyeClosed = `<line x1="1" y1="1" x2="23" y2="23"/>
+      <path d="M10.58 10.58A2 2 0 0 0 9.88 12a2 2 0 0 0 2 2 2 2 0 0 0 1.42-.59"/>
+      <path d="M6.35 6.35A9.07 9.07 0 0 0 1 12s4 8 11 8c2.12 0 4.07-.74 5.65-1.94"/>
+      <path d="M17.65 17.65A9.07 9.07 0 0 0 23 12s-4-8-11-8c-.47 0-.93.04-1.38.1"/>`;
+
+    toggleBtn.addEventListener('click', function () {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      eyeIcon.innerHTML = isPassword ? eyeClosed : eyeOpen;
+    });
+  </script>
 </body>
 </html>

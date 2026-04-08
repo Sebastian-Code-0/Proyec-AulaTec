@@ -6,6 +6,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin #
 from django.views.generic import ListView
 
 from gestion_aulatec.models import Usuario,Docente,Estudiante
+from gestion_aulatec.models.matricula import Matricula
+from gestion_aulatec.models.grado import Grado
 from gestion_aulatec.forms import LoginForm
 
 #Vistas de Autenticación(Login)
@@ -21,7 +23,7 @@ def login_view(request):
             user = authenticate(request,username=NumId, password=password)
             if user is not None:
                 login(request, user) #Iniciar Sesión del usuario
-                messages.success(request, f'Bienvenido!')
+                # messages.success(request, f'Bienvenido!')
                 #redireccionamiento depende del rol
                 if user.Rol == 'Administrador':
                     return redirect('gestion_aulatec:admin_dashboard')#una url para el menu de administradores
@@ -180,4 +182,10 @@ class EstudianteDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView)
 
         return context
 def home_view(request):
-    return render(request,'gestion_aulatec/home.html')
+    context = {
+        'total_estudiantes': Estudiante.objects.count(),
+        'total_docentes': Docente.objects.count(),
+        'total_matriculas': Matricula.objects.count(),
+        'total_grados': Grado.objects.count(),
+    }
+    return render(request, 'gestion_aulatec/home.html', context)

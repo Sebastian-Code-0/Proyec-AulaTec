@@ -1,60 +1,318 @@
-{% extends "gestion_aulatec/base0.html" %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AulaTec - Plataforma Educativa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
 
-{% block title %}AulaTec - Inicio{% endblock %}
+<!-- NAVBAR -->
+<header class="navbar" id="navbar">
+    <div class="navbar__logo">
+        <a href="{% url 'gestion_aulatec:home' %}">
+            <img src="{% static 'img/aula_tec_logo.png' %}" alt="AulaTec" height="32">
+        </a>
+    </div>
+    <ul class="navbar__links">
+        <li><a href="{% url 'gestion_aulatec:home' %}">Inicio</a></li>
+        <li><a href="#">Cursos</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Contacto</a></li>
+    </ul>
+    <div class="navbar__actions">
+        {% if request.user.is_authenticated %}
+        <span class="navbar__user">{{ request.user.Nombres }}</span>
+        <a href="{% url 'gestion_aulatec:logout' %}" class="btn--outline-white">Salir</a>
+        {% else %}
+        <a href="{% url 'gestion_aulatec:login' %}" class="btn--primary">Ingresar</a>
+        {% endif %}
+    </div>
+    <button class="navbar__toggle" id="menu-toggle" aria-label="Abrir menú">&#9776;</button>
+    <div class="navbar__mobile" id="mobile-menu">
+        <ul>
+            <li><a href="{% url 'gestion_aulatec:home' %}">Inicio</a></li>
+            <li><a href="#">Cursos</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Contacto</a></li>
+        </ul>
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'gestion_aulatec:logout' %}" class="btn--primary">Salir</a>
+        {% else %}
+        <a href="{% url 'gestion_aulatec:login' %}" class="btn--primary">Ingresar</a>
+        {% endif %}
+    </div>
+</header>
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
-{% endblock %}
-
-{% block content %}
+<!-- HERO -->
 <section class="hero">
     <video autoplay muted loop playsinline>
         <source src="{% static 'mp4/185023-874465595.mp4' %}" type="video/mp4">
-        Tu navegador no soporta video.
     </video>
-    <div class="overlay"></div>
-    <div class="hero-content" id="hero-content">
-        <h1>Bienvenido a AulaTec</h1>
-        <p>Transformamos la educación con tecnología e innovación digital.</p>
-        <a href="#info" class="btn">Descubrir más</a>
-    </div>  
-</section>
-<main class="container">
-    <section class="highlights appear" id="highlights">
-        <span id="info"></span> <!-- sirve como ancla para que se pueda lograr el scroll del boton descubrir mas -->
-        <h2 class="section-title">Proyectos destacados</h2>
-        <div class="card-grid futuristic">
-            <article class="card">
-                <img src="{% static 'img/card-1.jpeg' %}" alt="">
-                <div class="card__body">
-                    <h3>Aula de Innovación</h3>
-                    <p>Descubre cómo nuestros estudiantes aplican tecnología en proyectos reales.</p>
-                    <a href="#" class="btn btn--secondary">Ver más</a>
-                </div>
-            </article>
-            <article class="card">
-                <img src="{% static 'img/card-2.jpeg' %}" alt="">
-                <div class="card__body">
-                    <h3>Blog Estudiantil</h3>
-                    <p>Historias y artículos escritos por la comunidad académica.</p>
-                    <a href="#" class="btn btn--secondary">Explorar</a>
-                </div>
-            </article>
-            <article class="card">
-                <img src="{% static 'img/card-3.jpeg' %}" alt="">
-                <div class="card__body">
-                    <h3>Laboratorio Virtual</h3>
-                    <p>Accede a simuladores de física, química y más.</p>
-                    <a href="#" class="btn btn--secondary">Acceder</a>
-                </div>
-            </article>
+    <div class="hero__overlay"></div>
+    <div class="hero__content" id="hero-content">
+        <span class="hero__eyebrow">Plataforma Educativa</span>
+        <h1 class="hero__title">Gestión académica<br>para instituciones modernas</h1>
+        <p class="hero__sub">Estudiantes, docentes y administradores en un solo lugar.</p>
+        <div class="hero__actions">
+            <a href="{% url 'gestion_aulatec:login' %}" class="btn--primary">Ingresar al sistema</a>
+            <a href="#stats" class="btn--outline-white">Conocer más</a>
         </div>
-    </section>
-</main>
-{% endblock %}
+    </div>
+    <div class="hero__scroll">
+        <div class="hero__scroll-arrow"></div>
+    </div>
+</section>
 
-{% block extra_js %}
-<script src="{% static 'js/script_hero.js' %}"></script>
-<script src="{% static 'js/script_appear.js' %}"></script>
-{% endblock %}
+<!-- STATS -->
+<section class="stats appear" id="stats">
+    <div class="stats__container">
+        <p class="stats__label">AulaTec en números</p>
+        <h2 class="stats__title">Una comunidad que crece</h2>
+        <div class="stats__grid">
+            <div class="stat-card">
+                <span class="stat-card__number" data-target="{{ total_estudiantes }}">0</span>
+                <span class="stat-card__label">Estudiantes registrados</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-card__number" data-target="{{ total_docentes }}">0</span>
+                <span class="stat-card__label">Docentes activos</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-card__number" data-target="{{ total_matriculas }}">0</span>
+                <span class="stat-card__label">Matrículas procesadas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-card__number" data-target="{{ total_grados }}">0</span>
+                <span class="stat-card__label">Grados académicos</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES ALTERNADAS -->
+<section class="features">
+    <div class="features__container">
+
+        <div class="feature appear">
+            <div class="feature__text">
+                <span class="feature__tag">Administradores</span>
+                <h2 class="feature__title">Control total de tu institución</h2>
+                <p class="feature__desc">Gestiona usuarios, matrículas, horarios y calificaciones desde un panel centralizado con navegación intuitiva.</p>
+            </div>
+            <div class="feature__illustration">
+                <svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" width="100%">
+                    <rect width="280" height="200" rx="12" fill="#0f172a"/>
+                    <rect x="0" y="0" width="70" height="200" rx="8" fill="#1e293b"/>
+                    <rect x="8" y="20" width="54" height="8" rx="4" fill="#7d3cff" opacity="0.8"/>
+                    <rect x="8" y="38" width="54" height="6" rx="3" fill="#334155"/>
+                    <rect x="8" y="52" width="54" height="6" rx="3" fill="#334155"/>
+                    <rect x="8" y="66" width="54" height="6" rx="3" fill="#334155"/>
+                    <rect x="8" y="80" width="54" height="6" rx="3" fill="#334155"/>
+                    <rect x="80" y="16" width="90" height="36" rx="8" fill="#1e293b"/>
+                    <rect x="88" y="24" width="30" height="6" rx="3" fill="#a78bfa"/>
+                    <rect x="88" y="34" width="50" height="4" rx="2" fill="#334155"/>
+                    <rect x="180" y="16" width="90" height="36" rx="8" fill="#1e293b"/>
+                    <rect x="188" y="24" width="30" height="6" rx="3" fill="#10b981"/>
+                    <rect x="188" y="34" width="50" height="4" rx="2" fill="#334155"/>
+                    <rect x="80" y="62" width="190" height="120" rx="8" fill="#1e293b"/>
+                    <rect x="88" y="72" width="174" height="8" rx="2" fill="#334155"/>
+                    <rect x="88" y="88" width="174" height="6" rx="2" fill="#1e3a5f"/>
+                    <rect x="88" y="102" width="174" height="6" rx="2" fill="#1e293b"/>
+                    <rect x="88" y="116" width="174" height="6" rx="2" fill="#1e3a5f"/>
+                    <rect x="88" y="130" width="174" height="6" rx="2" fill="#1e293b"/>
+                    <rect x="88" y="144" width="60" height="20" rx="6" fill="#7d3cff" opacity="0.7"/>
+                    <rect x="156" y="144" width="60" height="20" rx="6" fill="#334155"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="feature reverse appear">
+            <div class="feature__text">
+                <span class="feature__tag green">Docentes</span>
+                <h2 class="feature__title">Calificaciones en segundos</h2>
+                <p class="feature__desc">Registra notas por período y gestiona tus materias. El sistema filtra automáticamente solo tus estudiantes.</p>
+            </div>
+            <div class="feature__illustration">
+                <svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" width="100%">
+                    <rect width="280" height="200" rx="12" fill="#0f1f0f"/>
+                    <rect x="0" y="0" width="70" height="200" rx="8" fill="#0d2818"/>
+                    <rect x="8" y="20" width="54" height="8" rx="4" fill="#10b981" opacity="0.9"/>
+                    <rect x="8" y="38" width="54" height="6" rx="3" fill="#1a3a2a"/>
+                    <rect x="8" y="52" width="54" height="6" rx="3" fill="#1a3a2a"/>
+                    <rect x="80" y="16" width="190" height="50" rx="8" fill="#0d2818"/>
+                    <rect x="88" y="24" width="120" height="8" rx="4" fill="#10b981"/>
+                    <rect x="88" y="38" width="80" height="6" rx="3" fill="#1a3a2a"/>
+                    <rect x="80" y="76" width="190" height="110" rx="8" fill="#0d2818"/>
+                    <rect x="88" y="86" width="60" height="6" rx="3" fill="#1a3a2a"/>
+                    <rect x="156" y="86" width="40" height="6" rx="3" fill="#1a3a2a"/>
+                    <rect x="204" y="86" width="40" height="6" rx="3" fill="#1a3a2a"/>
+                    <rect x="88" y="100" width="60" height="20" rx="4" fill="#0f2a1f"/>
+                    <text x="118" y="114" font-size="10" fill="#10b981" text-anchor="middle">8.5</text>
+                    <rect x="156" y="100" width="40" height="20" rx="4" fill="#0f2a1f"/>
+                    <text x="176" y="114" font-size="10" fill="#10b981" text-anchor="middle">7.0</text>
+                    <rect x="204" y="100" width="40" height="20" rx="4" fill="#0f2a1f"/>
+                    <text x="224" y="114" font-size="10" fill="#10b981" text-anchor="middle">9.2</text>
+                    <rect x="88" y="128" width="60" height="20" rx="4" fill="#0f2a1f"/>
+                    <text x="118" y="142" font-size="10" fill="#10b981" text-anchor="middle">6.8</text>
+                    <rect x="156" y="128" width="40" height="20" rx="4" fill="#0f2a1f"/>
+                    <text x="176" y="142" font-size="10" fill="#10b981" text-anchor="middle">8.1</text>
+                    <rect x="204" y="128" width="40" height="20" rx="4" fill="#0f2a1f"/>
+                    <text x="224" y="142" font-size="10" fill="#10b981" text-anchor="middle">7.5</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="feature appear">
+            <div class="feature__text">
+                <span class="feature__tag blue">Estudiantes</span>
+                <h2 class="feature__title">Consulta tu progreso académico</h2>
+                <p class="feature__desc">Accede a tus calificaciones por período y lleva el seguimiento de tu desempeño académico.</p>
+            </div>
+            <div class="feature__illustration">
+                <svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" width="100%">
+                    <rect width="280" height="200" rx="12" fill="#f8fafc"/>
+                    <rect x="20" y="20" width="240" height="50" rx="10" fill="#ede9fe"/>
+                    <circle cx="50" cy="45" r="18" fill="#7d3cff" opacity="0.15"/>
+                    <circle cx="50" cy="45" r="12" fill="#7d3cff" opacity="0.3"/>
+                    <rect x="76" y="32" width="80" height="8" rx="4" fill="#7d3cff" opacity="0.5"/>
+                    <rect x="76" y="46" width="50" height="6" rx="3" fill="#a78bfa" opacity="0.5"/>
+                    <rect x="20" y="82" width="112" height="50" rx="10" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
+                    <rect x="30" y="92" width="40" height="6" rx="3" fill="#94a3b8"/>
+                    <rect x="30" y="104" width="70" height="14" rx="4" fill="#7d3cff" opacity="0.15"/>
+                    <text x="65" y="115" font-size="12" fill="#7d3cff" text-anchor="middle" font-weight="600">8.2</text>
+                    <rect x="148" y="82" width="112" height="50" rx="10" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
+                    <rect x="158" y="92" width="40" height="6" rx="3" fill="#94a3b8"/>
+                    <rect x="158" y="104" width="70" height="14" rx="4" fill="#10b981" opacity="0.15"/>
+                    <text x="193" y="115" font-size="12" fill="#10b981" text-anchor="middle" font-weight="600">7.8</text>
+                    <rect x="20" y="144" width="240" height="40" rx="10" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
+                    <rect x="30" y="158" width="180" height="6" rx="3" fill="#e2e8f0"/>
+                    <rect x="30" y="158" width="130" height="6" rx="3" fill="#7d3cff" opacity="0.4"/>
+                    <text x="225" y="163" font-size="10" fill="#7d3cff" text-anchor="middle">72%</text>
+                </svg>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- FEATURES GRID -->
+<section class="pills appear">
+    <div class="pills__container">
+        <h2 class="pills__title">Todo lo que necesitas</h2>
+        <p class="pills__sub">Un sistema completo para la gestión académica</p>
+        <div class="pills__grid">
+            <div class="pill-card">
+                <div class="pill-card__icon">🗂️</div>
+                <p class="pill-card__title">Matrículas digitales</p>
+                <p class="pill-card__desc">Proceso completo de inscripción con datos del estudiante y acudiente en una sola transacción.</p>
+            </div>
+            <div class="pill-card">
+                <div class="pill-card__icon">🕐</div>
+                <p class="pill-card__title">Horarios automáticos</p>
+                <p class="pill-card__desc">Organiza clases por grado, materia, docente, día y hora sin conflictos.</p>
+            </div>
+            <div class="pill-card">
+                <div class="pill-card__icon">📝</div>
+                <p class="pill-card__title">Calificaciones por período</p>
+                <p class="pill-card__desc">Registra notas del 0 al 10 con promedios automáticos por materia y período.</p>
+            </div>
+            <div class="pill-card">
+                <div class="pill-card__icon">🔒</div>
+                <p class="pill-card__title">Acceso por roles</p>
+                <p class="pill-card__desc">Cada usuario ve solo lo que le corresponde. Seguridad server-side garantizada.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta appear">
+    <h2 class="cta__title">¿Listo para empezar?</h2>
+    <p class="cta__sub">Ingresa con tu cuenta y accede a tu panel personalizado.</p>
+    <a href="{% url 'gestion_aulatec:login' %}" class="btn--white">Ingresar al sistema</a>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer__container">
+        <div class="footer__brand">
+            <span class="footer__logo">AulaTec</span>
+            <p>Transformamos la educación con tecnología e innovación digital.</p>
+        </div>
+        <div class="footer__col">
+            <h4>Plataforma</h4>
+            <ul>
+                <li><a href="{% url 'gestion_aulatec:home' %}">Inicio</a></li>
+                <li><a href="#">Cursos</a></li>
+                <li><a href="#">Blog</a></li>
+            </ul>
+        </div>
+        <div class="footer__col">
+            <h4>Contacto</h4>
+            <ul>
+                <li>📍 Bogotá, Colombia</li>
+                <li>📧 contacto@aulatec.com</li>
+                <li>📞 +57 300 123 4567</li>
+            </ul>
+        </div>
+        <div class="footer__col">
+            <h4>Síguenos</h4>
+            <ul>
+                <li><a href="#">Facebook</a></li>
+                <li><a href="#">Instagram</a></li>
+                <li><a href="#">LinkedIn</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer__bottom">
+        <p>&copy; 2026 AulaTec. Todos los derechos reservados.</p>
+    </div>
+</footer>
+
+<script src="{% static 'js/menu.js' %}"></script>
+<script>
+// Navbar glassmorphism al scroll
+window.addEventListener('scroll', () => {
+    const navbar = document.getElementById('navbar');
+    if (window.scrollY > 40) navbar.classList.add('scrolled');
+    else navbar.classList.remove('scrolled');
+});
+
+// Animación appear al entrar en viewport
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+}, { threshold: 0.15 });
+document.querySelectorAll('.appear').forEach(el => observer.observe(el));
+
+// Contador animado para stats
+function animateCount(el) {
+    const target = parseInt(el.getAttribute('data-target')) || 0;
+    if (target === 0) { el.textContent = '0'; return; }
+    const duration = 1800;
+    const step = target / (duration / 16);
+    let current = 0;
+    const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { el.textContent = target; clearInterval(timer); }
+        else { el.textContent = Math.floor(current); }
+    }, 16);
+}
+const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.querySelectorAll('.stat-card__number').forEach(animateCount);
+            statsObserver.unobserve(e.target);
+        }
+    });
+}, { threshold: 0.3 });
+const statsSection = document.querySelector('.stats');
+if (statsSection) statsObserver.observe(statsSection);
+</script>
+</body>
+</html>
