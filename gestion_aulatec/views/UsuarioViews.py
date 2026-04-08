@@ -2,6 +2,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin 
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View, DetailView
+from django.contrib.auth.views import PasswordChangeView
 import random 
 import string
 from django.contrib import messages
@@ -22,7 +23,6 @@ class UsuarioListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         messages.error(self.request, 'No tienes permiso para acceder a la gestión de usuarios.')
         return redirect('gestion_aulatec:home') # O la página de login
     
-# Crear (Agregar un nuevo usuario)
 class UsuarioCreateView(CreateView):
     model = Usuario
     form_class = UsuarioForm
@@ -31,12 +31,52 @@ class UsuarioCreateView(CreateView):
 
     def form_valid(self, form):
         usuario = form.save(commit=False)
-        # Usa el campo 'password' del formulario para hashear
-        usuario.set_password(form.cleaned_data['password'])
+        
+        # 1. Capturamos los datos directamente del cleaned_data (Más seguro)
+        password_plana = form.cleaned_data.get('password')
+        correo_destino = form.cleaned_data.get('Email') # Verifica si en tu form es 'Email' o 'email'
+        
+        # 2. Enviamos el correo (usando la variable segura)
+        try:
+            asunto = "Bienvenido a AulaTec - Credenciales de Docente"
+            mensaje = f"""
+            Hola {usuario.Nombres},
+            
+            Se ha creado tu cuenta de docente en la plataforma AulaTec.
+            
+            Tus credenciales de acceso son:
+            Usuario (Documento): {usuario.NumId}
+            Contraseña: {password_plana}
+            
+            Puedes ingresar aquí: http://127.0.0.1:8000/login/
+            """
+            
+            from django.core.mail import send_mail
+            from django.conf import settings
+            
+            if correo_destino:
+                send_mail(
+                    asunto,
+                    mensaje,
+                    settings.EMAIL_HOST_USER,
+                    [correo_destino],
+                    fail_silently=False,
+                )
+            else:
+                print("DEBUG: No se encontró correo en cleaned_data")
+                
+        except Exception as e:
+            print(f"DEBUG Error enviando correo: {e}")
+            messages.warning(self.request, 'Usuario creado, pero hubo un error con el correo.')
+
+        # 3. Hasheamos y quitamos el cambio obligatorio
+        usuario.set_password(password_plana)
+        usuario.debe_cambiar_password = False 
         usuario.save()
-        messages.success(self.request, 'Usuario registrado con éxito. Ya puedes iniciar sesión.')
-        return super().form_valid(form) # Llama al método original para manejar la redirección, etc.
-    
+        
+        messages.success(self.request, f'Docente registrado con éxito. Notificación enviada.')
+        
+        return super().form_valid(form)
     def form_invalid(self, form):
         print("Errores del formulario:", form.errors)   
         return super().form_invalid(form)
@@ -66,4 +106,21 @@ class UsuarioDeleteView(DeleteView):
     # Opcional: Personalizar el objeto que se mostrará en el template
     context_object_name = 'usuario' # Para que en el template puedas usar {{ usuario.Nombres }}
 
-#oragnizamos el proyecto
+class CambiarPasswordView(PasswordChangeView):
+    # Esta es la plantilla que crearemos en el siguiente paso
+    template_name = 'gestion_aulatec/cambiar_password.html' 
+    
+    # A dónde lo manda cuando termine (ejemplo: al dashboard)
+    success_url = reverse_lazy('gestion_aulatec:estudiante_dashboard') 
+
+    def form_valid(self, form):
+        # OBTENEMOS AL USUARIO ACTUAL
+        user = self.request.user
+        
+        # APAGAMOS EL INTERRUPTOR DE CAMBIO OBLIGATORIO
+        user.debe_cambiar_password = False
+        user.save()
+        
+        messages.success(self.request, '¡Contraseña actualizada con éxito! Ya puedes navegar.')
+        return super().form_valid(form)
+

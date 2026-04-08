@@ -9,6 +9,8 @@ from django.contrib.auth.decorators import login_required
 import random
 import string
 
+from django.core.mail import send_mail
+from django.conf import settings
 from gestion_aulatec.forms import MatriculaForm
 from gestion_aulatec.models import Usuario,Estudiante,Matricula,Acudiente
 
@@ -51,6 +53,7 @@ class MatriculaCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
                         'Apellidos': form.cleaned_data['EstudianteApellidos'],
                         'Rol': 'Estudiante',
                         'Celular': form.cleaned_data['EstudianteCelular'],
+                        'Email': form.cleaned_data['EstudianteEmail'],
                     }
 
                     contrasena_estudiante = generar_contrasena_segura(12) 
@@ -63,9 +66,23 @@ class MatriculaCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
                     if created_eu:
                         estudiante_usuario.set_password(contrasena_estudiante)
                         estudiante_usuario.save()
-                    # Nota: si el usuario ya existe, no se actualiza la contraseña ni se guarda aquí.
-                    # Se asume que el usuario ya tiene una contraseña y sus datos ya están correctos.
-
+                        # --- ENVIAR CORREO --- 
+                        try:
+                            asunto = 'Bienvenido a Aulatec - Tus credenciales'
+                            mensaje = f'Hola {estudiante_usuario.Nombres},\n\n' \
+                                      f'Tu usuario es: {estudiante_usuario.NumId}\n' \
+                                      f'Tu contraseña es: {contrasena_estudiante}\n\n' \
+                                      f'Ingresa aquí: http://127.0.0.1:8000/login/'
+                            
+                            send_mail(
+                                asunto,
+                                mensaje,
+                                settings.EMAIL_HOST_USER,
+                                [estudiante_usuario.Email],
+                                fail_silently=False,
+                            )
+                        except Exception as e:
+                            print(f"Error al enviar correo: {e}")
                     # --- 2. Crear/Obtener el objeto Estudiante
                     estudiante, created_e = Estudiante.objects.get_or_create(
                         IdUsuario=estudiante_usuario,

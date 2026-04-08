@@ -9,6 +9,10 @@ class MatriculaForm(forms.ModelForm):
     # Los datos de estos campos se usarán para crear los objetos Usuario y Acudiente
     EstudianteNombres = forms.CharField(max_length=100, label="Nombres del estudiante")
     EstudianteApellidos = forms.CharField(max_length=100, label="Apellidos del estudiante")
+    EstudianteEmail = forms.EmailField(
+        label="Correo Electrónico",
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'ejemplo@correo.com'})
+    )
     EstudianteTipoId = forms.CharField(max_length=20, label="Tipo de documento")
     EstudianteNumId = forms.CharField(max_length=50, label="Número de documento")
     EstudianteCelular = forms.CharField(max_length=20, label="Teléfono de contacto del estudiante", required=False)

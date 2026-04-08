@@ -55,6 +55,12 @@ class UsuarioForm(forms.ModelForm):
         validators=[_solo_letras],
         widget=forms.TextInput(attrs={'placeholder': 'Solo letras y espacios'}),
     )
+    Email = forms.EmailField(
+        max_length=100,
+        required=True,
+        label='Correo Electrónico',
+        widget=forms.EmailInput(attrs={'placeholder': 'example@example.com'}),
+    )
     Rol = forms.ChoiceField(
         choices=ROL_CHOICES,
         label='Rol',

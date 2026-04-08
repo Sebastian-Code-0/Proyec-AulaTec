@@ -21,7 +21,7 @@ Thumbs.db
 # === Archivos sensibles ===
 *.log
 *.env
-.env.*
+.env
 
 # === Django ===
 db.sqlite3

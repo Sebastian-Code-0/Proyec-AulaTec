@@ -34,6 +34,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin): # Hereda de AbstractBaseUser 
     NumId = models.CharField(max_length=10, unique=True)
     Nombres = models.CharField(max_length=100)
     Apellidos = models.CharField(max_length=100)
+    Email = models.EmailField(max_length=255, unique=True) # El 'unique=True' es vital para que no se repitan
+    debe_cambiar_password = models.BooleanField(default=True)
     # Contrasena ya no se define aquí directamente, AbstractBaseUser la maneja
     Rol = models.CharField(max_length=50)
     Celular = models.CharField(max_length=20, blank=True, null=True)
