@@ -34,7 +34,7 @@ Si usas MySQL, importa el script que está en database/aulatec.sql.
 python manage.py runserver
 
 ## Autores
-- Kevin Valderrama
+- Kevin Andrés Valderrama Lozano
 - Sebastian Valencia
-- leidy
-- Alejandro
+- Leidy Alejandra Pechene Sanabria
+- Alejandro Ramírez Quiscue
