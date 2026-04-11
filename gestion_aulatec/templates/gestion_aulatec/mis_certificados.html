@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Certificados - AulaTec</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/dashboard_est.css' %}">
+    <link rel="stylesheet" href="{% static 'css/extras_docente.css' %}">
+</head>
+<body>
+<main style="max-width:900px;margin:3rem auto;padding:0 1rem;">
+    <div class="page-header">
+        <h1>📜 Mis Certificados</h1>
+        <a href="{% url 'gestion_aulatec:solicitar_certificado' %}" class="btn btn--primary">+ Solicitar Certificado</a>
+    </div>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if certificados %}
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Tipo</th>
+                    <th>Fecha Solicitud</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cert in certificados %}
+                <tr>
+                    <td><strong>{{ cert.codigo }}</strong></td>
+                    <td>{{ cert.tipo|title }}</td>
+                    <td>{{ cert.fecha_solicitud|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if cert.estado == 'pendiente' %}
+                        <span style="color:#F59E0B;font-weight:600;">● Pendiente</span>
+                        {% elif cert.estado == 'aprobado' %}
+                        <span style="color:#10B981;font-weight:600;">● Aprobado</span>
+                        {% elif cert.estado == 'rechazado' %}
+                        <span style="color:#EF4444;font-weight:600;">● Rechazado</span>
+                        {% else %}
+                        <span style="color:#6B7280;font-weight:600;">● {{ cert.estado|title }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        {% if cert.estado == 'aprobado' %}
+                        <a href="{% url 'gestion_aulatec:descargar_certificado_est' cert.IdCertificado %}" class="btn btn--primary">⬇ Descargar PDF</a>
+                        {% endif %}
+                        {% if cert.estado == 'rechazado' and cert.motivo_rechazo %}
+                        <span style="color:#EF4444;font-size:0.85rem;">{{ cert.motivo_rechazo }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty-msg">No tienes certificados todavía. ¡Solicita uno!</p>
+    {% endif %}
+</main>
+</body>
+</html>

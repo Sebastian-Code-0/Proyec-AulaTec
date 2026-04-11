@@ -1,12 +1,12 @@
 {% extends "gestion_aulatec/base_admin.html" %}
 {% load static %}
-{% block title %}{% if form.instance.pk %}Editar Usuario{% else %}Crear Usuario{% endif %} - AulaTec{% endblock %}
+{% block title %}Rechazar Certificado - AulaTec{% endblock %}
 {% block content %}
 <div class="wrapper">
     <aside class="sidebar">
         <ul class="menu">
             <li><a href="{% url 'gestion_aulatec:admin_dashboard' %}">🏠 Resumen</a></li>
-            <li><a href="{% url 'gestion_aulatec:usuario_list' %}" class="active">👤 Usuarios</a></li>
+            <li><a href="{% url 'gestion_aulatec:usuario_list' %}">👤 Usuarios</a></li>
             <li><a href="{% url 'gestion_aulatec:grado_list' %}">🎓 Grados</a></li>
             <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
             <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
@@ -14,30 +14,29 @@
             <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
             <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
             <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
-            <li><a href="{% url 'gestion_aulatec:admin_solicitudes' %}">📜 Certificados</a></li>
+            <li><a href="{% url 'gestion_aulatec:admin_solicitudes' %}" class="active">📜 Certificados</a></li>
         </ul>
     </aside>
     <main class="content">
         <div class="page-header">
-            <h1>{% if form.instance.pk %}Editar Usuario{% else %}Crear Nuevo Usuario{% endif %}</h1>
+            <h1>❌ Rechazar Certificado</h1>
+            <a href="{% url 'gestion_aulatec:admin_solicitudes' %}" class="btn btn--secondary">← Volver</a>
         </div>
         <div class="form-container">
+            <div class="detail-card">
+                <p><strong>Código:</strong> {{ certificado.codigo }}</p>
+                <p><strong>Estudiante:</strong> {{ certificado.IdEstudiante.IdUsuario.Nombres }} {{ certificado.IdEstudiante.IdUsuario.Apellidos }}</p>
+                <p><strong>Tipo:</strong> {{ certificado.tipo|title }}</p>
+            </div>
             <form method="post">
                 {% csrf_token %}
-                {% for field in form %}
                 <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                    <ul class="errorlist">
-                        {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
-                    </ul>
-                    {% endif %}
+                    <label>Motivo del rechazo</label>
+                    <textarea name="motivo_rechazo" rows="4" placeholder="Explica el motivo del rechazo..."></textarea>
                 </div>
-                {% endfor %}
                 <div class="form-actions">
-                    <button type="submit" class="btn btn--primary">Guardar</button>
-                    <a href="{% url 'gestion_aulatec:usuario_list' %}" class="btn btn--secondary">Cancelar</a>
+                    <button type="submit" class="btn btn--danger">❌ Confirmar Rechazo</button>
+                    <a href="{% url 'gestion_aulatec:admin_solicitudes' %}" class="btn btn--secondary">Cancelar</a>
                 </div>
             </form>
         </div>

@@ -13,3 +13,13 @@ from .calificacion_views import (
     CalificacionDeleteView,
     CalificacionEstudianteView
 )
+from .CertificadoViews import (
+    AdminSolicitudesView,
+    DetalleCertificadoAdminView,
+    AprobarCertificadoView,
+    RechazarCertificadoView,
+    DescargarCertificadoPDFView,
+    SolicitarCertificadoView,
+    MisCertificadosView,
+    DescargarCertificadoEstudianteView,
+)

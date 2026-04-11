@@ -23,7 +23,7 @@ class UsuarioListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         messages.error(self.request, 'No tienes permiso para acceder a la gestión de usuarios.')
         return redirect('gestion_aulatec:home') # O la página de login
     
-class UsuarioCreateView(CreateView):
+class UsuarioCreateView(LoginRequiredMixin, CreateView):
     model = Usuario
     form_class = UsuarioForm
     template_name = 'gestion_aulatec/usuario_form.html'
@@ -82,7 +82,7 @@ class UsuarioCreateView(CreateView):
         return super().form_invalid(form)
 
 # Actualizar (Editar un usuario existente)
-class UsuarioUpdateView(UpdateView):
+class UsuarioUpdateView(LoginRequiredMixin, UpdateView):
     model = Usuario
     form_class = UsuarioForm
     template_name = 'gestion_aulatec/usuario_form.html'
@@ -98,7 +98,7 @@ class UsuarioUpdateView(UpdateView):
         return redirect(self.success_url)
 
 # Eliminar (Borrar un usuario)
-class UsuarioDeleteView(DeleteView):
+class UsuarioDeleteView(LoginRequiredMixin, DeleteView):
     model = Usuario
     template_name = 'gestion_aulatec/usuario_confirm_delete.html'
     success_url = reverse_lazy('gestion_aulatec:usuario_list')  # Redirige a la lista de usuarios después de eliminar uno

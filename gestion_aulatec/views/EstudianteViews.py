@@ -1,6 +1,7 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View, DetailView
 from django.db.models import Q
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from gestion_aulatec.models import Estudiante
 from gestion_aulatec.forms import EstudianteForm
@@ -8,7 +9,7 @@ from gestion_aulatec.forms import EstudianteForm
 # --- Vistas para el CRUD de Estudiante ---
 
 # 1. Leer (Listar todos los Estudiantes) con filtro
-class EstudianteListView(ListView):
+class EstudianteListView(LoginRequiredMixin, ListView):
     model = Estudiante
     template_name = 'gestion_aulatec/estudiante_list.html' # Nueva plantilla
     context_object_name = 'estudiantes' # Nombre de la variable en la plantilla
@@ -32,21 +33,21 @@ class EstudianteListView(ListView):
         return queryset.order_by('IdUsuario__Nombres', 'IdUsuario__Apellidos') # Opcional: ordenar
 
 # 2. Crear un nuevo Estudiante
-class EstudianteCreateView(CreateView):
+class EstudianteCreateView(LoginRequiredMixin, CreateView):
     model = Estudiante
     form_class = EstudianteForm
     template_name = 'gestion_aulatec/estudiante_form.html' # Nueva plantilla
     success_url = reverse_lazy('gestion_aulatec:estudiante_list') # Redirige a la lista de estudiantes
 
 # 3. Actualizar un Estudiante existente
-class EstudianteUpdateView(UpdateView):
+class EstudianteUpdateView(LoginRequiredMixin, UpdateView):
     model = Estudiante
     form_class = EstudianteForm
     template_name = 'gestion_aulatec/estudiante_form.html' # Reusa la misma plantilla
     success_url = reverse_lazy('gestion_aulatec:estudiante_list')
 
 # 4. Eliminar un Estudiante
-class EstudianteDeleteView(DeleteView):
+class EstudianteDeleteView(LoginRequiredMixin, DeleteView):
     model = Estudiante
     template_name = 'gestion_aulatec/estudiante_confirm_delete.html' # Nueva plantilla
     success_url = reverse_lazy('gestion_aulatec:estudiante_list')

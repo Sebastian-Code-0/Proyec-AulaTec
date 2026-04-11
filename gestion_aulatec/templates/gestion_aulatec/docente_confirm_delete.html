@@ -1,15 +1,15 @@
 {% extends "gestion_aulatec/base_admin.html" %}
 {% load static %}
-{% block title %}{% if form.instance.pk %}Editar Usuario{% else %}Crear Usuario{% endif %} - AulaTec{% endblock %}
+{% block title %}Eliminar Docente - AulaTec{% endblock %}
 {% block content %}
 <div class="wrapper">
     <aside class="sidebar">
         <ul class="menu">
             <li><a href="{% url 'gestion_aulatec:admin_dashboard' %}">🏠 Resumen</a></li>
-            <li><a href="{% url 'gestion_aulatec:usuario_list' %}" class="active">👤 Usuarios</a></li>
+            <li><a href="{% url 'gestion_aulatec:usuario_list' %}">👤 Usuarios</a></li>
             <li><a href="{% url 'gestion_aulatec:grado_list' %}">🎓 Grados</a></li>
             <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
-            <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
+            <li><a href="{% url 'gestion_aulatec:docente_list' %}" class="active">👩‍🏫 Docentes</a></li>
             <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
             <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
             <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
@@ -19,25 +19,24 @@
     </aside>
     <main class="content">
         <div class="page-header">
-            <h1>{% if form.instance.pk %}Editar Usuario{% else %}Crear Nuevo Usuario{% endif %}</h1>
+            <h1>Eliminar Docente</h1>
+            <a href="{% url 'gestion_aulatec:docente_list' %}" class="btn btn--secondary">← Volver</a>
         </div>
         <div class="form-container">
+            <div class="alert alert--danger">
+                <p>¿Estás seguro de que deseas eliminar este docente?
+                <strong>Esta acción no se puede deshacer.</strong></p>
+            </div>
+            <div class="detail-card">
+                <p><strong>Nombre:</strong> {{ docente.IdUsuario.Nombres }} {{ docente.IdUsuario.Apellidos }}</p>
+                <p><strong>ID:</strong> {{ docente.IdDocente }}</p>
+                <p><strong>Usuario:</strong> {{ docente.IdUsuario.NumId }}</p>
+            </div>
             <form method="post">
                 {% csrf_token %}
-                {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                    <ul class="errorlist">
-                        {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
-                    </ul>
-                    {% endif %}
-                </div>
-                {% endfor %}
                 <div class="form-actions">
-                    <button type="submit" class="btn btn--primary">Guardar</button>
-                    <a href="{% url 'gestion_aulatec:usuario_list' %}" class="btn btn--secondary">Cancelar</a>
+                    <button type="submit" class="btn btn--danger">🗑️ Sí, eliminar</button>
+                    <a href="{% url 'gestion_aulatec:docente_list' %}" class="btn btn--secondary">Cancelar</a>
                 </div>
             </form>
         </div>

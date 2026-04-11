@@ -1,0 +1,59 @@
+{% extends "gestion_aulatec/base_admin.html" %}
+{% load static %}
+{% block title %}Detalle Certificado - AulaTec{% endblock %}
+{% block content %}
+<div class="wrapper">
+    <aside class="sidebar">
+        <ul class="menu">
+            <li><a href="{% url 'gestion_aulatec:admin_dashboard' %}">🏠 Resumen</a></li>
+            <li><a href="{% url 'gestion_aulatec:usuario_list' %}">👤 Usuarios</a></li>
+            <li><a href="{% url 'gestion_aulatec:grado_list' %}">🎓 Grados</a></li>
+            <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
+            <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
+            <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
+            <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
+            <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
+            <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
+            <li><a href="{% url 'gestion_aulatec:admin_solicitudes' %}" class="active">📜 Certificados</a></li>
+        </ul>
+    </aside>
+    <main class="content">
+        <div class="page-header">
+            <h1>📜 Detalle del Certificado</h1>
+            <a href="{% url 'gestion_aulatec:admin_solicitudes' %}" class="btn btn--secondary">← Volver</a>
+        </div>
+        <div class="form-container">
+            <div class="detail-card">
+                <p><strong>Código:</strong> {{ certificado.codigo }}</p>
+                <p><strong>Estudiante:</strong> {{ certificado.IdEstudiante.IdUsuario.Nombres }} {{ certificado.IdEstudiante.IdUsuario.Apellidos }}</p>
+                <p><strong>Documento:</strong> {{ certificado.IdEstudiante.IdUsuario.NumId }}</p>
+                <p><strong>Grado:</strong> {{ certificado.grado_estudiante }}</p>
+                <p><strong>Tipo:</strong> {{ certificado.tipo|title }}</p>
+                <p><strong>Estado:</strong> {{ certificado.estado|title }}</p>
+                <p><strong>Fecha solicitud:</strong> {{ certificado.fecha_solicitud|date:"d/m/Y H:i" }}</p>
+                {% if certificado.fecha_aprobacion %}
+                <p><strong>Fecha aprobación:</strong> {{ certificado.fecha_aprobacion|date:"d/m/Y H:i" }}</p>
+                {% endif %}
+                {% if certificado.aprobado_por %}
+                <p><strong>Aprobado por:</strong> {{ certificado.aprobado_por.Nombres }} {{ certificado.aprobado_por.Apellidos }}</p>
+                {% endif %}
+                {% if certificado.motivo_rechazo %}
+                <p><strong>Motivo rechazo:</strong> {{ certificado.motivo_rechazo }}</p>
+                {% endif %}
+                {% if certificado.observaciones %}
+                <p><strong>Observaciones:</strong> {{ certificado.observaciones }}</p>
+                {% endif %}
+            </div>
+            <div class="form-actions">
+                {% if certificado.estado == 'pendiente' %}
+                <a href="{% url 'gestion_aulatec:aprobar_certificado' certificado.IdCertificado %}" class="btn btn--primary">✅ Aprobar</a>
+                <a href="{% url 'gestion_aulatec:rechazar_certificado' certificado.IdCertificado %}" class="btn btn--danger">❌ Rechazar</a>
+                {% endif %}
+                {% if certificado.estado == 'aprobado' %}
+                <a href="{% url 'gestion_aulatec:descargar_certificado_admin' certificado.IdCertificado %}" class="btn btn--secondary">⬇ Descargar PDF</a>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

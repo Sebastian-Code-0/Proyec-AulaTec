@@ -15,5 +15,6 @@ urlpatterns = [
     path("matricula/", include("gestion_aulatec.urls.MatriculaUrls")),
     path("usuario/", include("gestion_aulatec.urls.UsuarioUrls")),
     path("login/", include("gestion_aulatec.urls.LoginUrls")),
-    path("calificaciones/", include("gestion_aulatec.urls.CalificacionUrls"))
+    path("calificaciones/", include("gestion_aulatec.urls.CalificacionUrls")),
+    path("certificados/", include("gestion_aulatec.urls.CertificadoUrls")),
 ]

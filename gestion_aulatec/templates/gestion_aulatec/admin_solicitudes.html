@@ -1,0 +1,102 @@
+{% extends "gestion_aulatec/base_admin.html" %}
+{% load static %}
+{% block title %}Solicitudes de Certificados - AulaTec{% endblock %}
+{% block content %}
+<div class="wrapper">
+    <aside class="sidebar">
+        <ul class="menu">
+            <li><a href="{% url 'gestion_aulatec:admin_dashboard' %}">🏠 Resumen</a></li>
+            <li><a href="{% url 'gestion_aulatec:usuario_list' %}">👤 Usuarios</a></li>
+            <li><a href="{% url 'gestion_aulatec:grado_list' %}">🎓 Grados</a></li>
+            <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
+            <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
+            <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
+            <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
+            <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
+            <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
+            <li><a href="{% url 'gestion_aulatec:admin_solicitudes' %}" class="active">📜 Certificados</a></li>
+        </ul>
+    </aside>
+    <main class="content">
+        <div class="page-header">
+            <h1>📜 Solicitudes de Certificados</h1>
+        </div>
+
+        <!-- Stats -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+            <div style="background:var(--adm-card);border:1px solid var(--adm-border);border-radius:12px;padding:1.25rem;text-align:center;">
+                <div style="font-size:1.75rem;font-weight:700;color:var(--adm-primary-light);">{{ pendientes }}</div>
+                <div style="font-size:0.8rem;color:var(--adm-muted);margin-top:4px;">Pendientes</div>
+            </div>
+            <div style="background:var(--adm-card);border:1px solid var(--adm-border);border-radius:12px;padding:1.25rem;text-align:center;">
+                <div style="font-size:1.75rem;font-weight:700;color:#10B981;">{{ aprobados }}</div>
+                <div style="font-size:0.8rem;color:var(--adm-muted);margin-top:4px;">Aprobados</div>
+            </div>
+            <div style="background:var(--adm-card);border:1px solid var(--adm-border);border-radius:12px;padding:1.25rem;text-align:center;">
+                <div style="font-size:1.75rem;font-weight:700;color:#EF4444;">{{ rechazados }}</div>
+                <div style="font-size:0.8rem;color:var(--adm-muted);margin-top:4px;">Rechazados</div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filtros-form" style="margin-bottom:1.5rem;">
+            <div class="filtros-grid">
+                <div class="filtro-actions">
+                    <a href="?estado=pendiente" class="btn {% if estado_filtro == 'pendiente' %}btn--primary{% else %}btn--secondary{% endif %}">Pendientes</a>
+                    <a href="?estado=aprobado"  class="btn {% if estado_filtro == 'aprobado'  %}btn--primary{% else %}btn--secondary{% endif %}">Aprobados</a>
+                    <a href="?estado=rechazado" class="btn {% if estado_filtro == 'rechazado' %}btn--primary{% else %}btn--secondary{% endif %}">Rechazados</a>
+                    <a href="?estado=todos"     class="btn {% if estado_filtro == 'todos'     %}btn--primary{% else %}btn--secondary{% endif %}">Todos</a>
+                </div>
+            </div>
+        </div>
+
+        {% if certificados %}
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Estudiante</th>
+                        <th>Tipo</th>
+                        <th>Fecha Solicitud</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cert in certificados %}
+                    <tr>
+                        <td><strong>{{ cert.codigo }}</strong></td>
+                        <td>{{ cert.IdEstudiante.IdUsuario.Nombres }} {{ cert.IdEstudiante.IdUsuario.Apellidos }}</td>
+                        <td>{{ cert.tipo|title }}</td>
+                        <td>{{ cert.fecha_solicitud|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if cert.estado == 'pendiente' %}
+                            <span style="color:#F59E0B;font-weight:600;">● Pendiente</span>
+                            {% elif cert.estado == 'aprobado' %}
+                            <span style="color:#10B981;font-weight:600;">● Aprobado</span>
+                            {% else %}
+                            <span style="color:#EF4444;font-weight:600;">● Rechazado</span>
+                            {% endif %}
+                        </td>
+                        <td class="actions">
+                            <a href="{% url 'gestion_aulatec:detalle_certificado_admin' cert.IdCertificado %}" class="btn btn--secondary">Ver</a>
+                            {% if cert.estado == 'pendiente' %}
+                            <a href="{% url 'gestion_aulatec:aprobar_certificado' cert.IdCertificado %}" class="btn btn--primary">Aprobar</a>
+                            <a href="{% url 'gestion_aulatec:rechazar_certificado' cert.IdCertificado %}" class="btn btn--danger">Rechazar</a>
+                            {% endif %}
+                            {% if cert.estado == 'aprobado' %}
+                            <a href="{% url 'gestion_aulatec:descargar_certificado_admin' cert.IdCertificado %}" class="btn btn--secondary">⬇ PDF</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="empty-msg">No hay certificados con estado "{{ estado_filtro }}".</p>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}

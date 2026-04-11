@@ -1,6 +1,6 @@
 {% extends "gestion_aulatec/base_admin.html" %}
 {% load static %}
-{% block title %}Confirmar Eliminación - AulaTec{% endblock %}
+{% block title %}Aprobar Certificado - AulaTec{% endblock %}
 {% block content %}
 <div class="wrapper">
     <aside class="sidebar">
@@ -13,30 +13,30 @@
             <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
             <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
             <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
-            <li><a href="{% url 'gestion_aulatec:matricula_list' %}" class="active">🗂️ Matrículas</a></li>
-            <li><a href="{% url 'gestion_aulatec:admin_solicitudes' %}">📜 Certificados</a></li>
+            <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
+            <li><a href="{% url 'gestion_aulatec:admin_solicitudes' %}" class="active">📜 Certificados</a></li>
         </ul>
     </aside>
     <main class="content">
         <div class="page-header">
-            <h1>Eliminar Matrícula</h1>
-            <a href="{% url 'gestion_aulatec:matricula_list' %}" class="btn btn--secondary">← Volver</a>
+            <h1>✅ Aprobar Certificado</h1>
+            <a href="{% url 'gestion_aulatec:admin_solicitudes' %}" class="btn btn--secondary">← Volver</a>
         </div>
         <div class="form-container">
-            <div class="alert alert--danger">
-                <p>¿Estás seguro de que deseas eliminar esta matrícula?
-                <strong>Esta acción no se puede deshacer.</strong></p>
-            </div>
             <div class="detail-card">
-                <p><strong>No. Matrícula:</strong> {{ object.NumMatricula }}</p>
-                <p><strong>Estudiante:</strong> {{ object.IdEstudiante.IdUsuario.Nombres }} {{ object.IdEstudiante.IdUsuario.Apellidos }}</p>
-                <p><strong>Grado:</strong> {{ object.IdGrado.NumGrado }}</p>
+                <p><strong>Código:</strong> {{ certificado.codigo }}</p>
+                <p><strong>Estudiante:</strong> {{ certificado.IdEstudiante.IdUsuario.Nombres }} {{ certificado.IdEstudiante.IdUsuario.Apellidos }}</p>
+                <p><strong>Tipo:</strong> {{ certificado.tipo|title }}</p>
+                <p><strong>Fecha solicitud:</strong> {{ certificado.fecha_solicitud|date:"d/m/Y" }}</p>
+                {% if certificado.observaciones %}
+                <p><strong>Observaciones:</strong> {{ certificado.observaciones }}</p>
+                {% endif %}
             </div>
             <form method="post">
                 {% csrf_token %}
                 <div class="form-actions">
-                    <button type="submit" class="btn btn--danger">🗑️ Sí, eliminar</button>
-                    <a href="{% url 'gestion_aulatec:matricula_list' %}" class="btn btn--secondary">Cancelar</a>
+                    <button type="submit" class="btn btn--primary">✅ Confirmar Aprobación</button>
+                    <a href="{% url 'gestion_aulatec:admin_solicitudes' %}" class="btn btn--secondary">Cancelar</a>
                 </div>
             </form>
         </div>

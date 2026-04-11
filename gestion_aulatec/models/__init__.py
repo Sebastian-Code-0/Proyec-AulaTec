@@ -7,3 +7,4 @@ from .materia import Materia
 from .acudiente import Acudiente
 from .horario import Horario
 from .calificacion import Calificacion
+from .certificado import Certificado

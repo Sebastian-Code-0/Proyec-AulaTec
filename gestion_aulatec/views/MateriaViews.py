@@ -1,6 +1,7 @@
 from django.views.generic import ListView,CreateView,UpdateView,DeleteView
 from django.db.models import Q
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from gestion_aulatec.models import Materia
 from gestion_aulatec.forms import MateriaForm
@@ -8,7 +9,7 @@ from gestion_aulatec.forms import MateriaForm
 # Vistas para el CRUD de materia
 
 #Leer (Listar todas las materias)
-class MateriaListView(ListView):
+class MateriaListView(LoginRequiredMixin, ListView):
     model = Materia
     template_name = 'gestion_aulatec/materia_list.html'
     context_object_name = 'materias'
@@ -25,21 +26,21 @@ class MateriaListView(ListView):
         return queryset.order_by('NombreMateria')
     
 # Crear un nueva Materia
-class MateriaCreateView(CreateView):
+class MateriaCreateView(LoginRequiredMixin, CreateView):
     model = Materia
     form_class = MateriaForm
     template_name = 'gestion_aulatec/materia_form.html'
     success_url = reverse_lazy('gestion_aulatec:materia_list')
 
 # Actualizar una Materia Existente
-class MateriaUpdateView(UpdateView):
+class MateriaUpdateView(LoginRequiredMixin, UpdateView):
     model = Materia
     form_class = MateriaForm
     template_name = 'gestion_aulatec/materia_form.html'
     success_url = reverse_lazy('gestion_aulatec:materia_list')
 
-# Eliminar una materia 
-class MateriaDeleteView(DeleteView):
+# Eliminar una materia
+class MateriaDeleteView(LoginRequiredMixin, DeleteView):
     model = Materia
     template_name = 'gestion_aulatec/materia_confirm_delete.html'
     success_url = reverse_lazy('gestion_aulatec:materia_list')
