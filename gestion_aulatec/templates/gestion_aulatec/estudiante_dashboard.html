@@ -188,6 +188,21 @@
         {% endif %}
     </div>
 
+    <!-- CERTIFICADOS -->
+    <div class="cert-section">
+        <h2 class="cert-section__title">📜 Certificados</h2>
+        <div class="cert-section__actions">
+            <a href="{% url 'gestion_aulatec:solicitar_certificado' %}"
+               class="cert-btn cert-btn--primary">
+                📤 Solicitar Certificado
+            </a>
+            <a href="{% url 'gestion_aulatec:mis_certificados' %}"
+               class="cert-btn cert-btn--outline">
+                📋 Mis Certificados
+            </a>
+        </div>
+    </div>
+
 </div>
 </body>
 </html>

@@ -56,10 +56,7 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return self.request.user.Rol == 'Administrador'
     
     def handle_no_permission(self):
-        if self.request.user.is_authenticated:    
-            messages.error(self.request, 'No tienes permiso para acceder a esta página.')
-            return redirect('gestion_aulatec:home') # Redirige a una página de inicio o login
-        return super().handle_no_permission()
+        return redirect('gestion_aulatec:home')
     
 class DocenteDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = 'gestion_aulatec/docente_dashboard.html'
@@ -69,7 +66,6 @@ class DocenteDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Docente'
 
     def handle_no_permission(self):
-        messages.error(self.request, 'No tienes permiso para acceder a esta página.')
         return redirect('gestion_aulatec:home')
 
     def get_queryset(self):
@@ -134,7 +130,6 @@ class EstudianteDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView)
         return self.request.user.is_authenticated and self.request.user.Rol == 'Estudiante'
 
     def handle_no_permission(self):
-        messages.error(self.request, 'No tienes permiso para acceder a esta página.')
         return redirect('gestion_aulatec:home')
 
     def get_queryset(self):

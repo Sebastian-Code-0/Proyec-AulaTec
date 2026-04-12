@@ -314,3 +314,47 @@ tbody tr:hover { background: var(--bg-card2); }
     .promedios-grid { grid-template-columns: repeat(2, 1fr); }
     .info-grid { grid-template-columns: 1fr 1fr; }
 }
+/* ── Sección certificados ── */
+.cert-section { margin-top: 2rem; }
+
+.cert-section__title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+.cert-section__actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.cert-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: opacity 0.2s, background 0.2s;
+}
+
+.cert-btn--primary {
+    background: var(--primary);
+    color: #fff;
+}
+
+.cert-btn--primary:hover { opacity: 0.88; }
+
+.cert-btn--outline {
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+}
+
+.cert-btn--outline:hover {
+    background: rgba(79, 70, 229, 0.08);
+}

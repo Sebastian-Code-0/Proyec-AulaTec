@@ -1,0 +1,45 @@
+{% extends "gestion_aulatec/base_admin.html" %}
+{% load static %}
+{% block title %}Eliminar Usuario - AulaTec{% endblock %}
+{% block content %}
+<div class="wrapper">
+    <aside class="sidebar">
+        <ul class="menu">
+            <li><a href="{% url 'gestion_aulatec:admin_dashboard' %}">🏠 Resumen</a></li>
+            <li><a href="{% url 'gestion_aulatec:usuario_list' %}" class="active">👤 Usuarios</a></li>
+            <li><a href="{% url 'gestion_aulatec:grado_list' %}">🎓 Grados</a></li>
+            <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
+            <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
+            <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
+            <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
+            <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
+            <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
+            <li><a href="{% url 'gestion_aulatec:admin_solicitudes' %}">📜 Certificados</a></li>
+        </ul>
+    </aside>
+    <main class="content">
+        <div class="page-header">
+            <h1>Eliminar Usuario</h1>
+            <a href="{% url 'gestion_aulatec:usuario_list' %}" class="btn btn--secondary">← Volver</a>
+        </div>
+        <div class="form-container">
+            <div class="alert alert--danger">
+                <p>¿Estás seguro de que deseas eliminar este usuario?
+                <strong>Esta acción no se puede deshacer.</strong></p>
+            </div>
+            <div class="detail-card">
+                <p><strong>Nombre:</strong> {{ usuario.Nombres }} {{ usuario.Apellidos }}</p>
+                <p><strong>Documento:</strong> {{ usuario.NumId }}</p>
+                <p><strong>Rol:</strong> {{ usuario.Rol }}</p>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn--danger">🗑️ Sí, eliminar</button>
+                    <a href="{% url 'gestion_aulatec:usuario_list' %}" class="btn btn--secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+{% endblock %}

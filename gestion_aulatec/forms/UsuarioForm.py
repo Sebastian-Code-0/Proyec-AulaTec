@@ -85,7 +85,7 @@ class UsuarioForm(forms.ModelForm):
 
     class Meta:
         model = Usuario
-        fields = ['TipoId', 'NumId', 'Nombres', 'Apellidos', 'Rol', 'Celular']
+        fields = ['TipoId', 'NumId', 'Nombres', 'Apellidos', 'Email', 'Rol', 'Celular']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -120,6 +120,12 @@ class UsuarioForm(forms.ModelForm):
         value = self.cleaned_data.get('Apellidos', '').strip()
         if not value:
             raise forms.ValidationError('Este campo es obligatorio.')
+        return value
+
+    def clean_Email(self):
+        value = self.cleaned_data.get('Email', '').strip()
+        if not value:
+            raise forms.ValidationError('El correo electrónico es obligatorio.')
         return value
 
     def clean_Rol(self):

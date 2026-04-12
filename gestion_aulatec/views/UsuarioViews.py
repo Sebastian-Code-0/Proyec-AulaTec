@@ -20,8 +20,7 @@ class UsuarioListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
 
     def handle_no_permission(self):
-        messages.error(self.request, 'No tienes permiso para acceder a la gestión de usuarios.')
-        return redirect('gestion_aulatec:home') # O la página de login
+        return redirect('gestion_aulatec:home')
     
 class UsuarioCreateView(LoginRequiredMixin, CreateView):
     model = Usuario

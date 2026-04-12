@@ -30,7 +30,6 @@ class MatriculaCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
 
     def handle_no_permission(self):
-        messages.error(self.request, 'No tienes permiso para realizar matrículas.')
         return redirect('gestion_aulatec:home')
 
     # Método GET: Muestra el formulario vacío
@@ -155,7 +154,6 @@ class MatriculaListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
 
     def handle_no_permission(self):
-        messages.error(self.request, 'No tienes permiso para ver las matrículas.')
         return redirect('gestion_aulatec:home')
 
 #detalles de matricula
@@ -168,9 +166,8 @@ class MatriculaDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
     
     def handle_no_permission(self):
-        messages.error(self.request, 'No tienes permiso para ver las matrículas.')
         return redirect('gestion_aulatec:home')
-    
+
 #editar matricula
 class MatriculaUpdateView(LoginRequiredMixin, UserPassesTestMixin,UpdateView):
     model = Matricula
@@ -182,9 +179,8 @@ class MatriculaUpdateView(LoginRequiredMixin, UserPassesTestMixin,UpdateView):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
     
     def handle_no_permission(self):
-        messages.error(self.request, 'No tienes permiso para ver las matrículas.')
         return redirect('gestion_aulatec:home')
-    
+
 #eliminar matricula
 class MatriculaDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Matricula
@@ -195,9 +191,8 @@ class MatriculaDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
     
     def handle_no_permission(self):
-        messages.error(self.request, 'No tienes permiso para ver las matrículas.')
         return redirect('gestion_aulatec:home')
-    
+
     def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, f'La matrícula "{self.object.NumMatricula}" ha sido eliminada exitosamente.')
@@ -207,8 +202,7 @@ class MatriculaDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 @require_POST
 def toggle_matricula_activa (request, pk):
     if not request.user.Rol == 'Administrador':
-        messages.error(request, 'No tienes permiso para cambiar el estado de la matrícula.')
-        return redirect('gestion_aulatec:matricula_list')
+        return redirect('gestion_aulatec:home')
 
     matricula = get_object_or_404(Matricula, pk=pk)
         

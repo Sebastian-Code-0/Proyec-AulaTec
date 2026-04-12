@@ -16,7 +16,6 @@ class EsAdminMixin(LoginRequiredMixin, UserPassesTestMixin):
         return self.request.user.Rol == 'Administrador'
 
     def handle_no_permission(self):
-        messages.error(self.request, 'No tienes permiso para acceder a esta página.')
         return redirect('gestion_aulatec:home')
 
 
@@ -25,7 +24,6 @@ class EsEstudianteMixin(LoginRequiredMixin, UserPassesTestMixin):
         return self.request.user.Rol == 'Estudiante'
 
     def handle_no_permission(self):
-        messages.error(self.request, 'Solo los estudiantes pueden acceder a esta sección.')
         return redirect('gestion_aulatec:home')
 
 
