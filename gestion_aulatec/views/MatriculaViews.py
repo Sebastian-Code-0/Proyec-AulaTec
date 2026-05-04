@@ -38,6 +38,12 @@ class MatriculaCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     # Método GET: Muestra el formulario vacío
     def get(self, request, *args, **kwargs):
+        from gestion_aulatec.models import Grado
+        if not Grado.objects.exists():
+            messages.warning(
+                request,
+                'No hay grados creados. Primero crea al menos un grado antes de registrar matrículas.'
+            )
         return render(request, self.template_name, self._ctx(MatriculaForm()))
 
     # Método POST: Procesa el formulario enviado
@@ -64,18 +70,21 @@ class MatriculaCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
                         NumId=estudiante_usuario_data['NumId'],
                         defaults=estudiante_usuario_data
                     )
-                    
+
                     if created_eu:
+                        # Estudiante nuevo: asignar contraseña y enviar correo
                         estudiante_usuario.set_password(contrasena_estudiante)
                         estudiante_usuario.save()
-                        # --- ENVIAR CORREO --- 
                         try:
-                            asunto = 'Bienvenido a Aulatec - Tus credenciales'
-                            mensaje = f'Hola {estudiante_usuario.Nombres},\n\n' \
-                                      f'Tu usuario es: {estudiante_usuario.NumId}\n' \
-                                      f'Tu contraseña es: {contrasena_estudiante}\n\n' \
-                                      f'Ingresa aquí: http://127.0.0.1:8000/login/'
-                            
+                            asunto = 'Bienvenido a AulaTec — Tus credenciales'
+                            mensaje = (
+                                f'Hola {estudiante_usuario.Nombres},\n\n'
+                                f'Se ha creado tu cuenta en la plataforma AulaTec.\n\n'
+                                f'Usuario (documento): {estudiante_usuario.NumId}\n'
+                                f'Contraseña inicial: {contrasena_estudiante}\n\n'
+                                f'Por seguridad, cambia tu contraseña al ingresar por primera vez.\n\n'
+                                f'Institución Educativa AulaTec'
+                            )
                             send_mail(
                                 asunto,
                                 mensaje,
@@ -84,7 +93,22 @@ class MatriculaCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
                                 fail_silently=False,
                             )
                         except Exception as e:
-                            print(f"Error al enviar correo: {e}")
+                            messages.warning(
+                                request,
+                                f'Matrícula creada correctamente, pero no se pudo enviar el correo '
+                                f'a {estudiante_usuario.Email}. Entrega las credenciales manualmente.'
+                            )
+                    else:
+                        # Estudiante existente (rematrícula): actualizar datos si cambiaron
+                        campos_a_actualizar = ['Nombres', 'Apellidos', 'Email', 'Celular', 'TipoId']
+                        cambio = False
+                        for campo in campos_a_actualizar:
+                            valor_nuevo = estudiante_usuario_data.get(campo)
+                            if valor_nuevo and getattr(estudiante_usuario, campo) != valor_nuevo:
+                                setattr(estudiante_usuario, campo, valor_nuevo)
+                                cambio = True
+                        if cambio:
+                            estudiante_usuario.save()
                     # --- 2. Crear/Obtener el objeto Estudiante
                     estudiante, created_e = Estudiante.objects.get_or_create(
                         IdUsuario=estudiante_usuario,

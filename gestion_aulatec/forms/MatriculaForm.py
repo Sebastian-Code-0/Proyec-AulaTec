@@ -1,3 +1,4 @@
+from datetime import date
 from django import forms
 from django.core.validators import RegexValidator
 from gestion_aulatec.models import Matricula, Grado
@@ -369,6 +370,9 @@ class MatriculaForm(forms.ModelForm):
             self.add_error('EspecificacionCondicionMedica', 'Debe especificar la condición médica.')
         if not tiene:
             cleaned_data['EspecificacionCondicionMedica'] = ''
+        autoriza = cleaned_data.get('AutorizaTratamientoDatos')
+        if not autoriza:
+            self.add_error('AutorizaTratamientoDatos', 'La autorización de tratamiento de datos es obligatoria para completar la matrícula.')
         return cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -376,3 +380,6 @@ class MatriculaForm(forms.ModelForm):
         self.fields['IdGrado'].queryset = Grado.objects.all()
         self.fields['IdGrado'].label_from_instance = lambda obj: str(obj)
         self.fields['IdGrado'].empty_label = '— Seleccione grado —'
+        # Pre-llenar AnioLectivo con el año actual solo si es un formulario vacío (sin datos previos)
+        if not args and not kwargs.get('instance'):
+            self.fields['AnioLectivo'].initial = date.today().year
