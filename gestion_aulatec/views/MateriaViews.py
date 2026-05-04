@@ -1,15 +1,22 @@
-from django.views.generic import ListView,CreateView,UpdateView,DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.db.models import Q
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import redirect
 
 from gestion_aulatec.models import Materia
 from gestion_aulatec.forms import MateriaForm
 
-# Vistas para el CRUD de materia
 
-#Leer (Listar todas las materias)
-class MateriaListView(LoginRequiredMixin, ListView):
+class EsAdminMixin(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
+
+    def handle_no_permission(self):
+        return redirect('gestion_aulatec:home')
+
+
+class MateriaListView(EsAdminMixin, ListView):
     model = Materia
     template_name = 'gestion_aulatec/materia_list.html'
     context_object_name = 'materias'
@@ -24,23 +31,23 @@ class MateriaListView(LoginRequiredMixin, ListView):
                 Q(IdDocente__IdUsuario__Apellidos__icontains=query)
             )
         return queryset.order_by('NombreMateria')
-    
-# Crear un nueva Materia
-class MateriaCreateView(LoginRequiredMixin, CreateView):
+
+
+class MateriaCreateView(EsAdminMixin, CreateView):
     model = Materia
     form_class = MateriaForm
     template_name = 'gestion_aulatec/materia_form.html'
     success_url = reverse_lazy('gestion_aulatec:materia_list')
 
-# Actualizar una Materia Existente
-class MateriaUpdateView(LoginRequiredMixin, UpdateView):
+
+class MateriaUpdateView(EsAdminMixin, UpdateView):
     model = Materia
     form_class = MateriaForm
     template_name = 'gestion_aulatec/materia_form.html'
     success_url = reverse_lazy('gestion_aulatec:materia_list')
 
-# Eliminar una materia
-class MateriaDeleteView(LoginRequiredMixin, DeleteView):
+
+class MateriaDeleteView(EsAdminMixin, DeleteView):
     model = Materia
     template_name = 'gestion_aulatec/materia_confirm_delete.html'
     success_url = reverse_lazy('gestion_aulatec:materia_list')

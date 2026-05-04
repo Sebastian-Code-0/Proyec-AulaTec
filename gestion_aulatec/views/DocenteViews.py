@@ -1,47 +1,53 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View, DetailView
 from django.db.models import Q
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import redirect
 
 from gestion_aulatec.models import Docente
 from gestion_aulatec.forms import DocenteForm
 
-#Vistas para el CRUD de Docentes
 
-#Leer (Listar todos los docentes)
-class DocenteListView(LoginRequiredMixin, ListView):
+class EsAdminMixin(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
+
+    def handle_no_permission(self):
+        return redirect('gestion_aulatec:home')
+
+
+class DocenteListView(EsAdminMixin, ListView):
     model = Docente
-    template_name = 'gestion_aulatec/docente_list.html' # Nueva plantilla
-    context_object_name = 'docentes' # Nombre de la variable en la plantilla
+    template_name = 'gestion_aulatec/docente_list.html'
+    context_object_name = 'docentes'
 
     def get_queryset(self):
         queryset = super().get_queryset()
         query = self.request.GET.get('q')
         if query:
-            # Filtra por Nombres o Apellidos del Usuario asociado
             queryset = queryset.filter(
                 Q(IdUsuario__Nombres__icontains=query) |
                 Q(IdUsuario__Apellidos__icontains=query)
             )
         return queryset.order_by('IdUsuario__Nombres', 'IdUsuario__Apellidos')
 
-# 2. Crear un nuevo Docente
-class DocenteCreateView(LoginRequiredMixin, CreateView):
+
+class DocenteCreateView(EsAdminMixin, CreateView):
     model = Docente
     form_class = DocenteForm
-    template_name = 'gestion_aulatec/docente_form.html' # Nueva plantilla
-    success_url = reverse_lazy('gestion_aulatec:docente_list') # Redirige a la lista de docentes
+    template_name = 'gestion_aulatec/docente_form.html'
+    success_url = reverse_lazy('gestion_aulatec:docente_list')
 
-# 3. Actualizar un Docente existente
-class DocenteUpdateView(LoginRequiredMixin, UpdateView):
+
+class DocenteUpdateView(EsAdminMixin, UpdateView):
     model = Docente
     form_class = DocenteForm
-    template_name = 'gestion_aulatec/docente_form.html' # Reusa la misma plantilla
+    template_name = 'gestion_aulatec/docente_form.html'
     success_url = reverse_lazy('gestion_aulatec:docente_list')
 
-# 4. Eliminar un Docente
-class DocenteDeleteView(LoginRequiredMixin, DeleteView):
+
+class DocenteDeleteView(EsAdminMixin, DeleteView):
     model = Docente
-    template_name = 'gestion_aulatec/docente_confirm_delete.html' # Nueva plantilla
+    template_name = 'gestion_aulatec/docente_confirm_delete.html'
     success_url = reverse_lazy('gestion_aulatec:docente_list')
-    context_object_name = 'docente' # Para usar {{ docente.IdUsuario.Nombres }} en el template
+    context_object_name = 'docente'

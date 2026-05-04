@@ -1,55 +1,53 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View, DetailView
 from django.db.models import Q
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import redirect
 
 from gestion_aulatec.models import Estudiante
 from gestion_aulatec.forms import EstudianteForm
 
-# --- Vistas para el CRUD de Estudiante ---
 
-# 1. Leer (Listar todos los Estudiantes) con filtro
-class EstudianteListView(LoginRequiredMixin, ListView):
+class EsAdminMixin(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
+
+    def handle_no_permission(self):
+        return redirect('gestion_aulatec:home')
+
+
+class EstudianteListView(EsAdminMixin, ListView):
     model = Estudiante
-    template_name = 'gestion_aulatec/estudiante_list.html' # Nueva plantilla
-    context_object_name = 'estudiantes' # Nombre de la variable en la plantilla
-    
-    def get_queryset(self):
-         #usamos select_related para evitar las N+1 consultas.
-        queryset = super().get_queryset().select_related(
-            'IdUsuario',  # Necesario para el nombre del estudiante y para los filtros
-            'IdGrado'     # Necesario para obtener NumGrado y NumCurso en la plantilla
-        )
-        #obtiene el termino de busqueda de la url (q = nombre)
-        query = self.request.GET.get('q')
+    template_name = 'gestion_aulatec/estudiante_list.html'
+    context_object_name = 'estudiantes'
 
+    def get_queryset(self):
+        queryset = super().get_queryset().select_related('IdUsuario', 'IdGrado')
+        query = self.request.GET.get('q')
         if query:
-            # Filtra por Nombres o Apellidos del Usuario asociado
-            # Usa Q para combinar condiciones OR
             queryset = queryset.filter(
                 Q(IdUsuario__Nombres__icontains=query) |
                 Q(IdUsuario__Apellidos__icontains=query)
             )
-        return queryset.order_by('IdUsuario__Nombres', 'IdUsuario__Apellidos') # Opcional: ordenar
+        return queryset.order_by('IdUsuario__Nombres', 'IdUsuario__Apellidos')
 
-# 2. Crear un nuevo Estudiante
-class EstudianteCreateView(LoginRequiredMixin, CreateView):
+
+class EstudianteCreateView(EsAdminMixin, CreateView):
     model = Estudiante
     form_class = EstudianteForm
-    template_name = 'gestion_aulatec/estudiante_form.html' # Nueva plantilla
-    success_url = reverse_lazy('gestion_aulatec:estudiante_list') # Redirige a la lista de estudiantes
+    template_name = 'gestion_aulatec/estudiante_form.html'
+    success_url = reverse_lazy('gestion_aulatec:estudiante_list')
 
-# 3. Actualizar un Estudiante existente
-class EstudianteUpdateView(LoginRequiredMixin, UpdateView):
+
+class EstudianteUpdateView(EsAdminMixin, UpdateView):
     model = Estudiante
     form_class = EstudianteForm
-    template_name = 'gestion_aulatec/estudiante_form.html' # Reusa la misma plantilla
+    template_name = 'gestion_aulatec/estudiante_form.html'
     success_url = reverse_lazy('gestion_aulatec:estudiante_list')
 
-# 4. Eliminar un Estudiante
-class EstudianteDeleteView(LoginRequiredMixin, DeleteView):
+
+class EstudianteDeleteView(EsAdminMixin, DeleteView):
     model = Estudiante
-    template_name = 'gestion_aulatec/estudiante_confirm_delete.html' # Nueva plantilla
+    template_name = 'gestion_aulatec/estudiante_confirm_delete.html'
     success_url = reverse_lazy('gestion_aulatec:estudiante_list')
-    context_object_name = 'estudiante' # Para usar {{ estudiante.IdUsuario.Nombres }} en el template
-
+    context_object_name = 'estudiante'

@@ -1,3 +1,4 @@
+from datetime import date
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout #funciones de autenticación
 from django.contrib.auth.decorators import login_required # Decorador para proteger vistas
@@ -40,23 +41,40 @@ def login_view(request):
         form = LoginForm()
     return render(request, 'gestion_aulatec/login.html', {'form': form })
 
-@login_required #Decorador para asegurar que el usuario este logueado para acceder a las vistas.
+@login_required
 def logout_view(request):
+    list(messages.get_messages(request))
     logout(request)
-    messages.info(request, 'Has cerrado sesión correctamente.')
-    return redirect('gestion_aulatec:logout')#Redirigir a la pagina de login despues de cerrar sesion
+    return redirect('gestion_aulatec:login')
 
 class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = 'gestion_aulatec/admin_dashboard.html'
-    model = Usuario # O el modelo principa que quieras mostrar
+    model = Usuario
     context_object_name = 'usuarios'
 
     def test_func(self):
-        #solo permite el acceso si el usuario es Admninistrador
         return self.request.user.Rol == 'Administrador'
-    
+
     def handle_no_permission(self):
         return redirect('gestion_aulatec:home')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from datetime import date
+        from gestion_aulatec.models import Estudiante, Docente, Matricula, Certificado, Materia, Horario
+
+        anio_actual = date.today().year
+
+        context['total_estudiantes'] = Estudiante.objects.count()
+        context['total_docentes'] = Docente.objects.count()
+        context['total_matriculas_activas'] = Matricula.objects.filter(Activa=True, AnioLectivo=anio_actual).count()
+        context['total_materias'] = Materia.objects.count()
+        context['total_horarios'] = Horario.objects.filter(activo=True).count()
+        context['cert_pendientes'] = Certificado.objects.filter(estado='pendiente').count()
+        context['cert_aprobados'] = Certificado.objects.filter(estado='aprobado').count()
+        context['anio_actual'] = anio_actual
+
+        return context
     
 class DocenteDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = 'gestion_aulatec/docente_dashboard.html'
@@ -168,6 +186,7 @@ class EstudianteDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView)
                 (3, 'Tercer Periodo'),
                 (4, 'Cuarto Periodo'),
             ]
+            context['anio_actual'] = date.today().year
         except Estudiante.DoesNotExist:
             context['estudiante'] = None
             context['calificaciones'] = []

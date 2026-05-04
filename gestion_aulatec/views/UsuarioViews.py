@@ -22,7 +22,12 @@ class UsuarioListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def handle_no_permission(self):
         return redirect('gestion_aulatec:home')
     
-class UsuarioCreateView(LoginRequiredMixin, CreateView):
+class UsuarioCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
+
+    def handle_no_permission(self):
+        return redirect('gestion_aulatec:home')
     model = Usuario
     form_class = UsuarioForm
     template_name = 'gestion_aulatec/usuario_form.html'
@@ -73,15 +78,18 @@ class UsuarioCreateView(LoginRequiredMixin, CreateView):
         usuario.debe_cambiar_password = False 
         usuario.save()
         
-        messages.success(self.request, f'Docente registrado con éxito. Notificación enviada.')
-        
         return super().form_valid(form)
     def form_invalid(self, form):
         print("Errores del formulario:", form.errors)   
         return super().form_invalid(form)
 
 # Actualizar (Editar un usuario existente)
-class UsuarioUpdateView(LoginRequiredMixin, UpdateView):
+class UsuarioUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
+
+    def handle_no_permission(self):
+        return redirect('gestion_aulatec:home')
     model = Usuario
     form_class = UsuarioForm
     template_name = 'gestion_aulatec/usuario_form.html'
@@ -97,7 +105,12 @@ class UsuarioUpdateView(LoginRequiredMixin, UpdateView):
         return redirect(self.success_url)
 
 # Eliminar (Borrar un usuario)
-class UsuarioDeleteView(LoginRequiredMixin, DeleteView):
+class UsuarioDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
+
+    def handle_no_permission(self):
+        return redirect('gestion_aulatec:home')
     model = Usuario
     template_name = 'gestion_aulatec/usuario_confirm_delete.html'
     success_url = reverse_lazy('gestion_aulatec:usuario_list')  # Redirige a la lista de usuarios después de eliminar uno

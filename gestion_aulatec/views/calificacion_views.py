@@ -135,7 +135,12 @@ class CalificacionListView(DocenteVinculadoMixin, EsDocenteOAdminMixin, ListView
             context['base_template'] = 'gestion_aulatec/base_docente.html'
         return context
 
-class CalificacionEstudianteView(LoginRequiredMixin, ListView):
+class CalificacionEstudianteView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.Rol in ('Estudiante', 'Docente', 'Administrador')
+
+    def handle_no_permission(self):
+        return redirect('gestion_aulatec:home')
     """
     Estudiante: ve sus propias calificaciones con promedios por periodo.
     Admin/Docente: pueden ver las calificaciones de cualquier estudiante.
@@ -156,7 +161,7 @@ class CalificacionEstudianteView(LoginRequiredMixin, ListView):
             IdEstudiante__pk=self.kwargs.get('pk')
         ).order_by('Periodo', 'IdMateria')
 
-2
+
 class CalificacionCreateView(DocenteVinculadoMixin, EsDocenteOAdminMixin, CreateView):
     model = Calificacion
     form_class = CalificacionForm
@@ -210,6 +215,17 @@ class CalificacionUpdateView(DocenteVinculadoMixin, EsDocenteOAdminMixin, Update
     template_name = 'gestion_aulatec/calificacion_form.html'
     success_url = reverse_lazy('gestion_aulatec:calificacion_list')
 
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        user = self.request.user
+        if user.Rol == 'Docente':
+            from gestion_aulatec.models import Docente
+            docente = Docente.objects.get(IdUsuario=user)
+            if obj.IdDocente != docente:
+                from django.core.exceptions import PermissionDenied
+                raise PermissionDenied
+        return obj
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.user.Rol == 'Administrador':
@@ -241,12 +257,10 @@ class CalificacionUpdateView(DocenteVinculadoMixin, EsDocenteOAdminMixin, Update
         return form
 
     def form_valid(self, form):
-        from datetime import date
         user = self.request.user
         if user.Rol == 'Docente':
             from gestion_aulatec.models import Docente
             form.instance.IdDocente = Docente.objects.get(IdUsuario=user)
-        form.instance.AnioLectivo = date.today().year
         messages.success(self.request, 'Calificación actualizada correctamente.')
         return super().form_valid(form)
 
