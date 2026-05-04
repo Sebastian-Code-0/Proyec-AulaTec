@@ -30,6 +30,16 @@
 
 <div class="dashboard">
 
+    {% if messages %}
+    <div class="dashboard-messages">
+        {% for message in messages %}
+        <div class="dashboard-msg dashboard-msg--{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <!-- BIENVENIDA -->
     <div class="welcome-banner">
         <div>
@@ -66,7 +76,7 @@
             <div class="info-card__icon">📅</div>
             <div>
                 <div class="info-card__label">Año Lectivo</div>
-                <div class="info-card__value">2025</div>
+                <div class="info-card__value">{{ anio_actual }}</div>
             </div>
         </div>
         <div class="info-card">
@@ -188,9 +198,9 @@
         {% endif %}
     </div>
 
-    <!-- CERTIFICADOS -->
+    <!-- CERTIFICADOS Y REPORTE -->
     <div class="cert-section">
-        <h2 class="cert-section__title">📜 Certificados</h2>
+        <h2 class="cert-section__title">📜 Certificados y Reportes</h2>
         <div class="cert-section__actions">
             <a href="{% url 'gestion_aulatec:solicitar_certificado' %}"
                class="cert-btn cert-btn--primary">
@@ -200,7 +210,16 @@
                class="cert-btn cert-btn--outline">
                 📋 Mis Certificados
             </a>
+            <a href="{% url 'gestion_aulatec:descargar_reporte_notas' %}"
+               class="cert-btn cert-btn--notas">
+                📊 Descargar Reporte de Notas
+            </a>
         </div>
+        {% if estudiante.ultima_descarga_notas %}
+        <p class="cert-section__hint">
+            Último reporte descargado: {{ estudiante.ultima_descarga_notas|date:"d/m/Y" }}
+        </p>
+        {% endif %}
     </div>
 
 </div>

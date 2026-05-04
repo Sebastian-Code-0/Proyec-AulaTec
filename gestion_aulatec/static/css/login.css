@@ -3,7 +3,7 @@
    ═══════════════════════════════════════════════════════════ */
 
 :root {
-  --login-bg:       #0a0a14;
+  --login-bg:       #1e1e3f;
   --login-card:     rgba(255,255,255,.04);
   --login-border:   rgba(125,60,255,.35);
   --login-accent:   #7d3cff;
@@ -83,7 +83,7 @@ html, body { height: 100%; margin: 0; padding: 0; }
 
 /* Logo grande — ocupa el espacio visual del h2 eliminado */
 .brand-logo {
-  width: 220px;
+  width: 300px;
   filter: drop-shadow(0 0 16px rgba(125,60,255,.65));
   transition: filter .3s;
 }

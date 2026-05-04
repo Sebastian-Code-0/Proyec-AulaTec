@@ -32,6 +32,11 @@
         <div class="form-container">
             <form method="POST" action="{% url 'gestion_aulatec:horario_create' %}">
                 {% csrf_token %}
+                {% if form.non_field_errors %}
+                <ul class="errorlist non-field">
+                    {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+                </ul>
+                {% endif %}
                 <div class="form-group">
                     <label for="grado">Grado *</label>
                     <select name="grado" id="grado" required>
@@ -81,7 +86,7 @@
                     <input type="text" name="aula" id="aula" placeholder="Ej: Aula 101, Laboratorio A">
                 </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn btn--primary">💾 Guardar Horario</button>
+                    <button type="submit" class="btn btn--primary">Guardar Horario</button>
                     <a href="{% url 'gestion_aulatec:horario_list' %}" class="btn btn--secondary">Cancelar</a>
                 </div>
             </form>

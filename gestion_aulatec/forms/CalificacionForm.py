@@ -26,3 +26,29 @@ class CalificacionForm(forms.ModelForm):
             if nota < 0 or nota > 10:
                 raise forms.ValidationError('La nota debe estar entre 0.00 y 10.00.')
         return nota
+
+    def clean(self):
+        cleaned_data = super().clean()
+        estudiante = cleaned_data.get('IdEstudiante')
+        materia = cleaned_data.get('IdMateria')
+        periodo = cleaned_data.get('Periodo')
+        actividad = cleaned_data.get('NombreActividad')
+
+        if all([estudiante, materia, periodo, actividad]):
+            from datetime import date
+            anio = date.today().year
+            qs = Calificacion.objects.filter(
+                IdEstudiante=estudiante,
+                IdMateria=materia,
+                AnioLectivo=anio,
+                Periodo=periodo,
+                NombreActividad=actividad,
+            )
+            if self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise forms.ValidationError(
+                    f'Ya existe una calificación para "{actividad}" '
+                    f'en el Periodo {periodo} del año {anio}.'
+                )
+        return cleaned_data

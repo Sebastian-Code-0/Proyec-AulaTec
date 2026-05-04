@@ -137,6 +137,16 @@
     color: #EF4444;
     font-size: 0.8rem;
 }
+.errorlist.non-field {
+    list-style: none;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    border-left: 4px solid #EF4444;
+    border-radius: 0.4rem;
+    color: #EF4444;
+    font-size: 0.875rem;
+}
 .form-group .help-text {
     display: block;
     margin-top: 0.3rem;

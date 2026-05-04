@@ -6,13 +6,16 @@
     <title>Mis Certificados - AulaTec</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/dashboard_est.css' %}">
-    <link rel="stylesheet" href="{% static 'css/extras_docente.css' %}">
 </head>
 <body>
 <main style="max-width:900px;margin:3rem auto;padding:0 1rem;">
+
     <div class="page-header">
         <h1>📜 Mis Certificados</h1>
-        <a href="{% url 'gestion_aulatec:solicitar_certificado' %}" class="btn btn--primary">+ Solicitar Certificado</a>
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+            <a href="{% url 'gestion_aulatec:solicitar_certificado' %}" class="btn btn--primary">+ Solicitar</a>
+            <a href="{% url 'gestion_aulatec:estudiante_dashboard' %}" class="btn btn--secondary">← Volver al panel</a>
+        </div>
     </div>
 
     {% if messages %}
@@ -30,8 +33,9 @@
                 <tr>
                     <th>Código</th>
                     <th>Tipo</th>
-                    <th>Fecha Solicitud</th>
+                    <th>Solicitado</th>
                     <th>Estado</th>
+                    <th>Vence</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -39,25 +43,53 @@
                 {% for cert in certificados %}
                 <tr>
                     <td><strong>{{ cert.codigo }}</strong></td>
-                    <td>{{ cert.tipo|title }}</td>
+                    <td>{{ cert.get_tipo_display }}</td>
                     <td>{{ cert.fecha_solicitud|date:"d/m/Y" }}</td>
                     <td>
                         {% if cert.estado == 'pendiente' %}
-                        <span style="color:#F59E0B;font-weight:600;">● Pendiente</span>
+                        <span class="estado-pendiente">● Pendiente</span>
                         {% elif cert.estado == 'aprobado' %}
-                        <span style="color:#10B981;font-weight:600;">● Aprobado</span>
+                        <span class="estado-aprobado">● Aprobado</span>
                         {% elif cert.estado == 'rechazado' %}
-                        <span style="color:#EF4444;font-weight:600;">● Rechazado</span>
+                        <span class="estado-rechazado">● Rechazado</span>
                         {% else %}
-                        <span style="color:#6B7280;font-weight:600;">● {{ cert.estado|title }}</span>
+                        <span class="estado-vencido">● Vencido</span>
                         {% endif %}
                     </td>
-                    <td class="actions">
-                        {% if cert.estado == 'aprobado' %}
-                        <a href="{% url 'gestion_aulatec:descargar_certificado_est' cert.IdCertificado %}" class="btn btn--primary">⬇ Descargar PDF</a>
+                    <td>
+                        {% if cert.fecha_vencimiento %}
+                            {% if cert.estado == 'aprobado' %}
+                            <span style="color:var(--success);font-size:0.85rem;">
+                                {{ cert.fecha_vencimiento|date:"d/m/Y" }}
+                                {% if cert.dias_para_vencer <= 5 %}
+                                ⚠️
+                                {% endif %}
+                            </span>
+                            {% elif cert.estado == 'vencido' %}
+                            <span class="estado-vencido" style="font-size:0.85rem;">
+                                Venció {{ cert.fecha_vencimiento|date:"d/m/Y" }}
+                            </span>
+                            {% else %}
+                            <span style="color:var(--text-muted);font-size:0.85rem;">—</span>
+                            {% endif %}
+                        {% else %}
+                        <span style="color:var(--text-muted);font-size:0.85rem;">—</span>
                         {% endif %}
-                        {% if cert.estado == 'rechazado' and cert.motivo_rechazo %}
-                        <span style="color:#EF4444;font-size:0.85rem;">{{ cert.motivo_rechazo }}</span>
+                    </td>
+                    <td>
+                        {% if cert.estado == 'aprobado' %}
+                        <a href="{% url 'gestion_aulatec:descargar_certificado_est' cert.IdCertificado %}"
+                           class="btn btn--primary" style="font-size:0.8rem;padding:0.35rem 0.75rem;">
+                            ⬇ Descargar
+                        </a>
+                        {% elif cert.estado == 'vencido' %}
+                        <span style="color:var(--text-muted);font-size:0.82rem;font-style:italic;">
+                            Expirado — solicita uno nuevo
+                        </span>
+                        {% elif cert.estado == 'rechazado' and cert.motivo_rechazo %}
+                        <span class="motivo-rechazo">{{ cert.motivo_rechazo }}</span>
+                        {% else %}
+                        <span style="color:var(--text-muted);font-size:0.82rem;">—</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -65,9 +97,15 @@
             </tbody>
         </table>
     </div>
+
+    <p style="margin-top:0.75rem;font-size:0.78rem;color:var(--text-muted);">
+        ℹ️ Los certificados aprobados tienen validez de 30 días. Los vencidos se eliminan automáticamente.
+    </p>
+
     {% else %}
-    <p class="empty-msg">No tienes certificados todavía. ¡Solicita uno!</p>
+    <p class="empty-msg">No tienes certificados todavía. ¡Solicita uno desde el botón de arriba!</p>
     {% endif %}
+
 </main>
 </body>
 </html>

@@ -1,56 +1,340 @@
 {% extends "gestion_aulatec/base_admin.html" %}
 {% load static %}
 {% block title %}Detalle Matrícula - AulaTec{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ── Reutiliza el mismo sistema de secciones del formulario ── */
+.mat-detail { max-width: 860px; margin: 0 auto; padding-bottom: 3rem; }
+
+.mat-section {
+  background: var(--adm-card);
+  border: 1px solid var(--adm-border);
+  border-radius: 12px;
+  padding: 1.6rem 1.8rem;
+  margin-bottom: 1.6rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+.mat-section__title {
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--adm-primary);
+  margin: 0 0 1.2rem;
+  padding-bottom: .5rem;
+  border-bottom: 2px solid rgba(125,60,255,.2);
+}
+
+/* ── Grid ─────────────────────────────────────────────────── */
+.mat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem 1.4rem; }
+.mat-grid--3 { grid-template-columns: 1fr 1fr 1fr; }
+
+/* ── Fila de dato ─────────────────────────────────────────── */
+.data-row { display: flex; flex-direction: column; gap: .2rem; }
+.data-row__label {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--adm-muted);
+}
+.data-row__value {
+  font-size: .95rem;
+  color: var(--adm-text);
+  word-break: break-word;
+}
+
+/* ── Badge Si/No ──────────────────────────────────────────── */
+.badge-si, .badge-no {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .25rem .7rem; border-radius: 20px;
+  font-size: .8rem; font-weight: 600;
+}
+.badge-si { background: rgba(16,185,129,.15); color: #10b981; }
+.badge-no { background: rgba(239,68,68,.12); color: #ef4444; }
+
+/* ── Check-grid para documentos ───────────────────────────── */
+.check-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .7rem;
+}
+.check-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .7rem 1rem;
+  background: var(--adm-card2);
+  border: 1px solid var(--adm-border);
+  border-radius: 10px;
+  gap: .8rem;
+}
+.check-card__label { font-size: .85rem; font-weight: 500; color: var(--adm-text); flex: 1; }
+
+/* ── Estado matrícula ─────────────────────────────────────── */
+.estado-badge {
+  display: inline-block; padding: .3rem .9rem;
+  border-radius: 20px; font-size: .82rem; font-weight: 700;
+}
+.estado-activa { background: rgba(16,185,129,.15); color: #10b981; }
+.estado-inactiva { background: rgba(239,68,68,.12); color: #ef4444; }
+
+@media (max-width: 600px) {
+  .mat-grid, .mat-grid--3, .check-grid { grid-template-columns: 1fr; }
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="wrapper">
-    <aside class="sidebar">
-        <ul class="menu">
-            <li><a href="{% url 'gestion_aulatec:admin_dashboard' %}">🏠 Resumen</a></li>
-            <li><a href="{% url 'gestion_aulatec:usuario_list' %}">👤 Usuarios</a></li>
-            <li><a href="{% url 'gestion_aulatec:grado_list' %}">🎓 Grados</a></li>
-            <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
-            <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
-            <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
-            <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
-            <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
-            <li><a href="{% url 'gestion_aulatec:matricula_list' %}" class="active">🗂️ Matrículas</a></li>
-            <li><a href="{% url 'gestion_aulatec:admin_solicitudes' %}">📜 Certificados</a></li>
-        </ul>
-    </aside>
-    <main class="content">
-        <div class="page-header">
-            <h1>📋 Detalle de Matrícula No. {{ object.NumMatricula }}</h1>
-            <a href="{% url 'gestion_aulatec:matricula_list' %}" class="btn btn--secondary">← Volver</a>
+  <aside class="sidebar">
+    <ul class="menu">
+      <li><a href="{% url 'gestion_aulatec:admin_dashboard' %}">🏠 Resumen</a></li>
+      <li><a href="{% url 'gestion_aulatec:usuario_list' %}">👤 Usuarios</a></li>
+      <li><a href="{% url 'gestion_aulatec:grado_list' %}">🎓 Grados</a></li>
+      <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
+      <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
+      <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
+      <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
+      <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
+      <li><a href="{% url 'gestion_aulatec:matricula_list' %}" class="active">🗂️ Matrículas</a></li>
+      <li><a href="{% url 'gestion_aulatec:admin_solicitudes' %}">📜 Certificados</a></li>
+    </ul>
+  </aside>
+
+  <main class="content">
+    <div class="page-header">
+      <h1>📋 Matrícula {{ matriculas.NumMatricula }}</h1>
+      <div style="display:flex;gap:.6rem;">
+        <a href="{% url 'gestion_aulatec:matricula_list' %}" class="btn btn--secondary">← Volver</a>
+      </div>
+    </div>
+
+    {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}<li class="{{ message.tags }}">{{ message }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="mat-detail">
+
+      <!-- ─── 1. RESUMEN MATRÍCULA ──────────────────────── -->
+      <div class="mat-section">
+        <p class="mat-section__title">Resumen de la Matrícula</p>
+        <div class="mat-grid mat-grid--3">
+          <div class="data-row">
+            <span class="data-row__label">Número</span>
+            <span class="data-row__value">{{ matriculas.NumMatricula }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Año Lectivo</span>
+            <span class="data-row__value">{{ matriculas.AnioLectivo }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Grado</span>
+            <span class="data-row__value">{{ matriculas.IdGrado }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Fecha Matrícula</span>
+            <span class="data-row__value">{{ matriculas.FechaMatricula|date:"d/m/Y H:i" }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Estado</span>
+            <span class="data-row__value">
+              {% if matriculas.Activa %}
+                <span class="estado-badge estado-activa">Activa</span>
+              {% else %}
+                <span class="estado-badge estado-inactiva">Inactiva</span>
+              {% endif %}
+            </span>
+          </div>
         </div>
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li class="{{ message.tags }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        <div class="form-container">
-            <div class="detail-card">
-                <p><strong>Número de Matrícula:</strong> {{ object.NumMatricula }}</p>
-                <p><strong>Año Lectivo:</strong> {{ object.AnioLectivo }}</p>
-                <p><strong>Grado:</strong> {{ object.IdGrado.NumGrado }}</p>
-                <p><strong>Estado:</strong> {% if object.Activa %}Activa{% else %}Inactiva{% endif %}</p>
-            </div>
-            <h2 style="color:var(--adm-primary-light);margin:1.5rem 0 0.75rem;">Estudiante</h2>
-            <div class="detail-card">
-                <p><strong>Nombres:</strong> {{ object.IdEstudiante.IdUsuario.Nombres }} {{ object.IdEstudiante.IdUsuario.Apellidos }}</p>
-                <p><strong>Tipo Documento:</strong> {{ object.IdEstudiante.IdUsuario.TipoId }}</p>
-                <p><strong>Número Documento:</strong> {{ object.IdEstudiante.IdUsuario.NumId }}</p>
-                <p><strong>Celular:</strong> {{ object.IdEstudiante.IdUsuario.Celular|default:"No registrado" }}</p>
-            </div>
-            <h2 style="color:var(--adm-primary-light);margin:1.5rem 0 0.75rem;">Acudiente</h2>
-            <div class="detail-card">
-                <p><strong>Nombres:</strong> {{ object.Acudiente_Nombres }} {{ object.Acudiente_Apellidos }}</p>
-                <p><strong>Documento:</strong> {{ object.Acudiente_TipoId }} {{ object.Acudiente_NumId }}</p>
-                <p><strong>Celular:</strong> {{ object.Acudiente_Celular|default:"No registrado" }}</p>
-                <p><strong>Parentesco:</strong> {{ object.Acudiente_Parentesco }}</p>
-            </div>
+      </div>
+
+      <!-- ─── 2. DATOS DEL ESTUDIANTE ───────────────────── -->
+      <div class="mat-section">
+        <p class="mat-section__title">Datos del Estudiante</p>
+        <div class="mat-grid">
+          <div class="data-row">
+            <span class="data-row__label">Nombres y Apellidos</span>
+            <span class="data-row__value">
+              {{ matriculas.IdEstudiante.IdUsuario.Nombres }} {{ matriculas.IdEstudiante.IdUsuario.Apellidos }}
+            </span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Tipo Documento</span>
+            <span class="data-row__value">{{ matriculas.IdEstudiante.IdUsuario.TipoId }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Número Documento</span>
+            <span class="data-row__value">{{ matriculas.IdEstudiante.IdUsuario.NumId }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Correo Electrónico</span>
+            <span class="data-row__value">{{ matriculas.IdEstudiante.IdUsuario.Email|default:"—" }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Teléfono</span>
+            <span class="data-row__value">{{ matriculas.IdEstudiante.IdUsuario.Celular|default:"No registrado" }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Fecha de Nacimiento</span>
+            <span class="data-row__value">{{ matriculas.FechaNacimientoEstudiante|date:"d/m/Y" }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Lugar de Nacimiento</span>
+            <span class="data-row__value">{{ matriculas.LugarNacimientoEstudiante }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Barrio / Vereda</span>
+            <span class="data-row__value">{{ matriculas.BarrioVeredaEstudiante }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">EPS / Seguro Médico</span>
+            <span class="data-row__value">{{ matriculas.EPSSeguroMedicoEstudiante }}</span>
+          </div>
         </div>
-    </main>
+      </div>
+
+      <!-- ─── 3. CONDICIÓN MÉDICA ───────────────────────── -->
+      <div class="mat-section">
+        <p class="mat-section__title">Condición Médica</p>
+        <div class="mat-grid">
+          <div class="data-row">
+            <span class="data-row__label">¿Tiene condición médica?</span>
+            <span class="data-row__value">
+              {% if matriculas.TieneCondicionMedica %}
+                <span class="badge-si">✓ Sí</span>
+              {% else %}
+                <span class="badge-no">✗ No</span>
+              {% endif %}
+            </span>
+          </div>
+          {% if matriculas.TieneCondicionMedica %}
+          <div class="data-row">
+            <span class="data-row__label">Especificación</span>
+            <span class="data-row__value">{{ matriculas.EspecificacionCondicionMedica|default:"—" }}</span>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- ─── 4. DATOS ACADÉMICOS ───────────────────────── -->
+      <div class="mat-section">
+        <p class="mat-section__title">Datos Académicos</p>
+        <div class="mat-grid">
+          <div class="data-row">
+            <span class="data-row__label">Último Grado Cursado</span>
+            <span class="data-row__value">{{ matriculas.UltimoGradoCursado }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Institución Anterior</span>
+            <span class="data-row__value">{{ matriculas.InstitucionAnterior|default:"—" }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Colegio de Procedencia</span>
+            <span class="data-row__value">{{ matriculas.NombreColegio|default:"—" }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Ciudad Institución Anterior</span>
+            <span class="data-row__value">{{ matriculas.CiudadMunicipioInstitucionAnterior|default:"—" }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── 5. DATOS DEL ACUDIENTE ────────────────────── -->
+      <div class="mat-section">
+        <p class="mat-section__title">Datos del Acudiente</p>
+        <div class="mat-grid">
+          <div class="data-row">
+            <span class="data-row__label">Nombres y Apellidos</span>
+            <span class="data-row__value">
+              {{ matriculas.IdAcudiente.Nombres }} {{ matriculas.IdAcudiente.Apellidos }}
+            </span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Tipo de Identificación</span>
+            <span class="data-row__value">{{ matriculas.IdAcudiente.TipoId }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Número de Identificación</span>
+            <span class="data-row__value">{{ matriculas.IdAcudiente.NumId }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Celular</span>
+            <span class="data-row__value">{{ matriculas.IdAcudiente.Celular|default:"No registrado" }}</span>
+          </div>
+          <div class="data-row">
+            <span class="data-row__label">Parentesco</span>
+            <span class="data-row__value">{{ matriculas.IdAcudiente.Parentesco }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── 6. DECLARACIONES ──────────────────────────── -->
+      <div class="mat-section">
+        <p class="mat-section__title">Declaraciones</p>
+        <div class="check-grid">
+          <div class="check-card">
+            <span class="check-card__label">¿Repite Grado?</span>
+            {% if matriculas.RepiteGrado %}<span class="badge-si">✓ Sí</span>{% else %}<span class="badge-no">✗ No</span>{% endif %}
+          </div>
+          <div class="check-card">
+            <span class="check-card__label">¿Requiere Apoyo Pedagógico?</span>
+            {% if matriculas.RequiereApoyoPedagogico %}<span class="badge-si">✓ Sí</span>{% else %}<span class="badge-no">✗ No</span>{% endif %}
+          </div>
+          <div class="check-card" style="grid-column:1/-1;">
+            <span class="check-card__label">Autoriza Tratamiento de Datos</span>
+            {% if matriculas.AutorizaTratamientoDatos %}<span class="badge-si">✓ Autorizado</span>{% else %}<span class="badge-no">✗ No autorizado</span>{% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── 7. DOCUMENTOS PRESENTADOS ────────────────── -->
+      <div class="mat-section">
+        <p class="mat-section__title">Documentos Presentados</p>
+        <div class="check-grid">
+          <div class="check-card">
+            <span class="check-card__label">Documento de Identidad Estudiante</span>
+            {% if matriculas.DocIdentidadEstudiantePresentado %}<span class="badge-si">✓ Sí</span>{% else %}<span class="badge-no">✗ Pendiente</span>{% endif %}
+          </div>
+          <div class="check-card">
+            <span class="check-card__label">Certificado de Notas Anterior</span>
+            {% if matriculas.CertificadoNotasAnteriorPresentado %}<span class="badge-si">✓ Sí</span>{% else %}<span class="badge-no">✗ Pendiente</span>{% endif %}
+          </div>
+          <div class="check-card">
+            <span class="check-card__label">Fotocopia Carnet de Vacunación</span>
+            {% if matriculas.FotocopiaCarnetVacunacionPresentado %}<span class="badge-si">✓ Sí</span>{% else %}<span class="badge-no">✗ Pendiente</span>{% endif %}
+          </div>
+          <div class="check-card">
+            <span class="check-card__label">Fotocopia EPS / Seguro Médico</span>
+            {% if matriculas.FotocopiaEpsSeguroMedicoPresentado %}<span class="badge-si">✓ Sí</span>{% else %}<span class="badge-no">✗ Pendiente</span>{% endif %}
+          </div>
+          <div class="check-card">
+            <span class="check-card__label">Fotos Tamaño Documento</span>
+            {% if matriculas.FotosTamanoDocumentoPresentadas %}<span class="badge-si">✓ Sí</span>{% else %}<span class="badge-no">✗ Pendiente</span>{% endif %}
+          </div>
+          <div class="check-card">
+            <span class="check-card__label">Certificado Médico</span>
+            {% if matriculas.CertificadoMedicoPresentado %}<span class="badge-si">✓ Sí</span>{% else %}<span class="badge-no">✗ Pendiente</span>{% endif %}
+          </div>
+          <div class="check-card">
+            <span class="check-card__label">Copia Cédula Acudiente</span>
+            {% if matriculas.CopiaCedulaAcudientePresentado %}<span class="badge-si">✓ Sí</span>{% else %}<span class="badge-no">✗ Pendiente</span>{% endif %}
+          </div>
+          <div class="check-card">
+            <span class="check-card__label">Comprobante de Residencia Acudiente</span>
+            {% if matriculas.ComprobanteResidenciaAcudientePresentado %}<span class="badge-si">✓ Sí</span>{% else %}<span class="badge-no">✗ Pendiente</span>{% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <a href="{% url 'gestion_aulatec:matricula_list' %}" class="btn btn--secondary">← Volver a matrículas</a>
+      </div>
+
+    </div>
+  </main>
 </div>
 {% endblock %}

@@ -22,6 +22,14 @@
             <h1>📜 Solicitudes de Certificados</h1>
         </div>
 
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
         <!-- Stats -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
             <div style="background:var(--adm-card);border:1px solid var(--adm-border);border-radius:12px;padding:1.25rem;text-align:center;">

@@ -16,7 +16,6 @@ class Certificado(models.Model):
     TIPO_CHOICES = [
         ('estudio', 'Certificado de Estudio'),
         ('notas', 'Certificado de Notas'),
-        ('conducta', 'Certificado de Conducta'),
     ]
     
     IdCertificado = models.AutoField(primary_key=True)

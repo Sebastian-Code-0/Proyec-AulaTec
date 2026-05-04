@@ -30,15 +30,36 @@ img { max-width: 100%; display: block; }
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 1px 0 rgba(0,0,0,0.08);
 }
+
+.navbar.scrolled .navbar__links a {
+  color: var(--home-text);
+}
+
+.navbar.scrolled .navbar__links a:hover {
+  color: var(--home-primary);
+}
+
+.navbar.scrolled .navbar__user {
+  color: var(--home-text);
+}
+
+.navbar.scrolled .btn--outline-white {
+  color: var(--home-text);
+  border-color: var(--home-border);
+}
+
+.navbar.scrolled .btn--outline-white:hover {
+  background: rgba(0,0,0,0.05);
+}
 .navbar__logo img { height: 32px; width: auto; }
 .navbar__links { list-style: none; display: flex; gap: 2rem; }
 .navbar__links a {
-  text-decoration: none; color: var(--home-text);
+  text-decoration: none; color: #fff;
   font-size: 0.9rem; font-weight: 500;
   transition: color 0.2s;
 }
 .navbar__links a:hover { color: var(--home-primary); }
-.navbar__user { font-weight: 600; margin-right: 1rem; font-size: 0.9rem; }
+.navbar__user { font-weight: 600; margin-right: 1rem; font-size: 0.9rem; color: #fff; }
 .btn--primary {
   background: var(--home-primary); color: #fff;
   padding: 0.5rem 1.25rem; border-radius: 8px;

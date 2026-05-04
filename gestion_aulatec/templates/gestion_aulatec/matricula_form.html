@@ -1,57 +1,539 @@
 {% extends "gestion_aulatec/base_admin.html" %}
 {% load static %}
 {% block title %}Nueva Matrícula - AulaTec{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ── Layout general del formulario ─────────────────────── */
+.mat-form { max-width: 860px; margin: 0 auto; padding-bottom: 3rem; }
+
+.mat-section {
+  background: var(--adm-card);
+  border: 1px solid var(--adm-border);
+  border-radius: 12px;
+  padding: 1.6rem 1.8rem;
+  margin-bottom: 1.6rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+.mat-section__title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--adm-primary);
+  margin: 0 0 1.2rem;
+  padding-bottom: .5rem;
+  border-bottom: 2px solid rgba(125,60,255,.2);
+}
+
+/* ── Grid 2 columnas ────────────────────────────────────── */
+.mat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.4rem; }
+.mat-grid--3 { grid-template-columns: 1fr 1fr 1fr; }
+.mat-grid--full { grid-column: 1 / -1; }
+
+/* ── Campo individual ───────────────────────────────────── */
+.mat-field { display: flex; flex-direction: column; gap: .35rem; }
+.mat-field label {
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--adm-text);
+}
+.mat-field input,
+.mat-field select,
+.mat-field textarea {
+  width: 100%;
+  padding: .6rem .9rem;
+  border: 1px solid var(--adm-border);
+  border-radius: 8px;
+  font-size: .9rem;
+  color: var(--adm-text);
+  background: var(--adm-card2);
+  transition: border-color .2s, box-shadow .2s;
+  box-sizing: border-box;
+}
+.mat-field input:focus,
+.mat-field select:focus,
+.mat-field textarea:focus {
+  outline: none;
+  border-color: var(--adm-primary);
+  box-shadow: 0 0 0 3px rgba(125,60,255,.15);
+}
+.mat-field .errorlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  color: #ef4444;
+  font-size: .78rem;
+}
+.mat-field input.input-error,
+.mat-field select.input-error,
+.mat-field textarea.input-error { border-color: #ef4444; }
+
+/* ── Condición médica: radio Si/No ─────────────────────── */
+.sinno-wrap { display: flex; gap: 1rem; margin-bottom: .5rem; }
+.sinno-btn {
+  display: flex; align-items: center; gap: .5rem;
+  cursor: pointer; padding: .55rem 1.2rem;
+  border: 2px solid var(--adm-border);
+  border-radius: 8px;
+  font-size: .9rem; font-weight: 600;
+  color: var(--adm-muted);
+  transition: all .2s;
+  user-select: none;
+}
+.sinno-btn input { display: none; }
+.sinno-btn:has(input:checked) {
+  border-color: var(--adm-primary);
+  background: rgba(125,60,255,.1);
+  color: var(--adm-primary);
+}
+.sinno-btn--si:has(input:checked) { border-color: #10b981; background: rgba(16,185,129,.1); color: #10b981; }
+
+/* Fallback para navegadores sin :has() */
+.sinno-btn input:checked ~ .sinno-dot { background: var(--adm-primary); }
+.sinno-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--adm-border); transition: background .2s;
+}
+
+/* ── Toggle switch ──────────────────────────────────────── */
+.check-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .8rem;
+}
+.check-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .75rem 1rem;
+  background: var(--adm-card2);
+  border: 1px solid var(--adm-border);
+  border-radius: 10px;
+  gap: .8rem;
+  transition: border-color .2s;
+}
+.check-card:hover { border-color: var(--adm-primary-light); }
+.check-card__label {
+  font-size: .85rem;
+  font-weight: 500;
+  color: var(--adm-text);
+  flex: 1;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+  flex-shrink: 0;
+}
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+.toggle-thumb {
+  position: absolute;
+  inset: 0;
+  background: #c0c0d0;
+  border-radius: 26px;
+  cursor: pointer;
+  transition: background .25s;
+}
+.toggle-thumb::before {
+  content: '';
+  position: absolute;
+  width: 20px; height: 20px;
+  left: 3px; top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform .25s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+.toggle-switch input:checked + .toggle-thumb { background: var(--adm-primary); }
+.toggle-switch input:checked + .toggle-thumb::before { transform: translateX(20px); }
+
+/* ── Textarea deshabilitada ─────────────────────────────── */
+#id_EspecificacionCondicionMedica:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .mat-grid, .check-grid { grid-template-columns: 1fr; }
+  .mat-grid--3 { grid-template-columns: 1fr; }
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="wrapper">
-    <aside class="sidebar">
-        <ul class="menu">
-            <li><a href="{% url 'gestion_aulatec:admin_dashboard' %}">🏠 Resumen</a></li>
-            <li><a href="{% url 'gestion_aulatec:usuario_list' %}">👤 Usuarios</a></li>
-            <li><a href="{% url 'gestion_aulatec:grado_list' %}">🎓 Grados</a></li>
-            <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
-            <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
-            <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
-            <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
-            <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
-            <li><a href="{% url 'gestion_aulatec:matricula_list' %}" class="active">🗂️ Matrículas</a></li>
-            <li><a href="{% url 'gestion_aulatec:admin_solicitudes' %}">📜 Certificados</a></li>
-        </ul>
-    </aside>
-    <main class="content">
-        <div class="page-header">
-            <h1>📋 Registrar Nueva Matrícula</h1>
+  <aside class="sidebar">
+    <ul class="menu">
+      <li><a href="{% url 'gestion_aulatec:admin_dashboard' %}">🏠 Resumen</a></li>
+      <li><a href="{% url 'gestion_aulatec:usuario_list' %}">👤 Usuarios</a></li>
+      <li><a href="{% url 'gestion_aulatec:grado_list' %}">🎓 Grados</a></li>
+      <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
+      <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
+      <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
+      <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
+      <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
+      <li><a href="{% url 'gestion_aulatec:matricula_list' %}" class="active">🗂️ Matrículas</a></li>
+      <li><a href="{% url 'gestion_aulatec:admin_solicitudes' %}">📜 Certificados</a></li>
+    </ul>
+  </aside>
+
+  <main class="content">
+    <div class="page-header">
+      <h1>📋 Registrar Nueva Matrícula</h1>
+    </div>
+
+    {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {{ form.non_field_errors }}
+
+    <!-- ══ datalists ══════════════════════════════════════ -->
+    <datalist id="municipios_list">
+      {% for m in municipios %}<option value="{{ m }}">{% endfor %}
+    </datalist>
+    <datalist id="eps_list">
+      {% for e in eps_lista %}<option value="{{ e }}">{% endfor %}
+    </datalist>
+
+    <form method="post" class="mat-form" novalidate>
+      {% csrf_token %}
+
+      <!-- ─────── 1. DATOS DEL ESTUDIANTE ─────────────── -->
+      <div class="mat-section">
+        <p class="mat-section__title">Datos del Estudiante</p>
+        <div class="mat-grid">
+
+          <div class="mat-field">
+            <label for="id_EstudianteNombres">Nombres *</label>
+            {{ form.EstudianteNombres }}
+            {{ form.EstudianteNombres.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_EstudianteApellidos">Apellidos *</label>
+            {{ form.EstudianteApellidos }}
+            {{ form.EstudianteApellidos.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_EstudianteTipoId">Tipo de Documento *</label>
+            {{ form.EstudianteTipoId }}
+            {{ form.EstudianteTipoId.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_EstudianteNumId">Número de Documento *</label>
+            {{ form.EstudianteNumId }}
+            {{ form.EstudianteNumId.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_EstudianteEmail">Correo Electrónico *</label>
+            {{ form.EstudianteEmail }}
+            {{ form.EstudianteEmail.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_EstudianteCelular">Teléfono</label>
+            {{ form.EstudianteCelular }}
+            {{ form.EstudianteCelular.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_FechaNacimientoEstudiante">Fecha de Nacimiento *</label>
+            {{ form.FechaNacimientoEstudiante }}
+            {{ form.FechaNacimientoEstudiante.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_LugarNacimientoEstudiante">Lugar de Nacimiento *</label>
+            {{ form.LugarNacimientoEstudiante }}
+            {{ form.LugarNacimientoEstudiante.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_BarrioVeredaEstudiante">Barrio / Vereda *</label>
+            {{ form.BarrioVeredaEstudiante }}
+            {{ form.BarrioVeredaEstudiante.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_EPSSeguroMedicoEstudiante">EPS o Seguro Médico *</label>
+            {{ form.EPSSeguroMedicoEstudiante }}
+            {{ form.EPSSeguroMedicoEstudiante.errors }}
+          </div>
+
         </div>
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li class="{{ message.tags }}">{{ message }}</li>
+      </div>
+
+      <!-- ─────── 2. CONDICIÓN MÉDICA ──────────────────── -->
+      <div class="mat-section">
+        <p class="mat-section__title">Condición Médica</p>
+
+        <div class="mat-field" style="margin-bottom:.8rem;">
+          <label>¿Tiene alguna condición médica?</label>
+          <div class="sinno-wrap">
+            {% for choice in form.TieneCondicionMedica %}
+            <label class="sinno-btn {% if choice.data.value == '1' %}sinno-btn--si{% endif %}">
+              {{ choice.tag }}
+              <span class="sinno-dot"></span>
+              {{ choice.choice_label }}
+            </label>
             {% endfor %}
-        </ul>
-        {% endif %}
-        <div class="form-container">
-            <form method="post">
-                {% csrf_token %}
-                {{ form.non_field_errors }}
-                {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.help_text %}
-                    <span class="help-text">{{ field.help_text }}</span>
-                    {% endif %}
-                    {% if field.errors %}
-                    <ul class="errorlist">
-                        {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
-                    </ul>
-                    {% endif %}
-                </div>
-                {% endfor %}
-                <div class="form-actions">
-                    <button type="submit" class="btn btn--primary">Registrar Matrícula</button>
-                    <a href="{% url 'gestion_aulatec:matricula_list' %}" class="btn btn--secondary">Cancelar</a>
-                </div>
-            </form>
+          </div>
+          {{ form.TieneCondicionMedica.errors }}
         </div>
-    </main>
+
+        <div class="mat-field" id="condicion-field">
+          <label for="id_EspecificacionCondicionMedica">Especifique la condición médica</label>
+          {{ form.EspecificacionCondicionMedica }}
+          {{ form.EspecificacionCondicionMedica.errors }}
+        </div>
+      </div>
+
+      <!-- ─────── 3. DATOS ACADÉMICOS ──────────────────── -->
+      <div class="mat-section">
+        <p class="mat-section__title">Datos Académicos</p>
+        <div class="mat-grid mat-grid--3">
+
+          <div class="mat-field">
+            <label for="id_IdGrado">Grado a Matricular *</label>
+            {{ form.IdGrado }}
+            {{ form.IdGrado.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_AnioLectivo">Año Lectivo *</label>
+            {{ form.AnioLectivo }}
+            {{ form.AnioLectivo.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_UltimoGradoCursado">Último Grado Cursado *</label>
+            {{ form.UltimoGradoCursado }}
+            {{ form.UltimoGradoCursado.errors }}
+          </div>
+
+          <div class="mat-field mat-grid--full">
+            <label for="id_NombreColegio">Nombre del Colegio de Procedencia</label>
+            {{ form.NombreColegio }}
+            {{ form.NombreColegio.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_InstitucionAnterior">Institución Anterior</label>
+            {{ form.InstitucionAnterior }}
+            {{ form.InstitucionAnterior.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_CiudadMunicipioInstitucionAnterior">Ciudad de la Institución Anterior</label>
+            {{ form.CiudadMunicipioInstitucionAnterior }}
+            {{ form.CiudadMunicipioInstitucionAnterior.errors }}
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ─────── 4. DATOS DEL ACUDIENTE ───────────────── -->
+      <div class="mat-section">
+        <p class="mat-section__title">Datos del Acudiente</p>
+        <div class="mat-grid">
+
+          <div class="mat-field">
+            <label for="id_AcudienteTipoId">Tipo de Identificación *</label>
+            {{ form.AcudienteTipoId }}
+            {{ form.AcudienteTipoId.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_AcudienteNumId">Número de Identificación *</label>
+            {{ form.AcudienteNumId }}
+            {{ form.AcudienteNumId.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_AcudienteNombres">Nombres *</label>
+            {{ form.AcudienteNombres }}
+            {{ form.AcudienteNombres.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_AcudienteApellidos">Apellidos *</label>
+            {{ form.AcudienteApellidos }}
+            {{ form.AcudienteApellidos.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_AcudienteCelular">Celular *</label>
+            {{ form.AcudienteCelular }}
+            {{ form.AcudienteCelular.errors }}
+          </div>
+
+          <div class="mat-field">
+            <label for="id_AcudienteParentesco">Parentesco *</label>
+            {{ form.AcudienteParentesco }}
+            {{ form.AcudienteParentesco.errors }}
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ─────── 5. DECLARACIONES ──────────────────────── -->
+      <div class="mat-section">
+        <p class="mat-section__title">Declaraciones</p>
+        <div class="check-grid">
+
+          <div class="check-card">
+            <span class="check-card__label">¿Repite Grado?</span>
+            <label class="toggle-switch">
+              {{ form.RepiteGrado }}
+              <span class="toggle-thumb"></span>
+            </label>
+          </div>
+
+          <div class="check-card">
+            <span class="check-card__label">¿Requiere Apoyo Pedagógico?</span>
+            <label class="toggle-switch">
+              {{ form.RequiereApoyoPedagogico }}
+              <span class="toggle-thumb"></span>
+            </label>
+          </div>
+
+          <div class="check-card" style="grid-column:1/-1;">
+            <span class="check-card__label">Autoriza Tratamiento de Datos</span>
+            <label class="toggle-switch">
+              {{ form.AutorizaTratamientoDatos }}
+              <span class="toggle-thumb"></span>
+            </label>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ─────── 6. DOCUMENTOS PRESENTADOS ────────────── -->
+      <div class="mat-section">
+        <p class="mat-section__title">Documentos Presentados</p>
+        <div class="check-grid">
+
+          <div class="check-card">
+            <span class="check-card__label">Documento de Identidad Estudiante</span>
+            <label class="toggle-switch">
+              {{ form.DocIdentidadEstudiantePresentado }}
+              <span class="toggle-thumb"></span>
+            </label>
+          </div>
+
+          <div class="check-card">
+            <span class="check-card__label">Certificado de Notas Anterior</span>
+            <label class="toggle-switch">
+              {{ form.CertificadoNotasAnteriorPresentado }}
+              <span class="toggle-thumb"></span>
+            </label>
+          </div>
+
+          <div class="check-card">
+            <span class="check-card__label">Fotocopia Carnet de Vacunación</span>
+            <label class="toggle-switch">
+              {{ form.FotocopiaCarnetVacunacionPresentado }}
+              <span class="toggle-thumb"></span>
+            </label>
+          </div>
+
+          <div class="check-card">
+            <span class="check-card__label">Fotocopia EPS / Seguro Médico</span>
+            <label class="toggle-switch">
+              {{ form.FotocopiaEpsSeguroMedicoPresentado }}
+              <span class="toggle-thumb"></span>
+            </label>
+          </div>
+
+          <div class="check-card">
+            <span class="check-card__label">Fotos Tamaño Documento</span>
+            <label class="toggle-switch">
+              {{ form.FotosTamanoDocumentoPresentadas }}
+              <span class="toggle-thumb"></span>
+            </label>
+          </div>
+
+          <div class="check-card">
+            <span class="check-card__label">Certificado Médico</span>
+            <label class="toggle-switch">
+              {{ form.CertificadoMedicoPresentado }}
+              <span class="toggle-thumb"></span>
+            </label>
+          </div>
+
+          <div class="check-card">
+            <span class="check-card__label">Copia Cédula Acudiente</span>
+            <label class="toggle-switch">
+              {{ form.CopiaCedulaAcudientePresentado }}
+              <span class="toggle-thumb"></span>
+            </label>
+          </div>
+
+          <div class="check-card">
+            <span class="check-card__label">Comprobante de Residencia Acudiente</span>
+            <label class="toggle-switch">
+              {{ form.ComprobanteResidenciaAcudientePresentado }}
+              <span class="toggle-thumb"></span>
+            </label>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ─────── Acciones ──────────────────────────────── -->
+      <div class="form-actions">
+        <button type="submit" class="btn btn--primary">Registrar Matrícula</button>
+        <a href="{% url 'gestion_aulatec:matricula_list' %}" class="btn btn--secondary">Cancelar</a>
+      </div>
+
+    </form>
+  </main>
 </div>
+
+<script>
+(function () {
+  // ── Condición médica: enable/disable textarea ─────────
+  var radios = document.querySelectorAll('input[name="TieneCondicionMedica"]');
+  var textarea = document.getElementById('id_EspecificacionCondicionMedica');
+
+  function actualizarCondicion() {
+    var checked = document.querySelector('input[name="TieneCondicionMedica"]:checked');
+    var esSi = checked && checked.value === '1';
+    textarea.disabled = !esSi;
+    if (!esSi) textarea.value = '';
+  }
+
+  radios.forEach(function (r) { r.addEventListener('change', actualizarCondicion); });
+
+  // Estado inicial
+  actualizarCondicion();
+
+  // ── Solo números en campos de documento / celular ─────
+  ['id_EstudianteNumId', 'id_AcudienteNumId',
+   'id_EstudianteCelular', 'id_AcudienteCelular'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', function () {
+      this.value = this.value.replace(/\D/g, '').slice(0, 10);
+    });
+  });
+})();
+</script>
 {% endblock %}

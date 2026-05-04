@@ -61,9 +61,46 @@ class HorarioForm(forms.ModelForm):
         cleaned_data = super().clean()
         hora_inicio = cleaned_data.get('hora_inicio')
         hora_fin = cleaned_data.get('hora_fin')
-        
+
         if hora_inicio and hora_fin:
             if hora_fin <= hora_inicio:
                 raise forms.ValidationError('La hora de fin debe ser mayor a la hora de inicio.')
-        
+
+        grado = cleaned_data.get('grado')
+        dia = cleaned_data.get('dia_semana')
+        docente = cleaned_data.get('docente')
+
+        if grado and dia and hora_inicio and hora_fin:
+            qs = Horario.objects.filter(
+                grado=grado,
+                dia_semana=dia,
+                hora_inicio=hora_inicio,
+                hora_fin=hora_fin,
+            )
+            if self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise forms.ValidationError(
+                    f'Ya existe un horario para {grado} el día {dia} '
+                    f'de {hora_inicio.strftime("%H:%M")} a {hora_fin.strftime("%H:%M")}.'
+                )
+
+        # Un docente no puede tener dos clases en horarios que se traslapen el mismo día
+        if docente and dia and hora_inicio and hora_fin:
+            conflicto = Horario.objects.filter(
+                docente=docente,
+                dia_semana=dia,
+                hora_inicio__lt=hora_fin,
+                hora_fin__gt=hora_inicio,
+            )
+            if self.instance.pk:
+                conflicto = conflicto.exclude(pk=self.instance.pk)
+            if conflicto.exists():
+                h = conflicto.first()
+                raise forms.ValidationError(
+                    f'El docente {docente} ya tiene clase el {dia} '
+                    f'de {h.hora_inicio.strftime("%H:%M")} a {h.hora_fin.strftime("%H:%M")} '
+                    f'({h.grado} — {h.materia}). No puede dictar dos clases al mismo tiempo.'
+                )
+
         return cleaned_data

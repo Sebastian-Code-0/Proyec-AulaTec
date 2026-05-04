@@ -159,3 +159,172 @@ body {
     .sidebar { width: 100%; height: auto; position: static; }
     .cards { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ── Estadísticas dashboard admin ── */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--card-bg, #2a1f4e);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 1.4rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.stat-card--accent {
+    border-color: rgba(245, 158, 11, 0.4);
+    background: rgba(245, 158, 11, 0.07);
+}
+
+.stat-card__icon { font-size: 1.6rem; }
+
+.stat-card__num {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+}
+
+.stat-card--accent .stat-card__num {
+    color: #F59E0B;
+}
+
+.stat-card__label {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.55);
+    margin-top: 0.1rem;
+}
+
+.stat-card__link {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    margin-top: 0.4rem;
+    transition: color 0.2s;
+}
+
+.stat-card__link:hover { color: rgba(255,255,255,0.85); }
+
+/* ── Acciones pendientes ── */
+.pending-section {
+    margin-bottom: 2rem;
+}
+
+.pending-section__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 0.75rem;
+}
+
+.pending-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.pending-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: opacity 0.2s, transform 0.15s;
+}
+
+.pending-item:hover {
+    opacity: 0.88;
+    transform: translateX(3px);
+}
+
+.pending-item--warn {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+.pending-item--info {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+.pending-item__icon { font-size: 1.4rem; }
+
+.pending-item__title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.pending-item__sub {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 0.15rem;
+}
+
+.pending-item__arrow {
+    margin-left: auto;
+    color: rgba(255,255,255,0.3);
+    font-size: 1rem;
+}
+
+/* ── Exportar Excel ── */
+.export-section {
+    margin-bottom: 1.5rem;
+}
+
+.export-form {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.export-form label {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.75);
+    font-weight: 500;
+}
+
+.export-select {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    color: #fff;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.export-select option {
+    background: #2a1f4e;
+    color: #fff;
+}
+
+.export-btn {
+    background: #10B981;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.45rem 1.1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.export-btn:hover { opacity: 0.85; }

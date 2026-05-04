@@ -1,73 +1,106 @@
 {% extends "gestion_aulatec/base_admin.html" %}
 {% load static %}
 
-{% block title %}AulaTec{% endblock %}
+{% block title %}Panel Admin — AulaTec{% endblock %}
 
 {% block content %}
-    <div class="wrapper">
-        <aside class="sidebar">
-            <ul class="menu">
-                <li><a href="" class="active">Resumen</a></li>
-                <li><a href="{% url 'gestion_aulatec:usuario_list' %}">👤 Usuarios</a></li>
-                <li><a href="{% url 'gestion_aulatec:grado_list' %}">🎓 Grados</a></li>
-                <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
-                <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
-                <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
-                <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
-                <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
-                <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
+<div class="wrapper">
+    <aside class="sidebar">
+        <ul class="menu">
+            <li><a href="" class="active">Resumen</a></li>
+            <li><a href="{% url 'gestion_aulatec:usuario_list' %}">👤 Usuarios</a></li>
+            <li><a href="{% url 'gestion_aulatec:grado_list' %}">🎓 Grados</a></li>
+            <li><a href="{% url 'gestion_aulatec:estudiante_list' %}">📚 Estudiantes</a></li>
+            <li><a href="{% url 'gestion_aulatec:docente_list' %}">👩‍🏫 Docentes</a></li>
+            <li><a href="{% url 'gestion_aulatec:horario_list' %}">🕐 Horarios</a></li>
+            <li><a href="{% url 'gestion_aulatec:materia_list' %}">📖 Materias</a></li>
+            <li><a href="{% url 'gestion_aulatec:calificacion_list' %}">📝 Calificaciones</a></li>
+            <li><a href="{% url 'gestion_aulatec:matricula_list' %}">🗂️ Matrículas</a></li>
             <li><a href="{% url 'gestion_aulatec:admin_solicitudes' %}">📜 Certificados</a></li>
-            </ul>
-        </aside>
+        </ul>
+    </aside>
 
-        <main class="content">
-            <section class="welcome">
-                <h1>¡Bienvenido, {{ request.user.Nombres }} {{ request.user.Apellidos }}!</h1>
-                <p>Tienes permisos de <strong>Administrador</strong>. Desde aquí puedes gestionar todo lo relacionado con el colegio.</p>
-            </section>
+    <main class="content">
 
-            <section class="cards">
-                <!-- Cada tarjeta representa una entidad que se puede administrar -->
-                <a href="{% url 'gestion_aulatec:usuario_list' %}" class="card">
-                    <h2>Usuarios</h2>
-                    <p>👤 Gestiona cuentas de acceso.</p>
+        <!-- BIENVENIDA -->
+        <section class="welcome">
+            <h1>¡Bienvenido, {{ request.user.Nombres }} {{ request.user.Apellidos }}!</h1>
+            <p>Panel de administración — <strong>{{ anio_actual }}</strong></p>
+        </section>
+
+        <!-- EXPORTAR EXCEL -->
+        <section class="export-section">
+            <form method="get" action="{% url 'gestion_aulatec:exportar_matriculas_excel' %}" class="export-form">
+                <label for="anio-excel">📊 Exportar matrículas activas:</label>
+                <select name="anio" id="anio-excel" class="export-select">
+                    <option value="{{ anio_actual }}" selected>{{ anio_actual }}</option>
+                    <option value="{{ anio_actual|add:'-1' }}">{{ anio_actual|add:'-1' }}</option>
+                    <option value="{{ anio_actual|add:'-2' }}">{{ anio_actual|add:'-2' }}</option>
+                    <option value="{{ anio_actual|add:'-3' }}">{{ anio_actual|add:'-3' }}</option>
+                </select>
+                <button type="submit" class="export-btn">⬇ Descargar Excel</button>
+            </form>
+        </section>
+
+        <!-- ESTADÍSTICAS REALES -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card__icon">📚</div>
+                <div class="stat-card__num">{{ total_estudiantes }}</div>
+                <div class="stat-card__label">Estudiantes</div>
+                <a href="{% url 'gestion_aulatec:estudiante_list' %}" class="stat-card__link">Ver todos →</a>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon">👩‍🏫</div>
+                <div class="stat-card__num">{{ total_docentes }}</div>
+                <div class="stat-card__label">Docentes</div>
+                <a href="{% url 'gestion_aulatec:docente_list' %}" class="stat-card__link">Ver todos →</a>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon">🗂️</div>
+                <div class="stat-card__num">{{ total_matriculas_activas }}</div>
+                <div class="stat-card__label">Matrículas activas {{ anio_actual }}</div>
+                <a href="{% url 'gestion_aulatec:matricula_list' %}" class="stat-card__link">Ver todas →</a>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon">📖</div>
+                <div class="stat-card__num">{{ total_materias }}</div>
+                <div class="stat-card__label">Materias</div>
+                <a href="{% url 'gestion_aulatec:materia_list' %}" class="stat-card__link">Ver todas →</a>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon">🕐</div>
+                <div class="stat-card__num">{{ total_horarios }}</div>
+                <div class="stat-card__label">Horarios activos</div>
+                <a href="{% url 'gestion_aulatec:horario_list' %}" class="stat-card__link">Ver todos →</a>
+            </div>
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__icon">📜</div>
+                <div class="stat-card__num">{{ cert_pendientes }}</div>
+                <div class="stat-card__label">Certificados pendientes</div>
+                <a href="{% url 'gestion_aulatec:admin_solicitudes' %}" class="stat-card__link">Revisar →</a>
+            </div>
+        </section>
+
+        <!-- ACCIONES RÁPIDAS PENDIENTES -->
+        {% if cert_pendientes %}
+        <section class="pending-section">
+            <h2 class="pending-section__title">Acciones pendientes</h2>
+            <div class="pending-list">
+                {% if cert_pendientes %}
+                <a href="{% url 'gestion_aulatec:admin_solicitudes' %}" class="pending-item pending-item--warn">
+                    <span class="pending-item__icon">📜</span>
+                    <div>
+                        <div class="pending-item__title">{{ cert_pendientes }} certificado{% if cert_pendientes != 1 %}s{% endif %} esperando aprobación</div>
+                        <div class="pending-item__sub">Haz clic para revisar y aprobar</div>
+                    </div>
+                    <span class="pending-item__arrow">→</span>
                 </a>
+                {% endif %}
+            </div>
+        </section>
+        {% endif %}
 
-                <a href="{% url 'gestion_aulatec:grado_list' %}" class="card">
-                    <h2>Grados</h2>
-                    <p>🎓 Organiza los niveles educativos.</p>
-                </a>
-
-                <a href="{% url 'gestion_aulatec:estudiante_list' %}" class="card">
-                    <h2>Estudiantes</h2>
-                    <p>📚 Administra la información académica.</p>
-                </a>
-
-                <a href="{% url 'gestion_aulatec:docente_list' %}" class="card">
-                    <h2>Docentes</h2>
-                    <p>👩‍🏫 Controla el cuerpo docente.</p>
-                </a>
-
-                <a href="{% url 'gestion_aulatec:horario_list' %}" class="card">
-                    <h2>Horarios</h2>
-                    <p>🕐 Controla los horarios.</p>
-                </a>
-
-                <a href="{% url 'gestion_aulatec:materia_list' %}" class="card">
-                    <h2>Materias</h2>
-                    <p>📖 Define los cursos ofrecidos.</p>
-                </a>
-
-                <a href="{% url 'gestion_aulatec:calificacion_list' %}" class="card">
-                    <h2>Calificaciones</h2>
-                    <p>📝 Gestiona las notas de los estudiantes.</p>
-                </a>
-
-                <a href="{% url 'gestion_aulatec:matricula_list' %}" class="card">
-                    <h2>Matrículas</h2>
-                    <p>🗂️ Registra inscripciones.</p>
-                </a>
-            </section>
-        </main>
-    </div>
+    </main>
+</div>
 {% endblock %}
