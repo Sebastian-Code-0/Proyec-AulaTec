@@ -78,7 +78,8 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     
 class DocenteDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = 'gestion_aulatec/docente_dashboard.html'
-    model = Docente
+    model = Usuario
+    context_object_name = 'usuarios'
 
     def test_func(self):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Docente'
@@ -86,56 +87,58 @@ class DocenteDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def handle_no_permission(self):
         return redirect('gestion_aulatec:home')
 
-    def get_queryset(self):
-        return Docente.objects.filter(IdUsuario=self.request.user)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        from gestion_aulatec.models import Materia, Horario, Calificacion, Estudiante
-        from django.db.models import Avg, Count
+        from gestion_aulatec.models import Docente, Horario, Calificacion, Materia
+        from django.db.models import Count, Avg
 
         try:
-            docente = Docente.objects.get(IdUsuario=self.request.user)
+            docente = Docente.objects.select_related('IdUsuario').get(IdUsuario=self.request.user)
+            context['docente'] = docente
 
-            # Materias del docente
+            # Materias asignadas al docente
             materias = Materia.objects.filter(IdDocente=docente)
+            context['materias'] = materias
 
-            # Horarios del docente
+            # Horarios activos del docente
             horarios = Horario.objects.filter(
                 docente=docente, activo=True
             ).select_related('materia', 'grado').order_by('dia_semana', 'hora_inicio')
+            context['horarios'] = horarios
 
-            # Calificaciones registradas por el docente
-            calificaciones = Calificacion.objects.filter(
+            # Calificaciones recientes (últimas 10)
+            calificaciones_recientes = Calificacion.objects.filter(
                 IdDocente=docente
-            ).select_related('IdEstudiante__IdUsuario', 'IdMateria').order_by('-FechaRegistro')
+            ).select_related(
+                'IdEstudiante__IdUsuario', 'IdMateria'
+            ).order_by('-FechaRegistro')[:10]
+            context['calificaciones_recientes'] = calificaciones_recientes
 
-            # Resumen por materia
+            # Total de calificaciones registradas
+            context['total_calificaciones'] = Calificacion.objects.filter(IdDocente=docente).count()
+
+            # Resumen por materia: estudiantes, calificaciones, promedio
             resumen_materias = []
             for materia in materias:
-                cals = calificaciones.filter(IdMateria=materia)
+                cals = Calificacion.objects.filter(IdDocente=docente, IdMateria=materia)
+                total_estudiantes = cals.values('IdEstudiante').distinct().count()
+                total_cals = cals.count()
                 promedio = cals.aggregate(Avg('Nota'))['Nota__avg']
-                estudiantes = Estudiante.objects.filter(
-                    IdGrado__horarios__materia=materia,
-                    IdGrado__horarios__docente=docente
-                ).distinct()
                 resumen_materias.append({
                     'materia': materia,
-                    'total_calificaciones': cals.count(),
+                    'total_estudiantes': total_estudiantes,
+                    'total_calificaciones': total_cals,
                     'promedio': round(promedio, 2) if promedio else None,
-                    'total_estudiantes': estudiantes.count(),
-                    'estudiantes': estudiantes.select_related('IdUsuario')[:5],
                 })
-
-            context['docente'] = docente
-            context['materias'] = materias
-            context['horarios'] = horarios
-            context['calificaciones_recientes'] = calificaciones[:10]
             context['resumen_materias'] = resumen_materias
-            context['total_calificaciones'] = calificaciones.count()
 
         except Docente.DoesNotExist:
             context['docente'] = None
+            context['materias'] = []
+            context['horarios'] = []
+            context['calificaciones_recientes'] = []
+            context['total_calificaciones'] = 0
+            context['resumen_materias'] = []
 
         return context
 
