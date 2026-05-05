@@ -152,13 +152,19 @@ class CalificacionEstudianteView(LoginRequiredMixin, UserPassesTestMixin, ListVi
     def get_queryset(self):
         user = self.request.user
         if user.Rol == 'Estudiante':
-            estudiante = Estudiante.objects.get(IdUsuario=user)
+            try:
+                estudiante = Estudiante.objects.get(IdUsuario=user)
+            except Estudiante.DoesNotExist:
+                return Calificacion.objects.none()
             return Calificacion.objects.filter(
                 IdEstudiante=estudiante
             ).order_by('Periodo', 'IdMateria')
         # Admin o Docente consultando un estudiante específico por pk en la URL
+        pk = self.kwargs.get('pk')
+        if not pk:
+            return Calificacion.objects.none()
         return Calificacion.objects.filter(
-            IdEstudiante__pk=self.kwargs.get('pk')
+            IdEstudiante__pk=pk
         ).order_by('Periodo', 'IdMateria')
 
 

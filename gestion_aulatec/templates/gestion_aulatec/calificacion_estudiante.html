@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calificaciones — AulaTec</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard_est.css' %}">
+</head>
+<body>
+<main style="max-width:900px;margin:3rem auto;padding:0 1rem;">
+
+    <div class="page-header">
+        <h1>📝 Calificaciones</h1>
+        {% if request.user.Rol == 'Estudiante' %}
+        <a href="{% url 'gestion_aulatec:estudiante_dashboard' %}" class="btn btn--secondary">← Volver al panel</a>
+        {% elif request.user.Rol == 'Docente' %}
+        <a href="{% url 'gestion_aulatec:docente_dashboard' %}" class="btn btn--secondary">← Volver al panel</a>
+        {% else %}
+        <a href="{% url 'gestion_aulatec:admin_dashboard' %}" class="btn btn--secondary">← Volver al panel</a>
+        {% endif %}
+    </div>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if calificaciones %}
+
+    {% regroup calificaciones by Periodo as califs_por_periodo %}
+    {% for grupo in califs_por_periodo %}
+
+    <div style="margin-bottom:2rem;">
+        <h2 style="font-size:1rem;font-weight:700;color:var(--primary);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:2px solid var(--border);">
+            {% if grupo.grouper == 1 %}Primer Periodo
+            {% elif grupo.grouper == 2 %}Segundo Periodo
+            {% elif grupo.grouper == 3 %}Tercer Periodo
+            {% elif grupo.grouper == 4 %}Cuarto Periodo
+            {% else %}Periodo {{ grupo.grouper }}{% endif %}
+        </h2>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Materia</th>
+                        <th>Actividad</th>
+                        <th>Docente</th>
+                        <th>Nota</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cal in grupo.list %}
+                    <tr>
+                        <td><strong>{{ cal.IdMateria.NombreMateria }}</strong></td>
+                        <td>{{ cal.NombreActividad }}</td>
+                        <td>
+                            {% if cal.IdDocente %}
+                            {{ cal.IdDocente.IdUsuario.Nombres }} {{ cal.IdDocente.IdUsuario.Apellidos }}
+                            {% else %}—{% endif %}
+                        </td>
+                        <td style="text-align:center;">
+                            <span style="
+                                display:inline-block;
+                                padding:0.2rem 0.6rem;
+                                border-radius:6px;
+                                font-weight:700;
+                                font-size:0.9rem;
+                                background:{% if cal.Nota >= 7 %}rgba(16,185,129,0.15){% elif cal.Nota >= 6 %}rgba(245,158,11,0.15){% else %}rgba(239,68,68,0.15){% endif %};
+                                color:{% if cal.Nota >= 7 %}var(--success){% elif cal.Nota >= 6 %}var(--warning){% else %}var(--danger){% endif %};
+                            ">{{ cal.Nota }}</span>
+                        </td>
+                        <td>{{ cal.FechaRegistro|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% endfor %}
+
+    {% else %}
+    <p class="empty-msg">No hay calificaciones registradas todavía.</p>
+    {% endif %}
+
+</main>
+</body>
+</html>
