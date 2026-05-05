@@ -383,3 +383,84 @@ class MatriculaForm(forms.ModelForm):
         # Pre-llenar AnioLectivo con el año actual solo si es un formulario vacío (sin datos previos)
         if not args and not kwargs.get('instance'):
             self.fields['AnioLectivo'].initial = date.today().year
+
+
+class MatriculaUpdateForm(forms.ModelForm):
+    """
+    Formulario de edición de matrícula.
+    Solo incluye campos del modelo Matricula — sin los campos extra
+    de estudiante/acudiente que solo aplican al crear.
+    """
+
+    # ---- Condición médica: override BooleanField → Si/No radio ----
+    TieneCondicionMedica = forms.TypedChoiceField(
+        choices=[('1', 'Sí'), ('0', 'No')],
+        coerce=lambda x: bool(int(x)),
+        widget=forms.RadioSelect(attrs={'class': 'si-no-radio'}),
+        label='¿Tiene alguna condición médica?',
+        initial='0',
+    )
+
+    # ---- Último grado: override CharField → select ----
+    UltimoGradoCursado = forms.ChoiceField(
+        choices=GRADOS_CHOICES, label='Último Grado Cursado',
+    )
+
+    class Meta:
+        model = Matricula
+        fields = [
+            'IdGrado', 'AnioLectivo', 'NombreColegio',
+            'FechaNacimientoEstudiante', 'LugarNacimientoEstudiante',
+            'BarrioVeredaEstudiante', 'EPSSeguroMedicoEstudiante',
+            'TieneCondicionMedica', 'EspecificacionCondicionMedica',
+            'UltimoGradoCursado', 'InstitucionAnterior',
+            'CiudadMunicipioInstitucionAnterior',
+            'RepiteGrado', 'RequiereApoyoPedagogico', 'AutorizaTratamientoDatos',
+            'DocIdentidadEstudiantePresentado', 'CertificadoNotasAnteriorPresentado',
+            'FotocopiaCarnetVacunacionPresentado', 'FotocopiaEpsSeguroMedicoPresentado',
+            'FotosTamanoDocumentoPresentadas', 'CertificadoMedicoPresentado',
+            'CopiaCedulaAcudientePresentado', 'ComprobanteResidenciaAcudientePresentado',
+        ]
+        widgets = {
+            'FechaNacimientoEstudiante': forms.DateInput(attrs={'type': 'date'}),
+            'EspecificacionCondicionMedica': forms.Textarea(attrs={
+                'rows': 3,
+                'placeholder': 'Describa la condición médica...',
+                'id': 'id_EspecificacionCondicionMedica',
+            }),
+            'LugarNacimientoEstudiante': forms.TextInput(attrs={
+                'list': 'municipios_list',
+                'autocomplete': 'off',
+                'placeholder': 'Escriba ciudad o departamento...',
+            }),
+            'EPSSeguroMedicoEstudiante': forms.TextInput(attrs={
+                'list': 'eps_list',
+                'autocomplete': 'off',
+                'placeholder': 'Escriba el nombre de la EPS...',
+            }),
+            'CiudadMunicipioInstitucionAnterior': forms.TextInput(attrs={
+                'list': 'municipios_list',
+                'autocomplete': 'off',
+                'placeholder': 'Escriba ciudad o departamento...',
+            }),
+            'BarrioVeredaEstudiante': forms.TextInput(attrs={'placeholder': 'Ej: La Floresta'}),
+            'NombreColegio': forms.TextInput(attrs={'placeholder': 'Nombre del colegio anterior'}),
+            'InstitucionAnterior': forms.TextInput(attrs={'placeholder': 'Nombre de la institución anterior'}),
+            'AnioLectivo': forms.NumberInput(attrs={'min': '2000', 'max': '2100'}),
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        tiene = cleaned_data.get('TieneCondicionMedica')
+        especificacion = cleaned_data.get('EspecificacionCondicionMedica', '').strip()
+        if tiene and not especificacion:
+            self.add_error('EspecificacionCondicionMedica', 'Debe especificar la condición médica.')
+        if not tiene:
+            cleaned_data['EspecificacionCondicionMedica'] = ''
+        return cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['IdGrado'].queryset = Grado.objects.all()
+        self.fields['IdGrado'].label_from_instance = lambda obj: str(obj)
+        self.fields['IdGrado'].empty_label = '— Seleccione grado —'

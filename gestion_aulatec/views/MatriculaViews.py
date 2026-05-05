@@ -12,7 +12,7 @@ import string
 from django.core.mail import send_mail
 from django.conf import settings
 from gestion_aulatec.forms import MatriculaForm
-from gestion_aulatec.forms.MatriculaForm import MUNICIPIOS_COLOMBIA, EPS_COLOMBIA
+from gestion_aulatec.forms.MatriculaForm import MUNICIPIOS_COLOMBIA, EPS_COLOMBIA, MatriculaUpdateForm
 from gestion_aulatec.models import Usuario,Estudiante,Matricula,Acudiente
 
 #funcion para generar una constrasela aleatoria segura
@@ -153,7 +153,8 @@ class MatriculaCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
                     estudiante.save()
 
                     messages.success(request, f'Matrícula {matricula.NumMatricula} creada con éxito para {estudiante.IdUsuario.Nombres}.')
-                    messages.info(request, f'Contraseña inicial estudiante (C.I.: {estudiante.IdUsuario.NumId}): {contrasena_estudiante}.')
+                    if created_eu:
+                        messages.info(request, f'Contraseña inicial del estudiante (C.I.: {estudiante.IdUsuario.NumId}): {contrasena_estudiante}. Guárdala o comunícasela al estudiante.')
                     
                     return redirect(reverse_lazy('gestion_aulatec:matricula_list'))
             
@@ -187,7 +188,7 @@ class MatriculaListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 class MatriculaDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Matricula
     template_name = 'gestion_aulatec/matricula_detail.html'
-    context_object_name = 'matriculas'
+    context_object_name = 'matricula'
 
     def test_func(self):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
@@ -199,8 +200,8 @@ class MatriculaDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 class MatriculaUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Matricula
     template_name = 'gestion_aulatec/matricula_form.html'
-    context_object_name = 'matriculas'
-    form_class = MatriculaForm
+    context_object_name = 'matricula'
+    form_class = MatriculaUpdateForm
     success_url = reverse_lazy('gestion_aulatec:matricula_list')
 
     def test_func(self):
@@ -213,6 +214,7 @@ class MatriculaUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['municipios'] = MUNICIPIOS_COLOMBIA
         context['eps_lista'] = EPS_COLOMBIA
+        context['es_edicion'] = True
         return context
 
 #eliminar matricula
