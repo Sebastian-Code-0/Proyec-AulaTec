@@ -217,6 +217,17 @@ class MatriculaUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         context['es_edicion'] = True
         return context
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        # Sincronizar Estudiante.IdGrado con el grado de la matrícula actualizada
+        matricula = self.object
+        estudiante = matricula.IdEstudiante
+        if estudiante.IdGrado != matricula.IdGrado:
+            estudiante.IdGrado = matricula.IdGrado
+            estudiante.save(update_fields=['IdGrado'])
+        messages.success(self.request, f'Matrícula {matricula.NumMatricula} actualizada correctamente.')
+        return response
+
 #eliminar matricula
 class MatriculaDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Matricula

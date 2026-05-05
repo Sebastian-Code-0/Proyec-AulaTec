@@ -395,7 +395,7 @@ class MatriculaUpdateForm(forms.ModelForm):
     # ---- Condición médica: override BooleanField → Si/No radio ----
     TieneCondicionMedica = forms.TypedChoiceField(
         choices=[('1', 'Sí'), ('0', 'No')],
-        coerce=lambda x: bool(int(x)),
+        coerce=lambda x: x == '1' if isinstance(x, str) else bool(x),
         widget=forms.RadioSelect(attrs={'class': 'si-no-radio'}),
         label='¿Tiene alguna condición médica?',
         initial='0',
@@ -457,6 +457,9 @@ class MatriculaUpdateForm(forms.ModelForm):
             self.add_error('EspecificacionCondicionMedica', 'Debe especificar la condición médica.')
         if not tiene:
             cleaned_data['EspecificacionCondicionMedica'] = ''
+        autoriza = cleaned_data.get('AutorizaTratamientoDatos')
+        if not autoriza:
+            self.add_error('AutorizaTratamientoDatos', 'La autorización de tratamiento de datos es obligatoria.')
         return cleaned_data
 
     def __init__(self, *args, **kwargs):
