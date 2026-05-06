@@ -143,7 +143,7 @@ AUTH_USER_MODEL = 'gestion_aulatec.Usuario'
 
 LOGIN_URL = reverse_lazy('gestion_aulatec:login')
 
-LOGOUT_REDIRECT_URL = '/login/'
+LOGOUT_REDIRECT_URL = '/login/login/'
 
 # MODIFICA SETTINGS.PY PARA QUE LEA EL LOCAL
 try:

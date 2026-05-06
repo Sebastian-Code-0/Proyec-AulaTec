@@ -122,8 +122,14 @@ class CambiarPasswordView(PasswordChangeView):
     # Esta es la plantilla que crearemos en el siguiente paso
     template_name = 'gestion_aulatec/cambiar_password.html' 
     
-    # A dónde lo manda cuando termine (ejemplo: al dashboard)
-    success_url = reverse_lazy('gestion_aulatec:estudiante_dashboard') 
+    def get_success_url(self):
+        user = self.request.user
+        if user.Rol == 'Administrador':
+            return reverse_lazy('gestion_aulatec:admin_dashboard')
+        elif user.Rol == 'Docente':
+            return reverse_lazy('gestion_aulatec:docente_dashboard')
+        else:
+            return reverse_lazy('gestion_aulatec:estudiante_dashboard')
 
     def form_valid(self, form):
         # OBTENEMOS AL USUARIO ACTUAL

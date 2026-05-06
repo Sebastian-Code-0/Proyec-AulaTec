@@ -24,6 +24,7 @@
             <div class="topbar__name">{{ request.user.Nombres }} {{ request.user.Apellidos }}</div>
             <div class="topbar__role">Estudiante</div>
         </div>
+        <a href="{% url 'gestion_aulatec:cambiar_password' %}" class="btn-logout" style="margin-right:0.5rem;">🔑 Contraseña</a>
         <a href="{% url 'gestion_aulatec:logout' %}" class="btn-logout">🚪 Salir</a>
     </div>
 </header>
