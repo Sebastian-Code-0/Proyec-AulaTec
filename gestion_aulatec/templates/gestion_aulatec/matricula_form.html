@@ -114,6 +114,9 @@
   transition: border-color .2s;
 }
 .check-card:hover { border-color: var(--adm-primary-light); }
+.check-card--error { border-color: #ef4444 !important; background: rgba(239,68,68,.07); }
+.check-card--error .check-card__label { color: #fca5a5; }
+.check-card__error-msg { display: block; font-size: .75rem; color: #ef4444; margin-top: .25rem; }
 .check-card__label {
   font-size: .85rem;
   font-weight: 500;
@@ -414,8 +417,13 @@
             </label>
           </div>
 
-          <div class="check-card" style="grid-column:1/-1;">
-            <span class="check-card__label">Autoriza Tratamiento de Datos</span>
+          <div class="check-card {% if form.AutorizaTratamientoDatos.errors %}check-card--error{% endif %}" style="grid-column:1/-1;">
+            <div style="flex:1;">
+              <span class="check-card__label">Autoriza Tratamiento de Datos <span style="color:#ef4444;">*</span></span>
+              {% if form.AutorizaTratamientoDatos.errors %}
+              <span class="check-card__error-msg">⚠ {{ form.AutorizaTratamientoDatos.errors.0 }}</span>
+              {% endif %}
+            </div>
             <label class="toggle-switch">
               {{ form.AutorizaTratamientoDatos }}
               <span class="toggle-thumb"></span>

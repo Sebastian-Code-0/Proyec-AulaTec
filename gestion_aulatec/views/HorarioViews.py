@@ -47,6 +47,7 @@ class HorarioCreateView(EsAdminMixin, CreateView):
         context['grados'] = Grado.objects.all()
         context['materias'] = Materia.objects.all()
         context['docentes'] = Docente.objects.select_related('IdUsuario').all()
+        context['dias'] = Horario.DIAS_SEMANA
         return context
 
 
@@ -61,6 +62,7 @@ class HorarioUpdateView(EsAdminMixin, UpdateView):
         context['grados'] = Grado.objects.all()
         context['materias'] = Materia.objects.all()
         context['docentes'] = Docente.objects.select_related('IdUsuario').all()
+        context['dias'] = Horario.DIAS_SEMANA
         return context
 
 

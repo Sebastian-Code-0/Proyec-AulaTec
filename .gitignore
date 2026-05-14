@@ -8,7 +8,7 @@ __pycache__/
 
 # === Entornos virtuales ===
 venv/
-env/
+.venv/
 
 # === VSCode / VSCodium ===
 .vscode/
