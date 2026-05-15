@@ -34,7 +34,7 @@ class DocenteVinculadoMixin:
     """
     def dispatch(self, request, *args, **kwargs):
         from gestion_aulatec.models import Docente
-        if request.user.Rol == 'Docente':
+        if request.user.is_authenticated and request.user.Rol == 'Docente':
             if not Docente.objects.filter(IdUsuario=request.user).exists():
                 messages.error(
                     request,
@@ -105,11 +105,17 @@ class CalificacionListView(DocenteVinculadoMixin, EsDocenteOAdminMixin, ListView
             for e in estudiantes
         ]
 
+        # Precalcular mapa materia→grados vía Horario
+        from gestion_aulatec.models import Horario
+        materia_grado_map = {}
+        for h in Horario.objects.filter(activo=True).values('materia_id', 'grado_id'):
+            materia_grado_map.setdefault(h['materia_id'], set()).add(str(h['grado_id']))
+
         materias_json = [
             {
                 'pk': str(m.pk),
                 'nombre': m.NombreMateria,
-                'grado': str(m.IdDocente.pk) if m.IdDocente else ''
+                'grados': list(materia_grado_map.get(m.pk, []))
             }
             for m in materias
         ]
@@ -136,11 +142,6 @@ class CalificacionListView(DocenteVinculadoMixin, EsDocenteOAdminMixin, ListView
         return context
 
 class CalificacionEstudianteView(LoginRequiredMixin, UserPassesTestMixin, ListView):
-    def test_func(self):
-        return self.request.user.is_authenticated and self.request.user.Rol in ('Estudiante', 'Docente', 'Administrador')
-
-    def handle_no_permission(self):
-        return redirect('gestion_aulatec:home')
     """
     Estudiante: ve sus propias calificaciones con promedios por periodo.
     Admin/Docente: pueden ver las calificaciones de cualquier estudiante.
@@ -149,22 +150,32 @@ class CalificacionEstudianteView(LoginRequiredMixin, UserPassesTestMixin, ListVi
     template_name = 'gestion_aulatec/calificacion_estudiante.html'
     context_object_name = 'calificaciones'
 
+    def test_func(self):
+        user = self.request.user
+        if user.Rol in ['Administrador', 'Docente']:
+            return True
+        if user.Rol == 'Estudiante':
+            # Solo puede ver sus propias calificaciones
+            try:
+                estudiante = Estudiante.objects.get(IdUsuario=user)
+                return str(estudiante.pk) == str(self.kwargs.get('pk'))
+            except Estudiante.DoesNotExist:
+                return False
+        return False
+
+    def handle_no_permission(self):
+        return redirect('gestion_aulatec:home')
+
     def get_queryset(self):
         user = self.request.user
         if user.Rol == 'Estudiante':
-            try:
-                estudiante = Estudiante.objects.get(IdUsuario=user)
-            except Estudiante.DoesNotExist:
-                return Calificacion.objects.none()
+            estudiante = Estudiante.objects.get(IdUsuario=user)
             return Calificacion.objects.filter(
                 IdEstudiante=estudiante
             ).order_by('Periodo', 'IdMateria')
         # Admin o Docente consultando un estudiante específico por pk en la URL
-        pk = self.kwargs.get('pk')
-        if not pk:
-            return Calificacion.objects.none()
         return Calificacion.objects.filter(
-            IdEstudiante__pk=pk
+            IdEstudiante__pk=self.kwargs.get('pk')
         ).order_by('Periodo', 'IdMateria')
 
 

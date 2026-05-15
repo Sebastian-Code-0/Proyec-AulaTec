@@ -10,5 +10,5 @@ urlpatterns = [
     path('usuarios/<int:pk>/editar/', views.UsuarioUpdateView.as_view(), name='usuario_update'),
     # URL para eliminar un usuario existente
     path('usuarios/<int:pk>/eliminar/', views.UsuarioDeleteView.as_view(), name='usuario_delete'),
-    path('cambiar-password/', views.UsuarioViews.CambiarPasswordView.as_view(), name='cambiar_password'),
+    path('cambiar-password/', views.CambiarPasswordView.as_view(), name='cambiar_password'),
 ]

@@ -10,7 +10,7 @@ class Estudiante(models.Model):
 
     def __str__(self):
         nombre_usuario = f"{self.IdUsuario.Nombres} {self.IdUsuario.Apellidos}" if self.IdUsuario else "Usuario Desconocido"
-        grado_info = f" (Grado {self.IdGrado.NumCurso}{self.IdGrado.NumGrado})" if self.IdGrado else ""
+        grado_info = f" (Grado {self.IdGrado.NumGrado}{self.IdGrado.NumCurso})" if self.IdGrado else ""
         return f"{nombre_usuario}{grado_info}"
 
     class Meta:

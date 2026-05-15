@@ -75,10 +75,12 @@ class UsuarioCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
         # 3. Hasheamos y quitamos el cambio obligatorio
         usuario.set_password(password_plana)
-        usuario.debe_cambiar_password = False 
+        usuario.debe_cambiar_password = False
         usuario.save()
-        
-        return super().form_valid(form)
+
+        # Saltar super().form_valid() para evitar doble save
+        from django.http import HttpResponseRedirect
+        return HttpResponseRedirect(self.success_url)
     def form_invalid(self, form):
         print("Errores del formulario:", form.errors)   
         return super().form_invalid(form)
