@@ -8,8 +8,8 @@ class Materia(models.Model):
 
     def __str__(self):
         if self.IdDocente and self.IdDocente.IdUsuario:
-            return f"{self.NombreMateria} (Docente: {self.IdDocente.IdUsuario.Nombres}{self.IdDocente.IdUsuario.Apellidos})" 
-        return f"{self.NombreMateria} (Docente no asigando)"
+            return f"{self.NombreMateria} (Docente: {self.IdDocente.IdUsuario.Nombres} {self.IdDocente.IdUsuario.Apellidos})"
+        return f"{self.NombreMateria} (Docente no asignado)"
 
     class Meta:
         db_table = 'Materia'

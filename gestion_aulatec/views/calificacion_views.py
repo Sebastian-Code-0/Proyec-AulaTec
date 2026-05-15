@@ -152,13 +152,31 @@ class CalificacionEstudianteView(LoginRequiredMixin, UserPassesTestMixin, ListVi
 
     def test_func(self):
         user = self.request.user
-        if user.Rol in ['Administrador', 'Docente']:
+        if user.Rol == 'Administrador':
             return True
+        if user.Rol == 'Docente':
+            # Solo estudiantes de grados donde el docente dicta clases
+            from gestion_aulatec.models import Docente, Horario
+            try:
+                docente = Docente.objects.get(IdUsuario=user)
+                grados_docente = Horario.objects.filter(
+                    docente=docente, activo=True
+                ).values_list('grado_id', flat=True)
+                return Estudiante.objects.filter(
+                    pk=self.kwargs.get('pk'),
+                    IdGrado_id__in=grados_docente
+                ).exists()
+            except Docente.DoesNotExist:
+                return False
         if user.Rol == 'Estudiante':
-            # Solo puede ver sus propias calificaciones
             try:
                 estudiante = Estudiante.objects.get(IdUsuario=user)
-                return str(estudiante.pk) == str(self.kwargs.get('pk'))
+                pk_url = self.kwargs.get('pk')
+                # Sin pk en URL = "mis calificaciones", siempre permitido
+                if pk_url is None:
+                    return True
+                # Con pk en URL = solo si es el propio estudiante
+                return str(estudiante.pk) == str(pk_url)
             except Estudiante.DoesNotExist:
                 return False
         return False
@@ -213,6 +231,7 @@ class CalificacionCreateView(DocenteVinculadoMixin, EsDocenteOAdminMixin, Create
             )
             form.fields['IdDocente'].initial = docente
             form.fields['IdDocente'].widget.attrs['disabled'] = True
+            form.fields['IdDocente'].widget.attrs['readonly'] = True
         return form
 
     def form_valid(self, form):
@@ -271,6 +290,7 @@ class CalificacionUpdateView(DocenteVinculadoMixin, EsDocenteOAdminMixin, Update
             )
             form.fields['IdDocente'].initial = docente
             form.fields['IdDocente'].widget.attrs['disabled'] = True
+            form.fields['IdDocente'].widget.attrs['readonly'] = True
         return form
 
     def form_valid(self, form):

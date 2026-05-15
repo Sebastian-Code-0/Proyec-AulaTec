@@ -42,7 +42,8 @@ class UsuarioCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         
         # 2. Enviamos el correo (usando la variable segura)
         try:
-            asunto = "Bienvenido a AulaTec - Credenciales de Docente"
+            rol = usuario.Rol if usuario.Rol else 'Usuario'
+            asunto = f"Bienvenido a AulaTec - Credenciales de {rol}"
             mensaje = f"""
             Hola {usuario.Nombres},
             
@@ -52,7 +53,7 @@ class UsuarioCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
             Usuario (Documento): {usuario.NumId}
             Contraseña: {password_plana}
             
-            Puedes ingresar aquí: http://127.0.0.1:8000/login/
+            Puedes ingresar aquí: {self.request.build_absolute_uri('/login/')}
             """
             
             from django.core.mail import send_mail
@@ -120,7 +121,7 @@ class UsuarioDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     # Opcional: Personalizar el objeto que se mostrará en el template
     context_object_name = 'usuario' # Para que en el template puedas usar {{ usuario.Nombres }}
 
-class CambiarPasswordView(PasswordChangeView):
+class CambiarPasswordView(LoginRequiredMixin, PasswordChangeView):
     # Esta es la plantilla que crearemos en el siguiente paso
     template_name = 'gestion_aulatec/cambiar_password.html' 
     

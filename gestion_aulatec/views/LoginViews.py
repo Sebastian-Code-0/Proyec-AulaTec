@@ -52,6 +52,9 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Usuario
     context_object_name = 'usuarios'
 
+    def get_queryset(self):
+        return Usuario.objects.none()
+
     def test_func(self):
         return self.request.user.Rol == 'Administrador'
 
@@ -145,7 +148,7 @@ class DocenteDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 class EstudianteDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = 'gestion_aulatec/estudiante_dashboard.html'
     model = Estudiante
-    context_object_name = 'estudiante_perfil'
+    context_object_name = 'estudiante_qs'
 
     def test_func(self):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Estudiante'

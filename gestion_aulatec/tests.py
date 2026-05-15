@@ -1,6 +1,4 @@
 from django.test import TestCase
-<<<<<<< HEAD
-=======
 from django.urls import reverse
 
 # Create your tests here.
