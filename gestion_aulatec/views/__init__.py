@@ -22,4 +22,5 @@ from .CertificadoViews import (
     SolicitarCertificadoView,
     MisCertificadosView,
     DescargarCertificadoEstudianteView,
+    DescargarReporteNotasView,
 )

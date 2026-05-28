@@ -67,11 +67,8 @@ class UsuarioCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                     [correo_destino],
                     fail_silently=False,
                 )
-            else:
-                print("DEBUG: No se encontró correo en cleaned_data")
-                
+
         except Exception as e:
-            print(f"DEBUG Error enviando correo: {e}")
             messages.warning(self.request, 'Usuario creado, pero hubo un error con el correo.')
 
         # 3. Hasheamos y quitamos el cambio obligatorio
@@ -83,7 +80,6 @@ class UsuarioCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         from django.http import HttpResponseRedirect
         return HttpResponseRedirect(self.success_url)
     def form_invalid(self, form):
-        print("Errores del formulario:", form.errors)   
         return super().form_invalid(form)
 
 # Actualizar (Editar un usuario existente)

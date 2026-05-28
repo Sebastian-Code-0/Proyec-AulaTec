@@ -50,10 +50,6 @@ INSTALLED_APPS = [
     'gestion_aulatec',  # Your custom app
 ]
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-
-CRISPY_TEMPLATE_PACK = "bootstrap5"
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -143,7 +139,7 @@ AUTH_USER_MODEL = 'gestion_aulatec.Usuario'
 
 LOGIN_URL = reverse_lazy('gestion_aulatec:login')
 
-LOGOUT_REDIRECT_URL = '/login/login/'
+LOGOUT_REDIRECT_URL = '/login/'
 
 # MODIFICA SETTINGS.PY PARA QUE LEA EL LOCAL
 try:
