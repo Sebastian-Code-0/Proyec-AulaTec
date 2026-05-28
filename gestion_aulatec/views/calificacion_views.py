@@ -16,6 +16,8 @@ class EsAdminMixin(LoginRequiredMixin, UserPassesTestMixin):
         return self.request.user.Rol == 'Administrador'
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
 
 
@@ -24,6 +26,8 @@ class EsDocenteOAdminMixin(LoginRequiredMixin, UserPassesTestMixin):
         return self.request.user.Rol in ['Administrador', 'Docente']
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
 
 
@@ -50,6 +54,8 @@ class EsEstudianteMixin(LoginRequiredMixin, UserPassesTestMixin):
         return self.request.user.Rol == 'Estudiante'
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
 
 
@@ -182,6 +188,8 @@ class CalificacionEstudianteView(LoginRequiredMixin, UserPassesTestMixin, ListVi
         return False
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
 
     def get_queryset(self):

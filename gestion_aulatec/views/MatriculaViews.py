@@ -31,6 +31,8 @@ class MatriculaCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
 
     def _ctx(self, form):
@@ -182,6 +184,8 @@ class MatriculaListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
 
 #detalles de matricula
@@ -194,6 +198,8 @@ class MatriculaDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
     
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
 
 #editar matricula
@@ -208,6 +214,8 @@ class MatriculaUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
 
     def get_context_data(self, **kwargs):
@@ -238,6 +246,8 @@ class MatriculaDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
     
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
 
     def form_valid(self, form):
@@ -272,6 +282,8 @@ class ExportarMatriculasExcelView(LoginRequiredMixin, UserPassesTestMixin, View)
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
 
     def get(self, request):

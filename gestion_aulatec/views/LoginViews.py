@@ -59,6 +59,8 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return self.request.user.Rol == 'Administrador'
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
 
     def get_context_data(self, **kwargs):
@@ -88,6 +90,8 @@ class DocenteDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Docente'
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
 
     def get_context_data(self, **kwargs):
@@ -154,6 +158,8 @@ class EstudianteDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView)
         return self.request.user.is_authenticated and self.request.user.Rol == 'Estudiante'
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
 
     def get_queryset(self):

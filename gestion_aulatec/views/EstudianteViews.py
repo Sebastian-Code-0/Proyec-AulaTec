@@ -13,6 +13,8 @@ class EsAdminMixin(LoginRequiredMixin, UserPassesTestMixin):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
 
 

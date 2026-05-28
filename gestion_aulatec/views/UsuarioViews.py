@@ -20,6 +20,8 @@ class UsuarioListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
     
 class UsuarioCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -27,6 +29,8 @@ class UsuarioCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
     model = Usuario
     form_class = UsuarioForm
@@ -88,6 +92,8 @@ class UsuarioUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
     model = Usuario
     form_class = UsuarioForm
@@ -109,6 +115,8 @@ class UsuarioDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user.is_authenticated and self.request.user.Rol == 'Administrador'
 
     def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('gestion_aulatec:login')
         return redirect('gestion_aulatec:home')
     model = Usuario
     template_name = 'gestion_aulatec/usuario_confirm_delete.html'
